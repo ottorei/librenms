@@ -14,7 +14,7 @@ class AlterTableDeviceOutages extends Migration
     public function up()
     {
         Schema::table('device_outages', function (Blueprint $table) {
-            $table->string('outage_reason', 50);
+            $table->string('outage_reason', 50)->nullable();
         });
     }
 
