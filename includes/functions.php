@@ -2038,7 +2038,9 @@ function device_is_up($device, $record_perf = false)
         $response['status_reason'] = 'icmp';
     }
 
-    if ($device['status'] != $response['status'] || $device['status_reason'] != $response['status_reason'] || $consider_maintenance) {
+    // ei ongoing outageja, status on 0, moodi päällä, maintenance ei päällä
+
+    if ($device['status'] != $response['status'] || $device['status_reason'] != $response['status_reason']) {
         dbUpdate(
             ['status' => $response['status'], 'status_reason' => $response['status_reason']],
             'devices',
