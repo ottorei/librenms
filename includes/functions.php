@@ -2030,25 +2030,15 @@ function device_is_up($device, $record_perf = false)
         } else {
             echo 'SNMP Unreachable';
             $response['status'] = '0';
-            if ($maintenance && $consider_maintenance) {
-                // Scheduled maintenance, device not responding to snmp
-                $response['status_reason'] = 'snmp (maintenance)';
-            } else {
-                $response['status_reason'] = 'snmp';
-            }
+            $response['status_reason'] = 'snmp';
         }
     } else {
         echo 'Unpingable';
         $response['status'] = '0';
-        if ($maintenance && $consider_maintenance) {
-            // Scheduled maintenance, device not responding to icmp
-            $response['status_reason'] = 'icmp (maintenance)';
-        } else {
-            $response['status_reason'] = 'icmp';
-        }
+        $response['status_reason'] = 'icmp';
     }
 
-    if ($device['status'] != $response['status'] || $device['status_reason'] != $response['status_reason']) {
+    if ($device['status'] != $response['status'] || $device['status_reason'] != $response['status_reason'] || $consider_maintenance) {
         dbUpdate(
             ['status' => $response['status'], 'status_reason' => $response['status_reason']],
             'devices',
@@ -2056,19 +2046,13 @@ function device_is_up($device, $record_perf = false)
             [$device['device_id']]
         );
 
-        $uptime = $device['uptime'] ?: 0;
-
         if ($response['status']) {
             $type = 'up';
             $reason = $device['status_reason'];
 
             $going_down = dbFetchCell('SELECT going_down FROM device_outages WHERE device_id=? AND up_again IS NULL ORDER BY going_down DESC', [$device['device_id']]);
             if (! empty($going_down)) {
-                $up_again = time() - $uptime;
-                if ($up_again <= $going_down) {
-                    // network connection loss, not device down
-                    $up_again = time();
-                }
+                $up_again = time();
                 dbUpdate(
                     ['device_id' => $device['device_id'], 'up_again' => $up_again],
                     'device_outages',
