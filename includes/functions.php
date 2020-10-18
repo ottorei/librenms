@@ -2002,6 +2002,7 @@ function device_is_up($device, $record_perf = false)
     $device_perf['timestamp'] = ['NOW()'];
     $maintenance = DeviceCache::get($device['device_id'])->isUnderMaintenance();
     $consider_maintenance = Config::get('graphing.availability_consider_maintenance');
+    $state_update_again = false;
 
     if ($record_perf === true && can_ping_device($device['attribs'])) {
         $trace_debug = [];
@@ -2038,9 +2039,15 @@ function device_is_up($device, $record_perf = false)
         $response['status_reason'] = 'icmp';
     }
 
-    // ei ongoing outageja, status on 0, moodi päällä, maintenance ei päällä
+    // Special case where the device is still down, optional mode is on, device not in maintenance mode and has no ongoing outages
+    if(($consider_maintenance && !$maintenance) && ($response['status'] = '0' && $device['status'] == 0)) {
+        $ongoing_outages = dbFetchCell('SELECT going_down FROM device_outages WHERE device_id=? AND up_again IS NULL ORDER BY going_down DESC', [$device['device_id']]);
+        if($ongoing_outages) {
+            $state_update_again = true;
+        }
+    }
 
-    if ($device['status'] != $response['status'] || $device['status_reason'] != $response['status_reason']) {
+    if ($device['status'] != $response['status'] || $device['status_reason'] != $response['status_reason'] || $state_update_again) {
         dbUpdate(
             ['status' => $response['status'], 'status_reason' => $response['status_reason']],
             'devices',
