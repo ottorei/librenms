@@ -2040,7 +2040,7 @@ function device_is_up($device, $record_perf = false)
     }
 
     // Special case where the device is still down, optional mode is on, device not in maintenance mode and has no ongoing outages
-    if(($consider_maintenance && !$maintenance) && ($response['status'] = '0' && $device['status'] == 0)) {
+    if(($consider_maintenance && !$maintenance) && ($response['status'] = '0')) {
         $ongoing_outages = empty(dbFetchCell('SELECT going_down FROM device_outages WHERE device_id=? AND up_again IS NULL ORDER BY going_down DESC', [$device['device_id']]));
         if($ongoing_outages) {
             $state_update_again = true;
