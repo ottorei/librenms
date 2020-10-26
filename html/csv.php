@@ -30,6 +30,7 @@ echo "VARS:\n\n";
 var_dump($vars);
 if ($report && file_exists(Config::get('install_dir') . "/includes/html/reports/$report.csv.inc.php")) {
     if ($debug === false) {
+        echo "--DEBUG INSIDE IF--";
         header('Content-Type: text/csv');
         header('Content-Disposition: attachment; filename="' . $report . '-' . date('Ymd') . '.csv"');
     }
