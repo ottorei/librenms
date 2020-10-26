@@ -23,7 +23,8 @@ if (! Auth::check()) {
 
 set_debug(strpos($_SERVER['PATH_INFO'], 'debug'));
 
-$report = basename($vars['report']);
+//$report = basename($vars['report']);
+$report = 'ports';
 echo "REPORT:";
 var_dump($report);
 echo "VARS:\n\n";
