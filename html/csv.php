@@ -24,7 +24,7 @@ if (! Auth::check()) {
 set_debug(strpos($_SERVER['PATH_INFO'], 'debug'));
 
 $report = basename($vars['report']);
-echo "REPORT:"
+echo "REPORT:";
 var_dump($report);
 echo "VARS:\n\n";
 var_dump($vars);
