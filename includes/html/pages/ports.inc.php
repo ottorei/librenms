@@ -24,6 +24,10 @@ if (! isset($vars['format'])) {
     $vars['format'] = 'list_basic';
 }
 
+if (! isset($vars['report'])) {
+    $vars['report'] = 'ports';
+}
+
 $displayLists = '';
 $displayLists .= '<span style="font-weight: bold;">Ports lists</span> &#187; ';
 
