@@ -28,8 +28,8 @@ echo "REPORT:";
 var_dump($report);
 echo "VARS:\n\n";
 var_dump($vars);
-echo "GET:\n\n"
-var_dump($_GET)
+echo "GET:\n\n";
+var_dump($_GET);
 if ($report && file_exists(Config::get('install_dir') . "/includes/html/reports/$report.csv.inc.php")) {
     if ($debug === false) {
         echo "--DEBUG INSIDE IF--";
