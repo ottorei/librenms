@@ -491,6 +491,39 @@ function device_outages(Illuminate\Http\Request $request)
     });
 }
 
+function get_neighbours(Illuminate\Http\Request $request)
+{
+    // return list of discovered neighbours of the device
+    $hostname = $request->route('hostname');
+
+    if (empty($hostname)) {
+        return api_error(400, 'No hostname has been provided to get neighbours');
+    }
+
+    $device_id = ctype_digit($hostname) ? $hostname : getidbyname($hostname);
+
+    return check_device_permission($device_id, function ($device_id) {
+        $neighbours = [];
+        foreach (dbFetchRows('SELECT * FROM links AS L, ports AS I WHERE I.device_id = ? AND I.port_id = L.local_port_id order by ifName', $device_id) as $neighbour) {
+            $local_port = $neighbour['ifAlias'];
+
+            if (is_numeric($neighbour['remote_port_id']) && $neighbour['remote_port_id']) {
+                $remote_device = device_by_id_cache($remote_port['device_id']);
+                $remote_port = get_port_by_id($neighbour['remote_port_id']);
+            } else {
+                $remote_device = $neighbour['remote_hostname'];
+                $remote_port = $neighbour['remote_port'];
+            }
+            $neighbours[] = $neighbour;
+            return $neighbours;
+
+        }
+        
+        return api_success($neighbours, 'neighbours');
+    });
+
+}
+
 function get_vlans(Illuminate\Http\Request $request)
 {
     $hostname = $request->route('hostname');
