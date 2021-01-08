@@ -19,6 +19,14 @@
                         <div class="col-sm-8 col-md-9">
                             <input type='checkbox' name='ack_until_clear' id='ack_until_clear'>
                         </div>
+
+                    <div class="form-group" id="ack_section">
+                        <label for="ack_api_call" class="col-sm-4 col-md-3 control-label" title="@lang('Create API-call for this alert')">@lang('Create API-call for this alert:')</label>
+                        <div class="col-sm-8 col-md-9">
+                            <input type='checkbox' name='ack_api_call' id='ack_api_call'>
+                        </div>
+                    </div>
+
                     </div>
                     <div class="form-group">
                         <div class="col-sm-offset-4 col-md-offset-3 col-sm-3 col-md-2">
