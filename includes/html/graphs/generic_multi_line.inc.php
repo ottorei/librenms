@@ -54,11 +54,13 @@ foreach ($rrd_list as $rrd) {
 
     $id = 'ds' . $i;
 
-    if ($use_last_values) {
-        $rrd_options .= ' DEF:' . $id . "=$filename:$ds:LAST";
-    } else {
-        $rrd_options .= ' DEF:' . $id . "=$filename:$ds:AVERAGE";
-    }
+    #if ($use_last_values) {
+    #    $rrd_options .= ' DEF:' . $id . "=$filename:$ds:LAST";
+    #} else {
+    #    $rrd_options .= ' DEF:' . $id . "=$filename:$ds:AVERAGE";
+    #}
+
+    $rrd_options .= ' DEF:' . $id . "=$filename:$ds:LAST";
 
     if ($simple_rrd) {
         $rrd_options .= ' CDEF:' . $id . 'min=' . $id . ' ';
