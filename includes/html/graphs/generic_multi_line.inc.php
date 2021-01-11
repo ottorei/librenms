@@ -61,7 +61,7 @@ foreach ($rrd_list as $rrd) {
     #}
 
     $rrd_options .= ' DEF:' . $id . "=$filename:$ds:LAST";
-    echo("TESTISTRING" . $rrd_options)
+    #echo("TESTISTRING" . $rrd_options)
 
     if ($simple_rrd) {
         $rrd_options .= ' CDEF:' . $id . 'min=' . $id . ' ';
