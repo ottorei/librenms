@@ -60,7 +60,7 @@ foreach ($rrd_list as $rrd) {
     #    $rrd_options .= ' DEF:' . $id . "=$filename:$ds:AVERAGE";
     #}
 
-    $rrd_options .= ' DEF:' . $id . "=$filename:$ds:LAST";
+    $rrd_options .= ' DEF:' . $id . "=$filename:$ds:AVERAGE";
     #echo("TESTISTRING" . $rrd_options)
 
     if ($simple_rrd) {
