@@ -12,7 +12,7 @@
 echo("Staring isis poll");
 
 // Get circuits data
-$isis_circuits_poll = snmpwalk_cache_oid($device, 'ISIS-MIB::IsisCircTable', [], '');
+$isis_circuits_poll = snmpwalk_cache_oid($device, 'ISIS-MIB::IsisCircTable', [], 'junos');
 
 d_echo($isis_circuits_poll);
 var_dump($isis_circuits_poll);
