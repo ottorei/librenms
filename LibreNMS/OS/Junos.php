@@ -26,6 +26,7 @@
 namespace LibreNMS\OS;
 use LibreNMS\OS;
 use App\Models\Device;
+use App\Models\IsisSystem;
 use LibreNMS\Interfaces\Polling\OSPolling;
 use LibreNMS\RRD\RrdDefinition;
 use Illuminate\Support\Collection;
