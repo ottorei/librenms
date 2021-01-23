@@ -57,7 +57,10 @@ class Isis implements Module
      * @param OS $os
      */
 
-     // POLLING FUNCTIONS
+    public function poll(OS $os)
+    {
+        // TODO
+    }
 
     /**
      * Remove all DB data for this module.
