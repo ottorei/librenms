@@ -71,7 +71,16 @@ class Junos extends OS implements OSPolling, IsisDiscovery
     public function discoverIsisSystems()
     {
         echo("Testing...");
-        $IsisSystems = snmpwalk_cache_multi_oid($this->getDeviceArray(), 'isisSystem', [], 'ISIS-MIB', 'junos');
-        var_dump($IsisSystems);
+        $IsisSysCache = snmpwalk_cache_multi_oid($this->getDeviceArray(), 'isisSystem', [], 'ISIS-MIB', 'junos');
+        //var_dump($IsisSysCache);
+
+        foreach ($IsisSysCache as $key => $value) {
+            $systems->push(new IsisSystem([
+                'device_id' => $this->getDeviceId(),
+                'isisSysId' => $value['isisSysID'],
+                'isisSysLevelType' => $value['isisSysLevelType'],
+                'isisSysAdminState' => $value['isisSysAdminState'],
+            ]));
+        }
     }
 }
