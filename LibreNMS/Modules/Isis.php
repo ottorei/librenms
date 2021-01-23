@@ -28,12 +28,10 @@ namespace LibreNMS\Modules;
 
 use App\Observers\ModuleModelObserver;
 use LibreNMS\DB\SyncsModels;
-use LibreNMS\Interfaces\Discovery\MplsDiscovery;
 use LibreNMS\Interfaces\Module;
-use LibreNMS\Interfaces\Polling\MplsPolling;
 use LibreNMS\OS;
 
-class Mpls implements Module
+class Isis implements Module
 {
     use SyncsModels;
 
