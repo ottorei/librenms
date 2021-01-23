@@ -75,7 +75,7 @@ class Junos extends OS implements OSPolling, IsisDiscovery
         //var_dump($IsisSysCache);
 
         foreach ($IsisSysCache as $key => $value) {
-            $systems->push(new IsisSystem([
+            $IsisSystem->push(new IsisSystem([
                 'device_id' => $this->getDeviceId(),
                 'isisSysId' => $value['isisSysID'],
                 'isisSysLevelType' => $value['isisSysLevelType'],
