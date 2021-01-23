@@ -44,7 +44,6 @@ class Isis implements Module
             echo "\nISIS SYSTEMS: ";
             ModuleModelObserver::observe('\App\Models\IsisSystem');
             $IsisSystems = $this->syncModels($os->getDevice(), 'IsisSystems', $os->discoverIsisSystems());
-
             echo PHP_EOL;
         }
     }
