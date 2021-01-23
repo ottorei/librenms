@@ -17,11 +17,6 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
- * @link       http://librenms.org
- * @copyright  2019 Vitali Kari
- * @copyright  2019 Tony Murray
- * @author     Vitali Kari <vitali.kari@gmail.com>
- * @author     Tony Murray <murraytony@gmail.com>
  */
 
 namespace LibreNMS\Modules;
@@ -47,7 +42,7 @@ class Isis implements Module
         if ($os instanceof IsisDiscovery) {
             echo "\nISIS SYSTEMS: ";
             ModuleModelObserver::observe('\App\Models\IsisSystem');
-            $lsps = $this->syncModels($os->getDevice(), 'IsisSystems', $os->discoverIsisSystems());
+            $systems = $this->syncModels($os->getDevice(), 'IsisSystems', $os->discoverIsisSystems());
 
             echo PHP_EOL;
         }
@@ -60,20 +55,8 @@ class Isis implements Module
      *
      * @param OS $os
      */
-#    public function poll(OS $os)
-#    {
-#        if ($os instanceof IsisPolling) {
-#            $device = $os->getDevice();
-#
-#            if ($device->IsisISAdjs()->exists()) {
-#                echo "\nISIS ADJACENTS: ";
-#                ModuleModelObserver::observe('\App\Models\IsisISAdj');
-#                $lsps = $this->syncModels($device, 'IsisISAdjs', $os->pollIsisISAdjs());
-#            }
-#
-#           echo PHP_EOL;
-#        }
-#    }
+
+     // POLLING FUNCTIONS
 
     /**
      * Remove all DB data for this module.
