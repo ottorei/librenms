@@ -43,7 +43,7 @@ class Isis implements Module
         if ($os instanceof IsisDiscovery) {
             echo "\nISIS SYSTEMS: ";
             ModuleModelObserver::observe('\App\Models\IsisSystem');
-            $systems = $this->syncModels($os->getDevice(), 'IsisSystems', $os->discoverIsisSystems());
+            $IsisSystems = $this->syncModels($os->getDevice(), 'IsisSystems', $os->discoverIsisSystems());
 
             echo PHP_EOL;
         }
