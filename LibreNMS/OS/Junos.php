@@ -30,7 +30,7 @@ use LibreNMS\Interfaces\Polling\OSPolling;
 use LibreNMS\RRD\RrdDefinition;
 use Illuminate\Support\Collection;
 
-class Junos extends OS implements OSPolling, MplsDiscovery
+class Junos extends OS implements OSPolling, IsisDiscovery
 {
     public function discoverOS(Device $device): void
     {
