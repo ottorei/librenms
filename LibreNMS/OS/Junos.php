@@ -29,6 +29,7 @@ use App\Models\Device;
 use LibreNMS\Interfaces\Polling\OSPolling;
 use LibreNMS\RRD\RrdDefinition;
 use Illuminate\Support\Collection;
+use LibreNMS\Interfaces\Discovery\IsisDiscovery;
 
 class Junos extends OS implements OSPolling, IsisDiscovery
 {

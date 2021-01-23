@@ -25,7 +25,7 @@
  */
 
 namespace LibreNMS\Modules;
-use LibreNMS\Interfaces\Discovery\IsisDiscovery;
+
 use App\Observers\ModuleModelObserver;
 use LibreNMS\DB\SyncsModels;
 use LibreNMS\Interfaces\Module;
