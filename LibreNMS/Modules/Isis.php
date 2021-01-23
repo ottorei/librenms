@@ -39,7 +39,6 @@ class Isis implements Module
      */
     public function discover(OS $os)
     {
-        echo "ISIS DISCOVERY";
         if ($os instanceof IsisDiscovery) {
             echo "\nISIS SYSTEMS: ";
             ModuleModelObserver::observe('\App\Models\IsisSystem');
