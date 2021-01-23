@@ -68,14 +68,21 @@ class Junos extends OS implements OSPolling, IsisDiscovery
         }
     }
 
+    public function pollIsis()
+    {
+        echo "test";
+        // TODO
+    }
+
     public function discoverIsisSystems()
     {
+        // Should we just always poll all adjacencies instead of discovering them?
         echo("Testing...");
         $IsisSysCache = snmpwalk_cache_multi_oid($this->getDeviceArray(), 'isisSystem', [], 'ISIS-MIB', 'junos');
         //var_dump($IsisSysCache);
 
         foreach ($IsisSysCache as $key => $value) {
-            $IsisSystems->push(new IsisSystem([
+            $systems->push(new IsisSystem([
                 'device_id' => $this->getDeviceId(),
                 'isisSysId' => $value['isisSysID'],
                 'isisSysLevelType' => $value['isisSysLevelType'],

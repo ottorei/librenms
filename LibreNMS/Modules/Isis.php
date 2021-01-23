@@ -25,6 +25,7 @@ use App\Observers\ModuleModelObserver;
 use LibreNMS\DB\SyncsModels;
 use LibreNMS\Interfaces\Module;
 use LibreNMS\Interfaces\Discovery\IsisDiscovery;
+use LibreNMS\Interfaces\Polling\IsisPolling;
 use LibreNMS\OS;
 
 class Isis implements Module
@@ -39,12 +40,12 @@ class Isis implements Module
      */
     public function discover(OS $os)
     {
-        if ($os instanceof IsisDiscovery) {
-            echo "\nISIS SYSTEMS: ";
-            ModuleModelObserver::observe('\App\Models\IsisSystem');
-            $IsisSystems = $this->syncModels($os->getDevice(), 'IsisSystems', $os->discoverIsisSystems());
-            echo PHP_EOL;
-        }
+        #if ($os instanceof IsisDiscovery) {
+        #    echo "\nISIS Systems: ";
+        #    ModuleModelObserver::observe('\App\Models\IsisSystem');
+        #    $systems = $os->getDevice()->
+        #    echo PHP_EOL;
+        #}
     }
 
     /**
@@ -57,7 +58,8 @@ class Isis implements Module
 
     public function poll(OS $os)
     {
-        // TODO
+        ModuleModelObserver::observe(PollIsis::class);
+        $isis_entries = $os->getDevice()->isis;
     }
 
     /**
@@ -68,6 +70,6 @@ class Isis implements Module
      */
     public function cleanup(OS $os)
     {
-        $os->getDevice()->IsisAdjs()->delete();
+        $os->getDevice()->IsisSystems()->delete();
     }
 }
