@@ -9,13 +9,17 @@ $device_model = DeviceCache::getPrimary();
 
 
 // Check if any ISIS circuits exist
-$isis_adjs = snmpwalk_cache_oid($device, 'ISIS-MIB::isisCirc', [], 'ISIS-MIB');
+$isis_circs = snmpwalk_cache_oid($device, 'ISIS-MIB::isisCirc', [], 'ISIS-MIB');
 // Poll ISIS adjacencies
-if (! empty($isis_adjs)) {
+if (! empty($isis_circs)) {
     $isis_adjs = snmpwalk_cache_oid($device, 'ISIS-MIB::isisISAdj', [], 'ISIS-MIB');
 }
 
-var_dump($isis_adjs);
+foreach ($isis_adjs as $key => $value) {
+    echo "{$key} => {$value} ";
+}
+
+#var_dump($isis_adjs);
 
 echo PHP_EOL;
 
