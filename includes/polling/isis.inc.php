@@ -28,7 +28,7 @@ foreach ($isis_adjs as $key => $value) {
 }
 
 foreach ($tmp_adjs as $key => $value) {
-    var_dump($value);
+    #var_dump($value);
     echo "\nisisISAdjState: " . $value[0]['isisISAdjState'];
     echo "\nisisISAdjNeighSysType: " . $value[0]['isisISAdjNeighSysType'];
     echo "\nisisISAdjNeighSysID: " . $value[0]['isisISAdjNeighSysID'];
