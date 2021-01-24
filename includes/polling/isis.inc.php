@@ -46,6 +46,9 @@ foreach ($tmp_adjacencies as $key => $value) {
     echo "\n";
     */
 
+    // Get port ID from existing data
+    $port_id = (int) $device_model->ports()->where('ifIndex')->value($key);
+
     // Save data to the DB
     $adjacency = IsisAdjacency::updateOrCreate([
         'device_id' => $device['device_id'],
