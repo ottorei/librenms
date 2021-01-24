@@ -9,7 +9,7 @@ $device_model = DeviceCache::getPrimary();
 
 
 // Poll ISIS adjacencies
-$isis_adjs = snmpwalk_cache_oid($device, 'ISIS-MIB::isisISAdj', [], 'ISIS-MIB');
+$isis_adjs = snmpwalk_cache_oid($device, 'isisISAdj', [], 'ISIS-MIB');
 
 var_dump($isis_adjs);
 
