@@ -14,8 +14,8 @@ if (! empty($isis_circs)) {
     // Poll ISIS adjacencies
     #$isis_adjs = snmpwalk_cache_oid($device, 'ISIS-MIB::isisISAdj', [], 'ISIS-MIB');
     #$isis_adjs = snmpwalk_cache_oid($device, 'ISIS-MIB::isisISAdj', [], 'ISIS-MIB');
-    $isis_adjs = snmpwalk_cache_oid($device, 'ISIS-MIB::isisISAdjState', [], 'ISIS-MIB');
-    $isis_adjs = snmpwalk_cache_oid($device, 'ISIS-MIB::isisISAdjIPAddrAddress', [], 'ISIS-MIB');
+    $isis_adjs = snmpwalk_cache_oid($device, 'ISIS-MIB::isisISAdjState', $isis_adjs, 'ISIS-MIB');
+    $isis_adjs = snmpwalk_cache_oid($device, 'ISIS-MIB::isisISAdjIPAddrAddress', $isis_adjs, 'ISIS-MIB');
 }
 
 
