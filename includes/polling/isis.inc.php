@@ -16,13 +16,13 @@ if (! empty($isis_circs)) {
 
 }
 
-$combined_arr = [];
+$adjs = [];
 
 var_dump($isis_adjs);
 
 foreach ($isis_adjs as $key => $value) {
     $index = explode(".", $key)[0];
-    echo $index;
+    echo $index . "\n";
 }
 
 #var_dump($isis_adjs);
