@@ -38,7 +38,7 @@ foreach ($tmp_adjs as $key => $value) {
     $isisISAdjLastUpTime = $value[0]['isisISAdjLastUpTime'];
     $isisISAdjAreaAddress = $value[1]['isisISAdjAreaAddress'];
     $isisISAdjIPAddrType = $value[1]['isisISAdjIPAddrType'];
-    $isisISAdjIPAddrAddress = $value[1]['isisISAdjIPAddrAddress'];
+    $isisISAdjIPAddrAddress = IP::fromHexString($value[1]['isisISAdjIPAddrAddress']);
 
     echo "\nisisISAdjState: " . $isisISAdjState;
     echo "\nisisISAdjNeighSysType: " . $isisISAdjNeighSysType;
