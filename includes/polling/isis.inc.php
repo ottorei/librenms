@@ -16,7 +16,15 @@ if (! empty($isis_circs)) {
 }
 
 foreach ($isis_adjs as $key => $value) {
-    echo($value["isisISAdjState"]);
+    echo('isisISAdjState: ' . $value["isisISAdjState"] . '\n');
+    echo('isisISAdjState: ' . $value["isisISAdjState"] . '\n');
+    echo('isisISAdjNeighSNPAAddress: ' . $value["isisISAdjNeighSNPAAddress"] . '\n');
+    echo('isisISAdjNeighSysType: ' . $value["isisISAdjNeighSysType"] . '\n');
+    echo('isisISAdjNeighSysID: ' . $value["isisISAdjNeighSysID"] . '\n');
+    echo('isisISAdjUsage: ' . $value["isisISAdjUsage"] . '\n');
+    echo('isisISAdjLastUpTime: ' . $value["isisISAdjLastUpTime"] . '\n');
+    echo('isisISAdjUsage: ' . $value["isisISAdjUsage"] . '\n');
+
 }
 
 #var_dump($isis_adjs);
