@@ -16,7 +16,7 @@ if (! empty($isis_circs)) {
 }
 
 foreach ($isis_adjs as $key => $value) {
-    echo($key["isisISAdjState"]);
+    echo($value["isisISAdjState"]);
 }
 
 #var_dump($isis_adjs);
