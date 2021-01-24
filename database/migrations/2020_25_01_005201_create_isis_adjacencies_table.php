@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Database\Migrations\Migration;
-use Illuminate\Support\Facades\Schema;
+use Illuminate\Database\Schema\Blueprint;
 
 class CreateIsisAdjacenciesTable extends Migration
 {
@@ -12,7 +12,7 @@ class CreateIsisAdjacenciesTable extends Migration
      */
     public function up()
     {
-        Schema::create('isis_adjacencies', function ($table) {
+        Schema::create('isis_adjacencies', function (Blueprint $table) {
             $table->increments('adjacency_id');
             $table->integer('device_id');
             $table->integer('port_id');
