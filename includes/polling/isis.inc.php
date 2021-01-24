@@ -69,7 +69,7 @@ foreach ($tmp_adjacencies as $key => $value) {
 echo PHP_EOL;
 
 unset(
-    $$adjacencies_poll
+    $adjacencies_poll
     $adjacencies
     $isis_data
     $tmp_adjacencies
