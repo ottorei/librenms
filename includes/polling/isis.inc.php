@@ -37,7 +37,7 @@ foreach ($tmp_adjs as $key => $value) {
     echo "\nisisISAdjAreaAddress: " . $value[1]['isisISAdjAreaAddress'];
     echo "\nisisISAdjIPAddrType: " . $value[1]['isisISAdjIPAddrType'];
     echo "\nisisISAdjIPAddrAddress: " . $value[1]['isisISAdjIPAddrAddress'];
-    echo "\n"
+    echo "\n";
 }
 // Get port ID from existing data
 // $port_id = (int) $device_model->ports()->where('ifIndex')->value('port_id');
