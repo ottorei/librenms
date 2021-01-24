@@ -24,7 +24,7 @@ foreach ($isis_adjs as $key => $value) {
     $index = explode(".", $key)[0];
     echo $index . "\n";
 
-    $adjs[$index] = $value;
+    $adjs[$index][] = $value;
 
 }
 
