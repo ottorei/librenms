@@ -54,8 +54,8 @@ var_dump($tmp_adjs);
 echo PHP_EOL;
 
 unset(
-    $isis_circs
-    $isis_adjs
-    $tmp_adjs
+    $isis_circs,
+    $isis_adjs,
+    $tmp_adjs,
     $adjs
 );
