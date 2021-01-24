@@ -56,7 +56,7 @@ foreach ($tmp_adjacencies as $key => $value) {
         'isisISAdjAreaAddress' => $isis_data["isisISAdjAreaAddress"],
         'isisISAdjIPAddrType' => $isis_data["isisISAdjIPAddrType"],
         'isisISAdjIPAddrAddress' => $isis_data["isisISAdjIPAddrAddress"],
-    ]));
+    ]);
 }
 
 // Get port ID from existing data
