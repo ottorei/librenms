@@ -8,8 +8,12 @@ use LibreNMS\RRD\RrdDefinition;
 $device_model = DeviceCache::getPrimary();
 
 
+// Check if any ISIS circuits exist
+$isis_circs = snmpwalk_cache_oid($device, 'ISIS-MIB::isisCirc', [], 'ISIS-MIB');
 // Poll ISIS adjacencies
-$isis_adjs = snmpwalk_cache_oid($device, 'ISIS-MIB::isisISAdj', [], 'ISIS-MIB');
+if (! empty($isis_circs)) {
+    $isis_adjs = snmpwalk_cache_oid($device, 'ISIS-MIB::isisISAdj', [], 'ISIS-MIB');
+}
 
 var_dump($isis_adjs);
 
