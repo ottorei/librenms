@@ -27,6 +27,9 @@ foreach ($isis_adjs as $key => $value) {
     $tmp_adjs[$index][] = $value;
 }
 
+foreach ($tmp_adjs as $key => $value) {
+    d_echo($value);
+}
 // Get port ID from existing data
 // $port_id = (int) $device_model->ports()->where('ifIndex')->value('port_id');
 
