@@ -3,7 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Support\Facades\Schema;
 
-class CreateCacheTable extends Migration
+class CreateIsisAdjacenciesTable extends Migration
 {
     /**
      * Run the migrations.
