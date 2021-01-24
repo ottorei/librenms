@@ -1,7 +1,8 @@
 <?php
 
 use App\Models\Ipv4Address;
-
+use LibreNMS\Util\IP;
+use LibreNMS\Util\IPv4;
 use LibreNMS\RRD\RrdDefinition;
 
 // Get device model
@@ -29,14 +30,23 @@ foreach ($isis_adjs as $key => $value) {
 
 foreach ($tmp_adjs as $key => $value) {
     #var_dump($value);
-    echo "\nisisISAdjState: " . $value[0]['isisISAdjState'];
-    echo "\nisisISAdjNeighSysType: " . $value[0]['isisISAdjNeighSysType'];
-    echo "\nisisISAdjNeighSysID: " . $value[0]['isisISAdjNeighSysID'];
-    echo "\nisisISAdjNeighPriority: " . $value[0]['isisISAdjNeighPriority'];
-    echo "\nisisISAdjLastUpTime: " . $value[0]['isisISAdjLastUpTime'];
-    echo "\nisisISAdjAreaAddress: " . $value[1]['isisISAdjAreaAddress'];
-    echo "\nisisISAdjIPAddrType: " . $value[1]['isisISAdjIPAddrType'];
-    echo "\nisisISAdjIPAddrAddress: " . $value[1]['isisISAdjIPAddrAddress'];
+    $isisISAdjState = $value[0]['isisISAdjState'];
+    $isisISAdjNeighSysType = $value[0]['isisISAdjNeighSysType'];
+    $isisISAdjNeighSysID = $value[0]['isisISAdjNeighSysID'];
+    $isisISAdjNeighPriority = $value[0]['isisISAdjNeighPriority'];
+    $isisISAdjLastUpTime = $value[0]['isisISAdjLastUpTime'];
+    $isisISAdjAreaAddress = $value[0]['isisISAdjAreaAddress'];
+    $isisISAdjIPAddrType = $value[0]['isisISAdjIPAddrType'];
+    $isisISAdjIPAddrAddress = $value[0]['isisISAdjIPAddrAddress'];
+
+    echo "\nisisISAdjState: " . $isisISAdjState;
+    echo "\nisisISAdjNeighSysType: " . $isisISAdjNeighSysType;
+    echo "\nisisISAdjNeighSysID: " . $isisISAdjNeighSysID;
+    echo "\nisisISAdjNeighPriority: " . $isisISAdjNeighPriority;
+    echo "\nisisISAdjLastUpTime: " . $isisISAdjLastUpTime;
+    echo "\nisisISAdjAreaAddress: " . $isisISAdjAreaAddress;
+    echo "\nisisISAdjIPAddrType: " . $isisISAdjIPAddrType;
+    echo "\nisisISAdjIPAddrAddress: " . $isisISAdjIPAddrAddress;
     echo "\n";
 }
 // Get port ID from existing data
