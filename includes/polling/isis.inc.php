@@ -29,6 +29,14 @@ foreach ($isis_adjs as $key => $value) {
 
 foreach ($tmp_adjs as $key => $value) {
     var_dump($value);
+    echo "\nisisISAdjState: " . $value[0]['isisISAdjState'];
+    echo "\nisisISAdjNeighSysType: " . $value[0]['isisISAdjNeighSysType'];
+    echo "\nisisISAdjNeighSysID: " . $value[0]['isisISAdjNeighSysID'];
+    echo "\nisisISAdjNeighPriority: " . $value[0]['isisISAdjNeighPriority'];
+    echo "\nisisISAdjLastUpTime: " . $value[0]['isisISAdjLastUpTime'];
+    echo "\nisisISAdjAreaAddress: " . $value[1]['isisISAdjAreaAddress'];
+    echo "\nisisISAdjIPAddrType: " . $value[1]['isisISAdjIPAddrType'];
+    echo "\nisisISAdjIPAddrAddress: " . $value[1]['isisISAdjIPAddrAddress'];
 }
 // Get port ID from existing data
 // $port_id = (int) $device_model->ports()->where('ifIndex')->value('port_id');
