@@ -28,6 +28,7 @@ foreach ($isis_adjs as $key => $value) {
     $tmp_adjs[$index][] = $value;
 }
 
+// Loop through all adjacencies
 foreach ($tmp_adjs as $key => $value) {
     #var_dump($value);
     $isisISAdjState = $value[0]['isisISAdjState'];
@@ -35,9 +36,9 @@ foreach ($tmp_adjs as $key => $value) {
     $isisISAdjNeighSysID = $value[0]['isisISAdjNeighSysID'];
     $isisISAdjNeighPriority = $value[0]['isisISAdjNeighPriority'];
     $isisISAdjLastUpTime = $value[0]['isisISAdjLastUpTime'];
-    $isisISAdjAreaAddress = $value[0]['isisISAdjAreaAddress'];
-    $isisISAdjIPAddrType = $value[0]['isisISAdjIPAddrType'];
-    $isisISAdjIPAddrAddress = $value[0]['isisISAdjIPAddrAddress'];
+    $isisISAdjAreaAddress = $value[1]['isisISAdjAreaAddress'];
+    $isisISAdjIPAddrType = $value[1]['isisISAdjIPAddrType'];
+    $isisISAdjIPAddrAddress = $value[1]['isisISAdjIPAddrAddress'];
 
     echo "\nisisISAdjState: " . $isisISAdjState;
     echo "\nisisISAdjNeighSysType: " . $isisISAdjNeighSysType;
