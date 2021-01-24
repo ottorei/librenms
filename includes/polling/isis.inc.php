@@ -23,9 +23,12 @@ var_dump($isis_adjs);
 foreach ($isis_adjs as $key => $value) {
     $index = explode(".", $key)[0];
     echo $index . "\n";
+
+    $adjs[$index] = $value;
+
 }
 
-#var_dump($isis_adjs);
+var_dump($adjs);
 
 echo PHP_EOL;
 
