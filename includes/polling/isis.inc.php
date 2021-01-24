@@ -28,6 +28,9 @@ foreach ($isis_adjs as $key => $value) {
     $tmp_adjs[$index][] = $value;
 }
 
+$adjacencies_poll = snmpwalk_group($device, 'ISIS-MIB::isisCirc', [], 'ISIS-MIB');
+var_dump($adjacencies_poll);
+/*
 // Loop through all adjacencies
 foreach ($tmp_adjs as $key => $value) {
     #var_dump($value);
@@ -50,6 +53,8 @@ foreach ($tmp_adjs as $key => $value) {
     echo "\nisisISAdjIPAddrAddress: " . $isisISAdjIPAddrAddress;
     echo "\n";
 }
+
+*/
 // Get port ID from existing data
 // $port_id = (int) $device_model->ports()->where('ifIndex')->value('port_id');
 
