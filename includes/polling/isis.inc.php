@@ -14,15 +14,10 @@ $isis_circs = snmpwalk_cache_oid($device, 'ISIS-MIB::isisCirc', [], 'ISIS-MIB');
 if (! empty($isis_circs)) {
     $isis_adjs = snmpwalk_cache_oid($device, 'ISIS-MIB::isisISAdj', [], 'ISIS-MIB');
 }
+d_echo($isis_adjs);
 
 foreach ($isis_adjs as $key => $value) {
-    echo 'isisISAdjState: ' . $value["isisISAdjState"] . '\n';
-    echo 'isisISAdjNeighSNPAAddress: ' . $value["isisISAdjNeighSNPAAddress"] . '\n';
-    echo 'isisISAdjNeighSysType: ' . $value["isisISAdjNeighSysType"] . '\n';
-    echo 'isisISAdjNeighSysID: ' . $value["isisISAdjNeighSysID"] . '\n';
-    echo 'isisISAdjUsage: ' . $value["isisISAdjUsage"] . '\n';
-    echo 'isisISAdjLastUpTime: ' . $value["isisISAdjLastUpTime"] . '\n';
-    echo 'isisISAdjUsage: ' . $value["isisISAdjUsage"] . '\n';
+
 
 }
 
