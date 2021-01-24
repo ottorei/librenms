@@ -46,8 +46,8 @@ foreach ($tmp_adjs as $key => $value) {
 #'isisISAdjIPAddrAddress',
 
 
-]
-)
+#]
+#)
 
 var_dump($tmp_adjs);
 
