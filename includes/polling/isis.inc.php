@@ -44,8 +44,8 @@ foreach ($tmp_adjacencies as $key => $value) {
     echo "\nisisISAdjIPAddrAddress: " . $isis_data["isisISAdjIPAddrAddress"];
     echo "\n";
 
-    // Save data
-    $adjacencies->push(new IsisAdjacency([
+    // Save data to the DB
+    $adjacency = IsisAdjacency::updateOrCreate([
         'device_id' => $device['device_id'],
         'port_id' => $port_id,
         'isisISAdjState' => $isis_data["isisISAdjState"],
