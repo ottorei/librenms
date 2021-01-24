@@ -45,7 +45,7 @@ foreach ($tmp_adjacencies as $key => $value) {
     echo "\n";
 
     // Save data
-    $adjacencencies->push(new IsisAdjacency([
+    $adjacencies->push(new IsisAdjacency([
         'device_id' => $device['device_id'],
         'port_id' => $port_id,
         'isisISAdjState' => $isis_data["isisISAdjState"],
@@ -69,8 +69,8 @@ foreach ($tmp_adjacencies as $key => $value) {
 echo PHP_EOL;
 
 unset(
-    $adjacencies_poll
-    $adjacencies
-    $isis_data
-    $tmp_adjacencies
+    $adjacencies_poll,
+    $adjacencies,
+    $isis_data,
+    $tmp_adjacencies,
 );
