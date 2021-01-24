@@ -28,7 +28,7 @@ foreach ($isis_adjs as $key => $value) {
 }
 
 foreach ($tmp_adjs as $key => $value) {
-    d_echo($value);
+    var_dump($value);
 }
 // Get port ID from existing data
 // $port_id = (int) $device_model->ports()->where('ifIndex')->value('port_id');
@@ -49,7 +49,7 @@ foreach ($tmp_adjs as $key => $value) {
 #]
 #)
 
-var_dump($tmp_adjs);
+#var_dump($tmp_adjs);
 
 echo PHP_EOL;
 
