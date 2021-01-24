@@ -14,10 +14,11 @@ $isis_circs = snmpwalk_cache_oid($device, 'ISIS-MIB::isisCirc', [], 'ISIS-MIB');
 if (! empty($isis_circs)) {
     $isis_adjs = snmpwalk_cache_oid($device, 'ISIS-MIB::isisISAdj', [], 'ISIS-MIB');
 }
+
 d_echo($isis_adjs);
 
 foreach ($isis_adjs as $key => $value) {
-
+    echo $value;
 
 }
 
