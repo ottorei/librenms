@@ -49,6 +49,11 @@ foreach ($tmp_adjacencies as $key => $value) {
     // Get port ID from existing data
     $port_id = (int) $device_model->ports()->where('ifIndex', $key)->value('port_id');
 
+    echo "\nPort ID: "
+    var_dump($port_id);
+    echo "\nifIndex: "
+    var_dump($key);
+    
     // Save data to the DB
     $adjacency = IsisAdjacency::updateOrCreate([
         'device_id' => $device['device_id'],
@@ -62,14 +67,9 @@ foreach ($tmp_adjacencies as $key => $value) {
         'isisISAdjIPAddrType' => $isis_data["isisISAdjIPAddrType"],
         'isisISAdjIPAddrAddress' => $isis_data["isisISAdjIPAddrAddress"],
     ]);
+
+    // TODO: DB cleanup - remove all entries from the device that are not present during the poll
 }
-
-// Get port ID from existing data
-// $port_id = (int) $device_model->ports()->where('ifIndex')->value('port_id');
-
-
-
-#var_dump($tmp_adjs);
 
 echo PHP_EOL;
 
