@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\Ipv4Address;
+use App\Models\IsisAdjacency;
 use LibreNMS\Util\IP;
 use LibreNMS\Util\IPv4;
 use LibreNMS\RRD\RrdDefinition;
@@ -8,30 +9,21 @@ use LibreNMS\RRD\RrdDefinition;
 // Get device model
 $device_model = DeviceCache::getPrimary();
 
+// Poll data from device
+$adjacencies_poll = snmpwalk_cache_oid($device, 'ISIS-MIB::isisISAdj', [], 'ISIS-MIB');
 
-// Check if any ISIS circuits exist
-$isis_circs = snmpwalk_cache_oid($device, 'ISIS-MIB::isisCirc', [], 'ISIS-MIB');
-if (! empty($isis_circs)) {
-    // Poll data from adjacencies
-    $isis_adjs = snmpwalk_cache_oid($device, 'ISIS-MIB::isisISAdj', [], 'ISIS-MIB');
-    // Poll 
-}
-
-$adjs = collect();
+$adjacencies = collect();
 
 #var_dump($isis_adjs);
 
 // Index the data by ifIndex
-$tmp_adjs = [];
+$tmp_adjacencies = [];
 foreach ($isis_adjs as $key => $value) {
     $index = explode(".", $key)[0];
-    $tmp_adjs[$index][] = $value;
+    $tmp_adjacencies[$index][] = $value;
 }
 
-$adjacencies_poll = snmpwalk_group($device, 'ISIS-MIB::isisCirc', [], 'ISIS-MIB');
-var_dump($adjacencies_poll);
-/*
-// Loop through all adjacencies
+// Loop through all adjacencies and output their status
 foreach ($tmp_adjs as $key => $value) {
     #var_dump($value);
     $isisISAdjState = $value[0]['isisISAdjState'];
@@ -52,27 +44,26 @@ foreach ($tmp_adjs as $key => $value) {
     echo "\nisisISAdjIPAddrType: " . $isisISAdjIPAddrType;
     echo "\nisisISAdjIPAddrAddress: " . $isisISAdjIPAddrAddress;
     echo "\n";
+
+    // Save data
+    $adjacencencies->push(new IsisAdjacency([
+        'device_id' => $device['device_id'],
+        'port_id' = > $port_id,
+        'isisISAdjState' => ,
+        'isisISAdjNeighSysType',
+        'isisISAdjNeighSysID',
+        'isisISAdjNeighPriority',
+        'isisISAdjLastUpTime', $adj[0]['']
+        'isisISAdjAreaAddress',
+        'isisISAdjIPAddrType',
+        'isisISAdjIPAddrAddress',
+    ]));
 }
 
-*/
 // Get port ID from existing data
 // $port_id = (int) $device_model->ports()->where('ifIndex')->value('port_id');
 
-#$adjs->push(new IsisAdj[
-#'device_id' => $device['device_id'],
-#'port_id' = > $port_id,
-#'isisISAdjState' => ,
-#'isisISAdjNeighSysType',
-#'isisISAdjNeighSysID',
-#'isisISAdjNeighPriority',
-#'isisISAdjLastUpTime', $adj[0]['']
-#'isisISAdjAreaAddress',
-#'isisISAdjIPAddrType',
-#'isisISAdjIPAddrAddress',
 
-
-#]
-#)
 
 #var_dump($tmp_adjs);
 
