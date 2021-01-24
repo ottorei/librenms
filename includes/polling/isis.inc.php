@@ -34,6 +34,7 @@ foreach ($tmp_adjacencies as $key => $value) {
     $isis_data["isisISAdjIPAddrType"] = $value[1]['isisISAdjIPAddrType'];
     $isis_data["isisISAdjIPAddrAddress"] = IP::fromHexString($value[1]['isisISAdjIPAddrAddress']);
 
+    /*
     echo "\nisisISAdjState: " . $isis_data["isisISAdjState"];
     echo "\nisisISAdjNeighSysType: " . $isis_data["isisISAdjNeighSysType"];
     echo "\nisisISAdjNeighSysID: " . $isis_data["isisISAdjNeighSysID"];
@@ -43,6 +44,7 @@ foreach ($tmp_adjacencies as $key => $value) {
     echo "\nisisISAdjIPAddrType: " . $isis_data["isisISAdjIPAddrType"];
     echo "\nisisISAdjIPAddrAddress: " . $isis_data["isisISAdjIPAddrAddress"];
     echo "\n";
+    */
 
     // Save data to the DB
     $adjacency = IsisAdjacency::updateOrCreate([
