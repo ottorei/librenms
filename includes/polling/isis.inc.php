@@ -26,9 +26,6 @@ foreach ($adjacencies_poll as $key => $value) {
 // Loop through all adjacencies and output their status
 foreach ($tmp_adjacencies as $key => $value) {
     #var_dump($value);
-
-    echo "\nChecking adjacent " . $isis_data["isisISAdjIPAddrAddress"];
-
     $isis_data["isisISAdjState"] = $value[0]['isisISAdjState'];
     $isis_data["isisISAdjNeighSysType"] = $value[0]['isisISAdjNeighSysType'];
     $isis_data["isisISAdjNeighSysID"] = $value[0]['isisISAdjNeighSysID'];
@@ -37,6 +34,8 @@ foreach ($tmp_adjacencies as $key => $value) {
     $isis_data["isisISAdjAreaAddress"] = $value[1]['isisISAdjAreaAddress'];
     $isis_data["isisISAdjIPAddrType"] = $value[1]['isisISAdjIPAddrType'];
     $isis_data["isisISAdjIPAddrAddress"] = IP::fromHexString($value[1]['isisISAdjIPAddrAddress']);
+
+    echo "\nFound adjacent " . $isis_data["isisISAdjIPAddrAddress"];
 
     // Get port ID from existing data. If port does not exist, use Null value
     // Return 0 if the port does not exist
