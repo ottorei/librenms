@@ -890,7 +890,7 @@ function alert_details($details)
             $fallback = false;
         }
 
-        if ($tmp_alerts['port_id']) {
+        if ($tmp_alerts['port_id'] && ! $tmp_alerts['isisISAdjIPAddrAddress']) {
             $tmp_alerts = cleanPort($tmp_alerts);
             $fault_detail .= generate_port_link($tmp_alerts) . ';&nbsp;';
             $fallback = false;
