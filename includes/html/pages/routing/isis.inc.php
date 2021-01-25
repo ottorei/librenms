@@ -31,14 +31,11 @@ foreach (dbFetchRows('SELECT A.`device_id`, A.`port_id`, A.`isisISAdjIPAddrAddre
     }
 
     $port_collection = Port::where('port_id', $adj['port_id'])->get();
-
+    
+    // Loop through port collection, return last matching port
     foreach($port_collection as $port) {
-        echo $port->getLabel();
+        $interface_name = $port->getLabel();
     }
-
-    //var_dump($port);
-
-    //$interface_name = $device->ports()->where('id', $adj['port_id'])->first();
 
     echo '
         <tbody>
