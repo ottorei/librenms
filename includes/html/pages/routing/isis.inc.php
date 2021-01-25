@@ -25,6 +25,7 @@ foreach (dbFetchRows('SELECT A.`device_id`, A.`isisISAdjIPAddrAddress`, A.`isisI
             <td></td>
             <td>' . generate_device_link($device, 0, ['tab' => 'routing', 'proto' => 'isis']) . '</td>
             <td>' . $adj['isisISAdjIPAddrAddress'] . '</td>
+            <td>' . $adj['isisISAdjNeighSysType'] . '</td>
             <td>' . $adj['isisISAdjState'] . '</td>
             <td>' . $adj['isisISAdjLastUpTime'] . '</td>
           </tr>
