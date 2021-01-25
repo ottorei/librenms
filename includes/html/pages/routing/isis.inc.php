@@ -1,5 +1,7 @@
 <?php
 
+use App\Models\Device;
+
 echo '
 <div>
   <div class="panel panel-default">
@@ -26,6 +28,8 @@ foreach (dbFetchRows('SELECT A.`device_id`, A.`port_id`, A.`isisISAdjIPAddrAddre
     else {
         $color = "red";
     }
+
+    $interface_name = $device->ports()->where('ifIndex', $adj['port_id'])->first();
 
     echo '
         <tbody>
