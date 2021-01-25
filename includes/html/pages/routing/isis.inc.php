@@ -12,12 +12,18 @@ echo '
             <th>Adjacent</th>
             <th>System type</th>
             <th>State</th>
-            <th>Last changed</th>
+            <th>Uptime</th>
           </tr>
         </thead>';
 
 foreach (dbFetchRows('SELECT A.`device_id`, A.`isisISAdjIPAddrAddress`, A.`isisISAdjState`, A.`isisISAdjLastUpTime`, A.`isisISAdjNeighSysType` FROM `isis_adjacencies` AS `A` ORDER BY A.`device_id`') as $adj) {
     $device = device_by_id_cache($adj['device_id']);
+    if ($adj['isisISAdjState'] == "up") {
+        $color = "green";
+    }
+    else {
+        $color = "red";
+    }
 
     echo '
         <tbody>
@@ -26,7 +32,7 @@ foreach (dbFetchRows('SELECT A.`device_id`, A.`isisISAdjIPAddrAddress`, A.`isisI
             <td>' . generate_device_link($device, 0, ['tab' => 'routing', 'proto' => 'isis']) . '</td>
             <td>' . $adj['isisISAdjIPAddrAddress'] . '</td>
             <td>' . $adj['isisISAdjNeighSysType'] . '</td>
-            <td>' . $adj['isisISAdjState'] . '</td>
+            <td><strong><span style="color: ' . $color . ';">' . $adj['isisISAdjState'] . '</span></strong></td>
             <td>' . $adj['isisISAdjLastUpTime'] . '</td>
           </tr>
         </tbody>';
