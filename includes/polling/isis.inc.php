@@ -72,7 +72,7 @@ foreach ($tmp_adjacencies as $key => $value) {
     ->where(['device_id' => $device['device_id']])
     ->whereNotIn('isisISAdjIPAddrAddress', $adjacencies->pluck('isisISAdjIPAddrAddress'))->delete();
 
-    // TODO: Create RRD-files from adjacency count
+    // TODO: Create RRD-files for each adjacency, save status and possibly uptime
 
 
 echo PHP_EOL;
