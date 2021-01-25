@@ -41,8 +41,11 @@ foreach (dbFetchRows('SELECT A.`device_id`, A.`port_id`, A.`isisISAdjIPAddrAddre
 
 */
 
+
+
 foreach (IsisAdjacency::all() as $adj) {
-    var_dump($adj);
+    $device = device_by_id_cache($adj->device_id);
+    //var_dump($adj);
     $port_collection = Port::where('port_id', $adj->port_id)->get();
         echo '
             <tbody>
