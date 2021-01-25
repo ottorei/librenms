@@ -33,7 +33,7 @@ foreach (dbFetchRows('SELECT A.`device_id`, A.`port_id`, A.`isisISAdjIPAddrAddre
     $port_collection = Port::where('port_id', $adj['port_id'])->get();
 
     foreach($port_collection as $port) {
-        echo $port->port_id;
+        echo $port->getLabel();
     }
 
     //var_dump($port);
