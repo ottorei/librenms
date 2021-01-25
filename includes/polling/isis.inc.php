@@ -40,7 +40,7 @@ foreach ($tmp_adjacencies as $key => $value) {
 
     // Remove spaces and convert to a more common display format
     $isis_data["isisISAdjNeighSysID"] = str_replace(' ', '', $isis_data["isisISAdjNeighSysID"]);
-    $isis_data["isisISAdjNeighSysID"] = chunk_split($isis_data["isisISAdjNeighSysID"], 4, '.').rtrim('.');
+    $isis_data["isisISAdjNeighSysID"] = implode(" ", str_split($isis_data["isisISAdjNeighSysID"], 4)).".";
 
     echo "\nFound adjacent " . $isis_data["isisISAdjIPAddrAddress"];
 
