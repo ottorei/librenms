@@ -11,7 +11,7 @@ $device_model = DeviceCache::getPrimary();
 
 // Poll data from device
 $adjacencies_poll = snmpwalk_cache_oid($device, 'ISIS-MIB::isisISAdj', [], 'ISIS-MIB');
-$var_dump($adjacencies_poll);
+var_dump($adjacencies_poll);
 $adjacencies = collect();
 
 $isis_data = [];
