@@ -29,7 +29,8 @@ foreach (dbFetchRows('SELECT A.`device_id`, A.`port_id`, A.`isisISAdjIPAddrAddre
         $color = "red";
     }
 
-    $interface_name = "test";
+    $port = $device->ports()->where('port_id', $ifIndex)->first();
+    $interface_name = $port->ifName;
     //$interface_name = $device->ports()->where('id', $adj['port_id'])->first();
 
     echo '
@@ -41,8 +42,8 @@ foreach (dbFetchRows('SELECT A.`device_id`, A.`port_id`, A.`isisISAdjIPAddrAddre
                 'page'=>'device', 
                 'device'=>$adj['device_id'], 
                 'tab'=>'port', 
-                'port'=>$adj['port_id'
-            ]]) . '">' . $interface_name . '</a></td>
+                'port'=>$adj['port_id']
+                ]) . '">' . $interface_name . '</a></td>
             <td>' . $adj['isisISAdjIPAddrAddress'] . '</td>
             <td>' . $adj['isisISAdjNeighSysID'] . '</td>
             <td>' . $adj['isisISAdjNeighSysType'] . '</td>
