@@ -793,9 +793,9 @@ ipv6_networks:
 isis_adjacencies:
   Columns:
     - { Field: id, Type: int unsigned, 'Null': false, Extra: 'auto_increment' }
-    - { Field: device_id, Type: int unsigned, 'Null': false, Extra: '' }
-    - { Field: port_id, Type: int unsigned, 'Null': false, Extra: '' }
-    - { Field: isisISAdjState, Type: varchar(128), 'Null': false, Extra: '' }
+    - { Field: device_id, Type: int, 'Null': false, Extra: '' }
+    - { Field: port_id, Type: int, 'Null': false, Extra: '' }
+    - { Field: isisISAdjState, Type: varchar(13), 'Null': false, Extra: '' }
     - { Field: isisISAdjNeighSysType, Type: varchar(128), 'Null': false, Extra: '' }
     - { Field: isisISAdjNeighSysID, Type: varchar(128), 'Null': false, Extra: '' }
     - { Field: isisISAdjNeighPriority, Type: varchar(128), 'Null': false, Extra: '' }

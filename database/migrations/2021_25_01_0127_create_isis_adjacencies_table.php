@@ -16,7 +16,7 @@ class CreateIsisAdjacenciesTable extends Migration
             $table->increments('id');
             $table->integer('device_id');
             $table->integer('port_id');
-            $table->string('isisISAdjState', 128);
+            $table->string('isisISAdjState', 13);
             $table->string('isisISAdjNeighSysType', 128);
             $table->string('isisISAdjNeighSysID', 128);
             $table->string('isisISAdjNeighPriority', 128);

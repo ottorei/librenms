@@ -48,7 +48,7 @@ foreach ($tmp_adjacencies as $key => $value) {
     var_dump($key);
     */
 
-    // Save data to the DB
+    // Save data into the DB
     $adjacency = IsisAdjacency::updateOrCreate([
         'device_id' => $device['device_id'],
         'isisISAdjIPAddrAddress' => $isis_data["isisISAdjIPAddrAddress"],
