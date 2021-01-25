@@ -22,7 +22,7 @@ echo '
           </tr>
         </thead>';
 
-foreach (IsisAdjacency::where('device_id' => $device['device_id']) as $adj) {
+foreach (IsisAdjacency::where('device_id' => $device['device_id'])->get() as $adj) {
     //$device = device_by_id_cache($adj->device_id);
     //var_dump($adj);
     $port_collection = Port::where('port_id', $adj->port_id)->get();
