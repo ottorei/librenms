@@ -1,54 +1,45 @@
 <?php
 
-$link_array = [
-    'page'   => 'device',
-    'device' => $device['device_id'],
-    'tab'    => 'routing',
-    'proto'  => 'isis',
-];
+echo '
+<div>
+  <div class="panel panel-default">
+    <div class="panel-body">
+      <table class="table table-condensed table-hover" style="border-collapse:collapse;">
+        <thead>
+          <tr>
+            <th>&nbsp;</th>
+            <th>Device</th>
+            <th>Adjacent</th>
+            <th>System IDID</th>
+            <th>System type</th>
+            <th>State</th>
+            <th>Uptime</th>
+          </tr>
+        </thead>';
 
-// echo(generate_link("Basic", $link_array,array('view'=>'basic')));
-if (! isset($vars['view'])) {
-    $vars['view'] = 'basic';
-}
-
-print_optionbar_start();
-
-echo "<span style='font-weight: bold;'>Adjacencies</span> &#187; ";
-
-$menu_options = ['basic' => 'Basic',
-    // 'detail' => 'Detail',
-];
-
-if (! $_GET['opta']) {
-    $_GET['opta'] = 'basic';
-}
-
-$sep = '';
-foreach ($menu_options as $option => $text) {
-    if ($vars['view'] == $option) {
-        echo "<span class='pagemenu-selected'>";
+foreach (dbFetchRows('SELECT A.`device_id`, A.`isisISAdjIPAddrAddress`, A.`isisISAdjNeighSysID`, A.`isisISAdjState`, A.`isisISAdjLastUpTime`, A.`isisISAdjNeighSysType` FROM `isis_adjacencies` AS `A` ORDER BY A.`device_id`') as $adj) {
+    $device = device_by_id_cache($adj['device_id']);
+    if ($adj['isisISAdjState'] == "up") {
+        $color = "green";
+    }
+    else {
+        $color = "red";
     }
 
-    echo generate_link($text, $link_array, ['view' => $option]);
-    if ($vars['view'] == $option) {
-        echo '</span>';
-    }
-
-    echo ' | ';
+    echo '
+        <tbody>
+          <tr>
+            <td></td>
+            <td>' . generate_device_link($device, 0, ['tab' => 'routing', 'proto' => 'isis']) . '</td>
+            <td>' . $adj['isisISAdjIPAddrAddress'] . '</td>
+            <td>' . $adj['isisISAdjNeighSysID'] . '</td>
+            <td>' . $adj['isisISAdjNeighSysType'] . '</td>
+            <td><strong><span style="color: ' . $color . ';">' . $adj['isisISAdjState'] . '</span></strong></td>
+            <td>' . $adj['isisISAdjLastUpTime'] . '</td>
+          </tr>
+        </tbody>';
 }
-
-unset($sep);
-
-
-print_optionbar_end();
-
-echo "<div style='margin: 5px;'><table border=0 cellspacing=0 cellpadding=5 width=100%>";
-$i = '0';
-foreach (dbFetchRows('SELECT * FROM `vrfs` WHERE `device_id` = ? ORDER BY `vrf_name`', [$device['device_id']]) as $vrf) {
-    include 'includes/html/print-vrf.inc.php';
-
-    $i++;
-}
-
-echo '</table></div>';
+echo '</table>
+    </div>
+  </div>
+</div>';
