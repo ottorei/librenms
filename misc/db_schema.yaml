@@ -790,6 +790,19 @@ ipv6_networks:
     - { Field: context_name, Type: varchar(128), 'Null': true, Extra: '' }
   Indexes:
     PRIMARY: { Name: PRIMARY, Columns: [ipv6_network_id], Unique: true, Type: BTREE }
+isis_adjacencies:
+  Columns:
+    - { Field: adjacency_id, Type: 'int unsigned', 'Null': false, Extra: auto_increment }
+    - { Field: device_id, Type: int unsigned, 'Null': false, Extra: '' }
+    - { Field: port_id, Type: int unsigned, 'Null': false, Extra: '' }
+    - { Field: isisISAdjState, Type: text, 'Null': false, Extra: '' }
+    - { Field: isisISAdjNeighSysType, Type: text, 'Null': false, Extra: '' }
+    - { Field: isisISAdjNeighSysID, Type: text, 'Null': false, Extra: '' }
+    - { Field: isisISAdjNeighPriority, Type: text, 'Null': false, Extra: '' }
+    - { Field: isisISAdjLastUpTime, Type: text, 'Null': false, Extra: '' }
+    - { Field: isisISAdjAreaAddress, Type: text, 'Null': false, Extra: '' }
+    - { Field: isisISAdjIPAddrType, Type: text, 'Null': false, Extra: '' }
+    - { Field: isisISAdjIPAddrAddress, Type: text, 'Null': false, Extra: '' }
 juniAtmVp:
   Columns:
     - { Field: id, Type: 'bigint unsigned', 'Null': false, Extra: auto_increment }
