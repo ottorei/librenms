@@ -9,7 +9,6 @@ class IsisAdjacency extends PortRelatedModel
     use HasFactory;
 
     public $timestamps = false;
-    protected $primarykey = ['device_id', 'isisISAdjIPAddrAddress'];
     protected $fillable = [
         'device_id',
         'port_id',
