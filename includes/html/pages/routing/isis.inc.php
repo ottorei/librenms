@@ -22,25 +22,6 @@ echo '
           </tr>
         </thead>';
 
-/*
-foreach (dbFetchRows('SELECT A.`device_id`, A.`port_id`, A.`isisISAdjIPAddrAddress`, A.`isisISAdjNeighSysID`, A.`isisISAdjState`, A.`isisISAdjLastUpTime`, A.`isisISAdjNeighSysType` FROM `isis_adjacencies` AS `A` ORDER BY A.`device_id`') as $adj) {
-    $device = device_by_id_cache($adj['device_id']);
-    if ($adj['isisISAdjState'] == "up") {
-        $color = "green";
-    }
-    else {
-        $color = "red";
-    }
-
-    $port_collection = Port::where('port_id', $adj['port_id'])->get();
-    
-    // Loop through port collection, return last matching port
-    foreach($port_collection as $port) {
-        $interface_name = $port->getLabel();
-    }
-
-*/
-
 foreach (IsisAdjacency::all() as $adj) {
     $device = device_by_id_cache($adj->device_id);
     //var_dump($adj);
