@@ -41,7 +41,7 @@ foreach ($tmp_adjacencies as $key => $value) {
     echo "\nFound adjacent " . $isis_data["isisISAdjIPAddrAddress"];
 
     // Get port ID from existing data. If port does not exist, use Null value
-    // Return 0 if the port does not exist
+    // Returns 0 if the port does not exist
     $port_id = (int) $device_model->ports()->where('ifIndex', $key)->value('port_id');
  
     /*
@@ -77,7 +77,7 @@ IsisAdjacency::query()
     ->where(['device_id' => $device['device_id']])
     ->whereNotIn('isisISAdjIPAddrAddress', $adjacencies->pluck('isisISAdjIPAddrAddress'))->delete();
 
-// TODO: Create RRD-files for each adjacency, save status and possibly uptime
+// TODO: Create RRD-files for each adjacency, save status and possibly uptime?
 
 
 $adjacency_count = $adjacencies->count();
