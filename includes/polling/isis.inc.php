@@ -68,13 +68,13 @@ foreach ($tmp_adjacencies as $key => $value) {
     $adjacencies->push($adjacency);
 }
 
-    // DB cleanup - remove all entries from the DB that were not present during the poll 
-    // => the adjacency no longer exists
-    IsisAdjacency::query()
+// DB cleanup - remove all entries from the DB that were not present during the poll 
+// => the adjacency no longer exists
+IsisAdjacency::query()
     ->where(['device_id' => $device['device_id']])
     ->whereNotIn('isisISAdjIPAddrAddress', $adjacencies->pluck('isisISAdjIPAddrAddress'))->delete();
 
-    // TODO: Create RRD-files for each adjacency, save status and possibly uptime
+// TODO: Create RRD-files for each adjacency, save status and possibly uptime
 
 
 echo PHP_EOL;

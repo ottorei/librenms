@@ -804,7 +804,7 @@ isis_adjacencies:
     - { Field: isisISAdjIPAddrType, Type: varchar(128), 'Null': false, Extra: '' }
     - { Field: isisISAdjIPAddrAddress, Type: varchar(128), 'Null': false, Extra: '' }
   Indexes:
-    PRIMARY: { Name: PRIMARY, Column: [id], Unique: true, Type, BTREE }
+    PRIMARY: { Name: PRIMARY, Columns: [id], Unique: true, Type: BTREE }
 juniAtmVp:
   Columns:
     - { Field: id, Type: 'bigint unsigned', 'Null': false, Extra: auto_increment }
