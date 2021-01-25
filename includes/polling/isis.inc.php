@@ -24,7 +24,7 @@ foreach ($adjacencies_poll as $key => $value) {
 }
 
 // Debug
-var_dump($adjacencies_poll);
+//var_dump($adjacencies_poll);
 
 // Loop through all adjacencies and output their status
 foreach ($tmp_adjacencies as $key => $value) {
@@ -47,7 +47,7 @@ foreach ($tmp_adjacencies as $key => $value) {
     $isis_data["isisISAdjLastUpTime"] = $tmp_time[0] * 86400;
     $isis_data["isisISAdjLastUpTime"] += $tmp_time[1] * 3600;
     $isis_data["isisISAdjLastUpTime"] += $tmp_time[2] * 60;
-    $isis_data["isisISAdjLastUpTime"] += $tmp_time[3].explode(".")[0];
+    //$isis_data["isisISAdjLastUpTime"] += $tmp_time[3].explode(".")[0];
 
     // Convert AreaID into a more common display format (dddd.dddd.dddd)
     // TODO
