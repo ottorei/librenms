@@ -18,7 +18,7 @@ echo '
             <th>System ID</th>
             <th>System type</th>
             <th>State</th>
-            <th>Uptime</th>
+            <th>Last changed</th>
           </tr>
         </thead>';
 
@@ -53,7 +53,7 @@ foreach (IsisAdjacency::all() as $adj) {
             <td>' . $adj->isisISAdjNeighSysID . '</td>
             <td>' . $adj->isisISAdjNeighSysType . '</td>
             <td><strong><span style="color: ' . $color . ';">' . $adj->isisISAdjState . '</span></strong></td>
-            <td>' . formatUptime($adj->isisISAdjLastUpTime) . '</td>
+            <td>' . formatUptime($adj->isisISAdjLastUpTime) . ' ago</td>
         </tr>
         </tbody>';
 }

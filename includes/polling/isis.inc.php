@@ -49,6 +49,8 @@ foreach ($tmp_adjacencies as $key => $value) {
     $isis_data["isisISAdjLastUpTime"] += $tmp_time[2] * 60;
     $isis_data["isisISAdjLastUpTime"] += $tmp_time[3].explode(".")[0];
 
+    // Convert AreaID into a more common display format (dddd.dddd.dddd)
+
     echo "\nFound adjacent " . $isis_data["isisISAdjIPAddrAddress"];
 
     // Get port_id from ifIndex
