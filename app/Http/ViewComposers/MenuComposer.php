@@ -152,7 +152,6 @@ class MenuComposer
                 ];
             }
 
-            /*
             if ($routing_count['ospf']) {
                 $routing_menu[] = [
                     [
@@ -162,8 +161,8 @@ class MenuComposer
                     ],
                 ];
             }
-            */
             
+            /*
             if ($routing_count['isis']) {
                 $routing_menu[] = [
                     [
@@ -173,7 +172,7 @@ class MenuComposer
                     ],
                 ];
             }
-
+            */
             if ($routing_count['cisco-otv']) {
                 $routing_menu[] = [
                     [
