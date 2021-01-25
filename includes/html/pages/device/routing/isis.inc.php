@@ -1,5 +1,8 @@
 <?php
 
+use App\Models\Device;
+use App\Models\Port;
+
 echo '
 <div>
   <div class="panel panel-default">
@@ -27,12 +30,24 @@ foreach (dbFetchRows('SELECT A.`device_id`, A.`port_id`, A.`isisISAdjIPAddrAddre
         $color = "red";
     }
 
+    $port_collection = Port::where('port_id', $adj['port_id'])->get();
+    
+    // Loop through port collection, return last matching port
+    foreach($port_collection as $port) {
+        $interface_name = $port->getLabel();
+    }
+
     echo '
         <tbody>
           <tr>
             <td></td>
             <td>' . generate_device_link($device, 0, ['tab' => 'routing', 'proto' => 'isis']) . '</td>
-            <td>' . $adj['port_id'] . '</td>
+            <td><a href="' . generate_url([
+                'page'=>'device', 
+                'device'=>$adj['device_id'], 
+                'tab'=>'port', 
+                'port'=>$adj['port_id']
+                ]) . '">' . $interface_name . '</a></td>
             <td>' . $adj['isisISAdjIPAddrAddress'] . '</td>
             <td>' . $adj['isisISAdjNeighSysID'] . '</td>
             <td>' . $adj['isisISAdjNeighSysType'] . '</td>
