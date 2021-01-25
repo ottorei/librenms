@@ -32,7 +32,12 @@ foreach (dbFetchRows('SELECT A.`device_id`, A.`port_id`, A.`isisISAdjIPAddrAddre
           <tr>
             <td></td>
             <td>' . generate_device_link($device, 0, ['tab' => 'routing', 'proto' => 'isis']) . '</td>
-            <td><a href="' . generate_url(['page'=>'device', 'device'=>$adj['device_id'], 'tab'=>'port', 'port'=>$adj['port_id']]) . '">' . 'text' . '</a></td>
+            <td><a href="' . generate_url([
+                'page'=>'device', 
+                'device'=>$adj['device_id'], 
+                'tab'=>'port', 
+                'port'=>$adj['port_id'
+            ]]) . '">' . 'text' . '</a></td>
             <td>' . $adj['isisISAdjIPAddrAddress'] . '</td>
             <td>' . $adj['isisISAdjNeighSysID'] . '</td>
             <td>' . $adj['isisISAdjNeighSysType'] . '</td>
