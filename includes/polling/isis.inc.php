@@ -38,6 +38,10 @@ foreach ($tmp_adjacencies as $key => $value) {
     $isis_data["isisISAdjIPAddrType"] = $value[1]['isisISAdjIPAddrType'];
     $isis_data["isisISAdjIPAddrAddress"] = IP::fromHexString($value[1]['isisISAdjIPAddrAddress']);
 
+    // Remove spaces and convert to a more common display format
+    $isis_data["isisISAdjNeighSysID"] = str_replace(' ', '', $isis_data["isisISAdjNeighSysID"]);
+    $isis_data["isisISAdjNeighSysID"] = chunk_split($isis_data["isisISAdjNeighSysID"], 4, '.').rtrim('.');
+
     echo "\nFound adjacent " . $isis_data["isisISAdjIPAddrAddress"];
 
     // Get port ID from existing data. If port does not exist, use Null value

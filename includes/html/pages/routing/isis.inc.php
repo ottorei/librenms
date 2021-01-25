@@ -38,24 +38,24 @@ foreach (IsisAdjacency::all() as $adj) {
     foreach($port_collection as $port) {
         $interface_name = $port->getLabel();
     }
-        echo '
-            <tbody>
-            <tr>
-                <td></td>
-                <td>' . generate_device_link($device, 0, ['tab' => 'routing', 'proto' => 'isis']) . '</td>
-                <td><a href="' . generate_url([
-                    'page'=>'device', 
-                    'device'=>$adj->device_id, 
-                    'tab'=>'port', 
-                    'port'=>$adj->port_id
-                    ]) . '">' . $interface_name . '</a></td>
-                <td>' . $adj->isisISAdjIPAddrAddress . '</td>
-                <td>' . $adj->isisISAdjNeighSysID . '</td>
-                <td>' . $adj->isisISAdjNeighSysType . '</td>
-                <td><strong><span style="color: ' . $color . ';">' . $adj->isisISAdjState . '</span></strong></td>
-                <td>' . $adj->isisISAdjLastUpTime . '</td>
-            </tr>
-            </tbody>';
+    echo '
+        <tbody>
+        <tr>
+            <td></td>
+            <td>' . generate_device_link($device, 0, ['tab' => 'routing', 'proto' => 'isis']) . '</td>
+            <td><a href="' . generate_url([
+                'page'=>'device', 
+                'device'=>$adj->device_id, 
+                'tab'=>'port', 
+                'port'=>$adj->port_id
+                ]) . '">' . $interface_name . '</a></td>
+            <td>' . $adj->isisISAdjIPAddrAddress . '</td>
+            <td>' . $adj->isisISAdjNeighSysID . '</td>
+            <td>' . $adj->isisISAdjNeighSysType . '</td>
+            <td><strong><span style="color: ' . $color . ';">' . $adj->isisISAdjState . '</span></strong></td>
+            <td>' . $adj->isisISAdjLastUpTime . '</td>
+        </tr>
+        </tbody>';
 }
 echo '</table>
     </div>
