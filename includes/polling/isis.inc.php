@@ -70,7 +70,7 @@ foreach ($tmp_adjacencies as $key => $value) {
 
     IsisAdjacency::query()
     ->where(['device' => $device['device_id']])
-    ->whereNotIn('isisISAdjIPAddrAddress', $adjacencies->value('isisISAdjIPAddrAddress'))->delete();
+    ->whereNotIn('isisISAdjIPAddrAddress', $adjacencies->pluck('isisISAdjIPAddrAddress'))->delete();
 
     // TODO: Create RRD-files from adjacency count
 
