@@ -24,7 +24,6 @@ class CreateIsisAdjacenciesTable extends Migration
             $table->string('isisISAdjAreaAddress', 128);
             $table->string('isisISAdjIPAddrType', 128);
             $table->string('isisISAdjIPAddrAddress', 128);
-            $table->unique(['device_id', 'isisISAdjIPAddrAddress']);
         });
     }
 

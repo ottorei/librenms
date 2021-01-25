@@ -792,6 +792,7 @@ ipv6_networks:
     PRIMARY: { Name: PRIMARY, Columns: [ipv6_network_id], Unique: true, Type: BTREE }
 isis_adjacencies:
   Columns:
+    - { Field: id, Type: int unsigned, 'Null': false, Extra: 'auto_increment' }
     - { Field: device_id, Type: int unsigned, 'Null': false, Extra: '' }
     - { Field: port_id, Type: int unsigned, 'Null': false, Extra: '' }
     - { Field: isisISAdjState, Type: varchar(128), 'Null': false, Extra: '' }
