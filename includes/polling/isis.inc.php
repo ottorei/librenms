@@ -26,6 +26,9 @@ foreach ($adjacencies_poll as $key => $value) {
 // Loop through all adjacencies and output their status
 foreach ($tmp_adjacencies as $key => $value) {
     #var_dump($value);
+
+    echo "\nChecking adjacent " . $isis_data["isisISAdjIPAddrAddress"];
+
     $isis_data["isisISAdjState"] = $value[0]['isisISAdjState'];
     $isis_data["isisISAdjNeighSysType"] = $value[0]['isisISAdjNeighSysType'];
     $isis_data["isisISAdjNeighSysID"] = $value[0]['isisISAdjNeighSysID'];
