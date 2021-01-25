@@ -936,6 +936,16 @@ function alert_details($details)
             $fallback = false;
         }
 
+        if ($tmp_alerts['isisISAdjIPAddrAddress']) {
+            $fault_detail .= "ISIS adjacent <a href='" .
+                generate_url(['page' => 'device',
+                    'device' => $tmp_alerts['device_id'],
+                    'tab' => 'routing', ]) .
+                "'>" . $tmp_alerts['bgpPeerIdentifier'] . '</a>';
+            $fault_detail .= ', State ' . $tmp_alerts['isisISAdjState'];
+            $fallback = false;
+        }
+
         if ($tmp_alerts['type'] && $tmp_alerts['label']) {
             if ($tmp_alerts['error'] == '') {
                 $fault_detail .= ' ' . $tmp_alerts['type'] . ' - ' . $tmp_alerts['label'] . ';&nbsp;';
