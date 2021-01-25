@@ -51,15 +51,15 @@ foreach (IsisAdjacency::all() as $adj) {
                 <td>' . generate_device_link($device, 0, ['tab' => 'routing', 'proto' => 'isis']) . '</td>
                 <td><a href="' . generate_url([
                     'page'=>'device', 
-                    'device'=>$adj['device_id'], 
+                    'device'=>$adj->device_id, 
                     'tab'=>'port', 
-                    'port'=>$adj['port_id']
+                    'port'=>$adj->port_id
                     ]) . '">' . $interface_name . '</a></td>
-                <td>' . $adj['isisISAdjIPAddrAddress'] . '</td>
-                <td>' . $adj['isisISAdjNeighSysID'] . '</td>
-                <td>' . $adj['isisISAdjNeighSysType'] . '</td>
-                <td><strong><span style="color: ' . $color . ';">' . $adj['isisISAdjState'] . '</span></strong></td>
-                <td>' . $adj['isisISAdjLastUpTime'] . '</td>
+                <td>' . $adj->isisISAdjIPAddrAddress . '</td>
+                <td>' . $adj->isisISAdjNeighSysID . '</td>
+                <td>' . $adj->isisISAdjNeighSysType . '</td>
+                <td><strong><span style="color: ' . $color . ';">' . $adj->isisISAdjState . '</span></strong></td>
+                <td>' . $adj->isisISAdjLastUpTime . '</td>
             </tr>
             </tbody>';
 }
