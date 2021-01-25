@@ -10,12 +10,13 @@ echo '
             <th>&nbsp;</th>
             <th>Device</th>
             <th>Adjacent</th>
+            <th>System type</th>
             <th>State</th>
             <th>Last changed</th>
           </tr>
         </thead>';
 
-foreach (dbFetchRows('SELECT A.`device_id`, A.`isisISAdjIPAddrAddress`, A.`isisISAdjState`, A.`isisISAdjLastUpTime` FROM `isis_adjacencies` AS `A` ORDER BY A.`device_id`') as $adj) {
+foreach (dbFetchRows('SELECT A.`device_id`, A.`isisISAdjIPAddrAddress`, A.`isisISAdjState`, A.`isisISAdjLastUpTime`, A.`isisISAdjNeighSysType` FROM `isis_adjacencies` AS `A` ORDER BY A.`device_id`') as $adj) {
     $device = device_by_id_cache($adj['device_id']);
 
     echo '
