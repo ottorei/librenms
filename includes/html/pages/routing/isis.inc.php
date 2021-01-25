@@ -10,6 +10,7 @@ echo '
             <th>&nbsp;</th>
             <th>Device</th>
             <th>Adjacent</th>
+            <th>Adjacent System ID</th>
             <th>System type</th>
             <th>State</th>
             <th>Uptime</th>
@@ -31,6 +32,7 @@ foreach (dbFetchRows('SELECT A.`device_id`, A.`isisISAdjIPAddrAddress`, A.`isisI
             <td></td>
             <td>' . generate_device_link($device, 0, ['tab' => 'routing', 'proto' => 'isis']) . '</td>
             <td>' . $adj['isisISAdjIPAddrAddress'] . '</td>
+            <td>' . $adj['isisISAdjNeighSysID'] . '</td>
             <td>' . $adj['isisISAdjNeighSysType'] . '</td>
             <td><strong><span style="color: ' . $color . ';">' . $adj['isisISAdjState'] . '</span></strong></td>
             <td>' . $adj['isisISAdjLastUpTime'] . '</td>
