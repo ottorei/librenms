@@ -38,22 +38,20 @@ foreach ($tmp_adjacencies as $key => $value) {
     $isis_data["isisISAdjIPAddrType"] = $value[1]['isisISAdjIPAddrType'];
     $isis_data["isisISAdjIPAddrAddress"] = IP::fromHexString($value[1]['isisISAdjIPAddrAddress']);
 
-    // Remove spaces and convert to a more common display format
+    // Remove spaces from systemid and convert it into a more common display format (dddd.dddd.dddd)
     $isis_data["isisISAdjNeighSysID"] = str_replace(' ', '', $isis_data["isisISAdjNeighSysID"]);
     $isis_data["isisISAdjNeighSysID"] = wordwrap($isis_data["isisISAdjNeighSysID"], 4, ".", true);
 
+    // Convert time to seconds
+    $tmp_time = $isis_data["isisISAdjLastUpTime"].explode(":");
+    $isis_data["isisISAdjLastUpTime"] = $tmp_time[0] * 86400;
+    $isis_data["isisISAdjLastUpTime"] += $tmp_time[1] * 3600;
+    $isis_data["isisISAdjLastUpTime"] += $tmp_time[2] * 60;
+
     echo "\nFound adjacent " . $isis_data["isisISAdjIPAddrAddress"];
 
-    // Get port ID from existing data. If port does not exist, use Null value
-    // Returns 0 if the port does not exist
+    // Get port_id from ifIndex
     $port_id = (int) $device_model->ports()->where('ifIndex', $key)->value('port_id');
- 
-    /*
-    echo "\nPort ID: ";
-    var_dump($port_id);
-    echo "\nifIndex: ";
-    var_dump($key);
-    */
 
     // Save data into the DB
     $adjacency = IsisAdjacency::updateOrCreate([
@@ -95,4 +93,5 @@ unset(
     $adjacencies,
     $isis_data,
     $tmp_adjacencies,
+    $tmp_time,
 );
