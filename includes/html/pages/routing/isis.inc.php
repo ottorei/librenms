@@ -17,7 +17,7 @@ echo '
           </tr>
         </thead>';
 
-foreach (dbFetchRows('SELECT A.`device_id`, A.`isisISAdjIPAddrAddress`, A.`isisISAdjState`, A.`isisISAdjLastUpTime`, A.`isisISAdjNeighSysType` FROM `isis_adjacencies` AS `A` ORDER BY A.`device_id`') as $adj) {
+foreach (dbFetchRows('SELECT A.`device_id`, A.`isisISAdjIPAddrAddress`, A.`isisISAdjNeighSysID`, A.`isisISAdjState`, A.`isisISAdjLastUpTime`, A.`isisISAdjNeighSysType` FROM `isis_adjacencies` AS `A` ORDER BY A.`device_id`') as $adj) {
     $device = device_by_id_cache($adj['device_id']);
     if ($adj['isisISAdjState'] == "up") {
         $color = "green";
