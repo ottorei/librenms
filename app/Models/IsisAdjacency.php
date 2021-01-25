@@ -7,8 +7,11 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 class IsisAdjacency extends PortRelatedModel
 {
     use HasFactory;
-
+    
+    public $incrementing = false;
+    public $primaryKey = ['device_id', 'isisISAdjIPAddrAddress'];
     public $timestamps = false;
+
     protected $fillable = [
         'device_id',
         'port_id',
