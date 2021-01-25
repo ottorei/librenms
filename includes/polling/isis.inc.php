@@ -42,7 +42,7 @@ foreach ($tmp_adjacencies as $key => $value) {
     $isis_data["isisISAdjNeighSysID"] = str_replace(' ', '', $isis_data["isisISAdjNeighSysID"]);
     $isis_data["isisISAdjNeighSysID"] = wordwrap($isis_data["isisISAdjNeighSysID"], 4, ".", true);
 
-    // Convert time to seconds
+    // Convert uptime into seconds
     $tmp_time = $isis_data["isisISAdjLastUpTime"].explode(":");
     $isis_data["isisISAdjLastUpTime"] = $tmp_time[0] * 86400;
     $isis_data["isisISAdjLastUpTime"] += $tmp_time[1] * 3600;
