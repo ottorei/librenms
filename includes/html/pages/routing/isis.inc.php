@@ -30,8 +30,13 @@ foreach (dbFetchRows('SELECT A.`device_id`, A.`port_id`, A.`isisISAdjIPAddrAddre
         $color = "red";
     }
 
-    $port = Port::where('port_id', $adj['port_id'])->get();
-    var_dump($port);
+    $port_collection = Port::where('port_id', $adj['port_id'])->get();
+
+    foreach($port_collection as $port) {
+        echo $port->port_id;
+    }
+
+    //var_dump($port);
 
     //$interface_name = $device->ports()->where('id', $adj['port_id'])->first();
 
