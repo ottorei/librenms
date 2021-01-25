@@ -941,7 +941,7 @@ function alert_details($details)
                 generate_url(['page' => 'device',
                     'device' => $tmp_alerts['device_id'],
                     'tab' => 'routing', ]) .
-                "'>" . $tmp_alerts['bgpPeerIdentifier'] . '</a>';
+                "'>" . $tmp_alerts['isisISAdjIPAddrAddress'] . '</a>';
             $fault_detail .= ', State ' . $tmp_alerts['isisISAdjState'];
             $fallback = false;
         }
