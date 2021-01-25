@@ -13,7 +13,6 @@ class CreateIsisAdjacenciesTable extends Migration
     public function up()
     {
         Schema::create('isis_adjacencies', function (Blueprint $table) {
-            $table->index(['device_id', 'isisISAdjIPAddrAddress']);
             $table->integer('device_id');
             $table->integer('port_id');
             $table->text('isisISAdjState');
@@ -24,6 +23,7 @@ class CreateIsisAdjacenciesTable extends Migration
             $table->text('isisISAdjAreaAddress');
             $table->text('isisISAdjIPAddrType');
             $table->text('isisISAdjIPAddrAddress');
+            $table->primary(['device_id', 'isisISAdjIPAddrAddress']);
         });
     }
 
