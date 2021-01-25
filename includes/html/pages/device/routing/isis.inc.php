@@ -10,7 +10,7 @@ echo '
             <th>&nbsp;</th>
             <th>Device</th>
             <th>Adjacent</th>
-            <th>System IDID</th>
+            <th>System ID</th>
             <th>System type</th>
             <th>State</th>
             <th>Uptime</th>
