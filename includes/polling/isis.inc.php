@@ -43,7 +43,7 @@ foreach ($tmp_adjacencies as $key => $value) {
     $isis_data["isisISAdjNeighSysID"] = wordwrap($isis_data["isisISAdjNeighSysID"], 4, ".", true);
 
     // Convert uptime into seconds
-    $tmp_time = $isis_data["isisISAdjLastUpTime"].explode(":");
+    $tmp_time = explode(":", $isis_data["isisISAdjLastUpTime"]);
     $isis_data["isisISAdjLastUpTime"] = $tmp_time[0] * 86400;
     $isis_data["isisISAdjLastUpTime"] += $tmp_time[1] * 3600;
     $isis_data["isisISAdjLastUpTime"] += $tmp_time[2] * 60;
