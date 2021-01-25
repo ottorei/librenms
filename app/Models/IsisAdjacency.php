@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-class IsisAdjacency extends DeviceRelatedModel
+class IsisAdjacency extends PortRelatedModel
 {
     use HasFactory;
 

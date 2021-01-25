@@ -34,25 +34,16 @@ foreach ($tmp_adjacencies as $key => $value) {
     $isis_data["isisISAdjIPAddrType"] = $value[1]['isisISAdjIPAddrType'];
     $isis_data["isisISAdjIPAddrAddress"] = IP::fromHexString($value[1]['isisISAdjIPAddrAddress']);
 
-    /*
-    echo "\nisisISAdjState: " . $isis_data["isisISAdjState"];
-    echo "\nisisISAdjNeighSysType: " . $isis_data["isisISAdjNeighSysType"];
-    echo "\nisisISAdjNeighSysID: " . $isis_data["isisISAdjNeighSysID"];
-    echo "\nisisISAdjNeighPriority: " . $isis_data["isisISAdjNeighPriority"];
-    echo "\nisisISAdjLastUpTime: " . $isis_data["isisISAdjLastUpTime"];
-    echo "\nisisISAdjAreaAddress: " . $isis_data["isisISAdjAreaAddress"];
-    echo "\nisisISAdjIPAddrType: " . $isis_data["isisISAdjIPAddrType"];
-    echo "\nisisISAdjIPAddrAddress: " . $isis_data["isisISAdjIPAddrAddress"];
-    echo "\n";
-    */
-
-    // Get port ID from existing data
+    // Get port ID from existing data. If port does not exist, use Null value
+    // Return 0 if the port does not exist
     $port_id = (int) $device_model->ports()->where('ifIndex', $key)->value('port_id');
-
+ 
+    /*
     echo "\nPort ID: ";
     var_dump($port_id);
     echo "\nifIndex: ";
     var_dump($key);
+    */
 
     // Save data to the DB
     $adjacency = IsisAdjacency::updateOrCreate([
@@ -68,7 +59,9 @@ foreach ($tmp_adjacencies as $key => $value) {
         'isisISAdjIPAddrAddress' => $isis_data["isisISAdjIPAddrAddress"],
     ]);
 
-    // TODO: DB cleanup - remove all entries from the device that are not present during the poll
+    // TODO: DB cleanup - remove all entries from the DB that are not present during the poll
+
+    // TODO: Create RRD-files from adjacency count
 }
 
 echo PHP_EOL;
