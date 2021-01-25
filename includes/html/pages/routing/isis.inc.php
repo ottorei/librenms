@@ -29,7 +29,8 @@ foreach (dbFetchRows('SELECT A.`device_id`, A.`port_id`, A.`isisISAdjIPAddrAddre
         $color = "red";
     }
 
-    $interface_name = $device->ports()->where('ifIndex', $adj['port_id'])->first();
+    $interface_name = "test";
+    //$interface_name = $device->ports()->where('id', $adj['port_id'])->first();
 
     echo '
         <tbody>
