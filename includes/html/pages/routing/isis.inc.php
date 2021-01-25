@@ -41,7 +41,7 @@ foreach (dbFetchRows('SELECT A.`device_id`, A.`port_id`, A.`isisISAdjIPAddrAddre
                 'device'=>$adj['device_id'], 
                 'tab'=>'port', 
                 'port'=>$adj['port_id'
-            ]]) . '">' . 'text' . '</a></td>
+            ]]) . '">' . $interface_name . '</a></td>
             <td>' . $adj['isisISAdjIPAddrAddress'] . '</td>
             <td>' . $adj['isisISAdjNeighSysID'] . '</td>
             <td>' . $adj['isisISAdjNeighSysType'] . '</td>
