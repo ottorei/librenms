@@ -63,10 +63,17 @@ foreach ($tmp_adjacencies as $key => $value) {
         'isisISAdjIPAddrAddress' => $isis_data["isisISAdjIPAddrAddress"],
     ]);
 
+    $adjacencies->push($adjacency);
+}
+
     // TODO: DB cleanup - remove all entries from the DB that are not present during the poll
 
+    IsisAdjacency::query()
+    ->where(['device' => $device['device_id']])
+    ->whereNotIn('isisISAdjIPAddrAddress', $adjacencies->value('isisISAdjIPAddrAddress'))->delete();
+
     // TODO: Create RRD-files from adjacency count
-}
+
 
 echo PHP_EOL;
 
