@@ -47,6 +47,7 @@ foreach ($tmp_adjacencies as $key => $value) {
     $isis_data["isisISAdjLastUpTime"] = $tmp_time[0] * 86400;
     $isis_data["isisISAdjLastUpTime"] += $tmp_time[1] * 3600;
     $isis_data["isisISAdjLastUpTime"] += $tmp_time[2] * 60;
+    $isis_data["isisISAdjLastUpTime"] += $tmp_time[3].explode(".")[0];
 
     echo "\nFound adjacent " . $isis_data["isisISAdjIPAddrAddress"];
 
