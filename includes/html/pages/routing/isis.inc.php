@@ -41,12 +41,22 @@ foreach (dbFetchRows('SELECT A.`device_id`, A.`port_id`, A.`isisISAdjIPAddrAddre
 
 */
 
-
-
 foreach (IsisAdjacency::all() as $adj) {
     $device = device_by_id_cache($adj->device_id);
     //var_dump($adj);
     $port_collection = Port::where('port_id', $adj->port_id)->get();
+
+    if ($adj->isisISAdjState == "up") {
+        $color = "green";
+    }
+    else {
+        $color = "red";
+    }
+
+    // Loop through port collection, return last matching port
+    foreach($port_collection as $port) {
+        $interface_name = $port->getLabel();
+    }
         echo '
             <tbody>
             <tr>
