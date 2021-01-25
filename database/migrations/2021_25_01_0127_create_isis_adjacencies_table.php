@@ -13,6 +13,7 @@ class CreateIsisAdjacenciesTable extends Migration
     public function up()
     {
         Schema::create('isis_adjacencies', function (Blueprint $table) {
+            $table->increments('id');
             $table->integer('device_id');
             $table->integer('port_id');
             $table->string('isisISAdjState', 128);
