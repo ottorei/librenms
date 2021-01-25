@@ -50,6 +50,7 @@ foreach ($tmp_adjacencies as $key => $value) {
     $isis_data["isisISAdjLastUpTime"] += $tmp_time[3].explode(".")[0];
 
     // Convert AreaID into a more common display format (dddd.dddd.dddd)
+    // TODO
 
     echo "\nFound adjacent " . $isis_data["isisISAdjIPAddrAddress"];
 
