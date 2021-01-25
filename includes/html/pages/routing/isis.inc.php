@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\Device;
+use App\Models\Port;
 
 echo '
 <div>
@@ -29,8 +30,9 @@ foreach (dbFetchRows('SELECT A.`device_id`, A.`port_id`, A.`isisISAdjIPAddrAddre
         $color = "red";
     }
 
-    $port = $device->ports()->where('port_id', $ifIndex)->first();
-    $interface_name = $port->ifName;
+    $interface_name = Port::where('port_id', $adj['port_id'])->get();
+    var_dump($interface_name);
+
     //$interface_name = $device->ports()->where('id', $adj['port_id'])->first();
 
     echo '
