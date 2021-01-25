@@ -64,7 +64,7 @@ class ObjectCache
                 'vrf' => Vrf::hasAccess($user)->count(),
                 'mpls' => Mpls::hasAccess($user)->count(),
                 'ospf' => OspfInstance::hasAccess($user)->count(),
-                // 'isis' => IsisAdjacency::hasAccess($user)->count(),
+                'isis' => IsisAdjacency::hasAccess($user)->count(),
                 'cisco-otv' => Component::hasAccess($user)->where('type', 'Cisco-OTV')->count(),
                 'bgp' => BgpPeer::hasAccess($user)->count(),
                 'cef' => CefSwitching::hasAccess($user)->count(),

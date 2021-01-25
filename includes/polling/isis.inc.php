@@ -77,6 +77,10 @@ IsisAdjacency::query()
 // TODO: Create RRD-files for each adjacency, save status and possibly uptime
 
 
+$adjacency_count = $adjacencies->count();
+echo "\nTotal adjacencies: " . $adjacency_count;
+
+
 echo PHP_EOL;
 
 unset(
