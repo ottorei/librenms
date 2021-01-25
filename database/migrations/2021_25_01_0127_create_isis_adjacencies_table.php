@@ -15,14 +15,14 @@ class CreateIsisAdjacenciesTable extends Migration
         Schema::create('isis_adjacencies', function (Blueprint $table) {
             $table->integer('device_id');
             $table->integer('port_id');
-            $table->text('isisISAdjState');
-            $table->text('isisISAdjNeighSysType');
-            $table->text('isisISAdjNeighSysID');
-            $table->text('isisISAdjNeighPriority');
-            $table->text('isisISAdjLastUpTime');
-            $table->text('isisISAdjAreaAddress');
-            $table->text('isisISAdjIPAddrType');
-            $table->text('isisISAdjIPAddrAddress');
+            $table->string('isisISAdjState', 128);
+            $table->string('isisISAdjNeighSysType', 128);
+            $table->string('isisISAdjNeighSysID', 128);
+            $table->string('isisISAdjNeighPriority', 128);
+            $table->string('isisISAdjLastUpTime', 128);
+            $table->string('isisISAdjAreaAddress', 128);
+            $table->string('isisISAdjIPAddrType', 128);
+            $table->string('isisISAdjIPAddrAddress', 128);
             $table->primary(['device_id', 'isisISAdjIPAddrAddress']);
         });
     }

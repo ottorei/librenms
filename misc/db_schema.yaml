@@ -795,14 +795,14 @@ isis_adjacencies:
     - { Field: adjacency_id, Type: 'int unsigned', 'Null': false, Extra: auto_increment }
     - { Field: device_id, Type: int unsigned, 'Null': false, Extra: '' }
     - { Field: port_id, Type: int unsigned, 'Null': false, Extra: '' }
-    - { Field: isisISAdjState, Type: text, 'Null': false, Extra: '' }
-    - { Field: isisISAdjNeighSysType, Type: text, 'Null': false, Extra: '' }
-    - { Field: isisISAdjNeighSysID, Type: text, 'Null': false, Extra: '' }
-    - { Field: isisISAdjNeighPriority, Type: text, 'Null': false, Extra: '' }
-    - { Field: isisISAdjLastUpTime, Type: text, 'Null': false, Extra: '' }
-    - { Field: isisISAdjAreaAddress, Type: text, 'Null': false, Extra: '' }
-    - { Field: isisISAdjIPAddrType, Type: text, 'Null': false, Extra: '' }
-    - { Field: isisISAdjIPAddrAddress, Type: text, 'Null': false, Extra: '' }
+    - { Field: isisISAdjState, Type: varchar(128), 'Null': false, Extra: '' }
+    - { Field: isisISAdjNeighSysType, Type: varchar(128), 'Null': false, Extra: '' }
+    - { Field: isisISAdjNeighSysID, Type: varchar(128), 'Null': false, Extra: '' }
+    - { Field: isisISAdjNeighPriority, Type: varchar(128), 'Null': false, Extra: '' }
+    - { Field: isisISAdjLastUpTime, Type: varchar(128), 'Null': false, Extra: '' }
+    - { Field: isisISAdjAreaAddress, Type: varchar(128), 'Null': false, Extra: '' }
+    - { Field: isisISAdjIPAddrType, Type: varchar(128), 'Null': false, Extra: '' }
+    - { Field: isisISAdjIPAddrAddress, Type: varchar(128), 'Null': false, Extra: '' }
 juniAtmVp:
   Columns:
     - { Field: id, Type: 'bigint unsigned', 'Null': false, Extra: auto_increment }
