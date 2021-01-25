@@ -31,6 +31,7 @@ use App\Models\Component;
 use App\Models\Device;
 use App\Models\Mpls;
 use App\Models\OspfInstance;
+use App\Models\IsisAdjacency;
 use App\Models\Port;
 use App\Models\Pseudowire;
 use App\Models\Sensor;
