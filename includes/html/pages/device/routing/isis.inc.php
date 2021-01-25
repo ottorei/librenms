@@ -8,7 +8,8 @@ echo '
         <thead>
           <tr>
             <th>&nbsp;</th>
-            <th>Device</th>
+            <th>Local device</th>
+            <th>Local interface</th>
             <th>Adjacent</th>
             <th>System ID</th>
             <th>System type</th>
@@ -17,7 +18,7 @@ echo '
           </tr>
         </thead>';
 
-foreach (dbFetchRows('SELECT A.`device_id`, A.`isisISAdjIPAddrAddress`, A.`isisISAdjNeighSysID`, A.`isisISAdjState`, A.`isisISAdjLastUpTime`, A.`isisISAdjNeighSysType` FROM `isis_adjacencies` AS `A` ORDER BY A.`device_id`') as $adj) {
+foreach (dbFetchRows('SELECT A.`device_id`, A.`port_id`, A.`isisISAdjIPAddrAddress`, A.`isisISAdjNeighSysID`, A.`isisISAdjState`, A.`isisISAdjLastUpTime`, A.`isisISAdjNeighSysType` FROM `isis_adjacencies` AS `A` ORDER BY A.`device_id`') as $adj) {
     $device = device_by_id_cache($adj['device_id']);
     if ($adj['isisISAdjState'] == "up") {
         $color = "green";
@@ -31,6 +32,7 @@ foreach (dbFetchRows('SELECT A.`device_id`, A.`isisISAdjIPAddrAddress`, A.`isisI
           <tr>
             <td></td>
             <td>' . generate_device_link($device, 0, ['tab' => 'routing', 'proto' => 'isis']) . '</td>
+            <td>' . $adj['port_id'] . '</td>
             <td>' . $adj['isisISAdjIPAddrAddress'] . '</td>
             <td>' . $adj['isisISAdjNeighSysID'] . '</td>
             <td>' . $adj['isisISAdjNeighSysType'] . '</td>
