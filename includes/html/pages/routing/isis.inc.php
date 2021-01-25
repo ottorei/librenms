@@ -15,7 +15,7 @@ echo '
           </tr>
         </thead>';
 
-foreach (dbFetchRows('SELECT A.`device_id`, A.`device_id`, A.`device_id`, A.`device_id` FROM `isis_adjacencies` AS `A` ORDER BY A.`device_id`') as $adj) {
+foreach (dbFetchRows('SELECT A.`device_id`, A.`isisISAdjIPAddrAddress`, A.`isisISAdjState`, A.`isisISAdjLastUpTime` FROM `isis_adjacencies` AS `A` ORDER BY A.`device_id`') as $adj) {
     $device = device_by_id_cache($adj['device_id']);
 
     echo '
