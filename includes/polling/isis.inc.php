@@ -34,9 +34,6 @@ foreach ($tmp_adjacencies as $key => $value) {
 
     // Format systemID
     $isis_data['isisISAdjNeighSysID'] = str_replace(' ', '.', $isis_data['isisISAdjNeighSysID']);
-    // Remove spaces from systemid and convert it into a more common display format (dddd.dddd.dddd)
-    //$isis_data['isisISAdjNeighSysID'] = str_replace(' ', '', $isis_data['isisISAdjNeighSysID']);
-    //$isis_data['isisISAdjNeighSysID'] = wordwrap($isis_data['isisISAdjNeighSysID'], 4, '.', true);
 
     // Convert uptime into seconds with an accuracy of 1 min
     $tmp_time = explode(':', $isis_data['isisISAdjLastUpTime']);
@@ -44,11 +41,8 @@ foreach ($tmp_adjacencies as $key => $value) {
     $isis_data['isisISAdjLastUpTime'] += $tmp_time[1] * 3600;
     $isis_data['isisISAdjLastUpTime'] += $tmp_time[2] * 60;
 
+    // Format area address
     $isis_data['isisISAdjAreaAddress'] = str_replace(' ', '.', $isis_data['isisISAdjAreaAddress']);
-    // Convert AreaID into a more common display format (aa.aaaa)
-    // Remove spaces from systemid and convert it into a more common display format (dddd.dddd.dddd)
-    //$isis_data['isisISAdjAreaAddress'][2] = '.';
-    //$isis_data['isisISAdjAreaAddress']= str_replace(' ', '', $isis_data['isisISAdjAreaAddress']);
 
     echo "\nFound adjacent " . $isis_data['isisISAdjIPAddrAddress'];
 
@@ -76,12 +70,12 @@ foreach ($tmp_adjacencies as $key => $value) {
 }
 
 // DB cleanup - remove all entries from the DB that were not present during the poll
-// => the adjacency no longer exists
+// => the adjacency no longer exists and should not be saved
 IsisAdjacency::query()
     ->where(['device_id' => $device['device_id']])
     ->whereNotIn('isisISAdjIPAddrAddress', $adjacencies->pluck('isisISAdjIPAddrAddress'))->delete();
 
-// TODO: Create RRD-files for each adjacency, save status and possibly uptime?
+// TODO: Create RRD-files for some of the data?
 
 $adjacency_count = $adjacencies->count();
 echo "\nTotal adjacencies: " . $adjacency_count;
