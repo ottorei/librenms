@@ -15,6 +15,7 @@ echo '
             <th>Local interface</th>
             <th>Adjacent</th>
             <th>System ID</th>
+            <th>Area</th>
             <th>System type</th>
             <th>State</th>
             <th>Last uptime</th>
@@ -25,7 +26,7 @@ foreach (IsisAdjacency::all() as $adj) {
     $device = device_by_id_cache($adj->device_id);
 
     // If ifIndex does not exist for example, because of SNMP interfaces filtering on the device
-    $interface_name = "";
+    $interface_name = '';
   
     if ($adj->isisISAdjState == 'up') {
         $color = 'green';
@@ -52,6 +53,7 @@ foreach (IsisAdjacency::all() as $adj) {
     ]) . '">' . $interface_name . '</a></td>
             <td>' . $adj->isisISAdjIPAddrAddress . '</td>
             <td>' . $adj->isisISAdjNeighSysID . '</td>
+            <td>' . $adj->isisISAdjAreaAddress . '</td>
             <td>' . $adj->isisISAdjNeighSysType . '</td>
             <td><strong><span style="color: ' . $color . ';">' . $adj->isisISAdjState . '</span></strong></td>
             <td>' . formatUptime($adj->isisISAdjLastUpTime) . '</td>

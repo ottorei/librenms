@@ -32,19 +32,23 @@ foreach ($tmp_adjacencies as $key => $value) {
     $isis_data['isisISAdjIPAddrType'] = $value[1]['isisISAdjIPAddrType'];
     $isis_data['isisISAdjIPAddrAddress'] = IP::fromHexString($value[1]['isisISAdjIPAddrAddress']);
 
+    // Format systemID
+    $isis_data['isisISAdjNeighSysID'] = str_replace(' ', '.', $isis_data['isisISAdjNeighSysID']);
     // Remove spaces from systemid and convert it into a more common display format (dddd.dddd.dddd)
-    $isis_data['isisISAdjNeighSysID'] = str_replace(' ', '', $isis_data['isisISAdjNeighSysID']);
-    $isis_data['isisISAdjNeighSysID'] = wordwrap($isis_data['isisISAdjNeighSysID'], 4, '.', true);
+    //$isis_data['isisISAdjNeighSysID'] = str_replace(' ', '', $isis_data['isisISAdjNeighSysID']);
+    //$isis_data['isisISAdjNeighSysID'] = wordwrap($isis_data['isisISAdjNeighSysID'], 4, '.', true);
 
-    // Convert uptime into seconds
+    // Convert uptime into seconds with an accuracy of 1 min
     $tmp_time = explode(':', $isis_data['isisISAdjLastUpTime']);
     $isis_data['isisISAdjLastUpTime'] = $tmp_time[0] * 86400;
     $isis_data['isisISAdjLastUpTime'] += $tmp_time[1] * 3600;
     $isis_data['isisISAdjLastUpTime'] += $tmp_time[2] * 60;
-    //$isis_data["isisISAdjLastUpTime"] += $tmp_time[3].explode(".")[0];
 
-    // Convert AreaID into a more common display format (dddd.dddd.dddd)
-    // TODO
+    $isis_data['isisISAdjAreaAddress'] = str_replace(' ', '.', $isis_data['isisISAdjAreaAddress']);
+    // Convert AreaID into a more common display format (aa.aaaa)
+    // Remove spaces from systemid and convert it into a more common display format (dddd.dddd.dddd)
+    //$isis_data['isisISAdjAreaAddress'][2] = '.';
+    //$isis_data['isisISAdjAreaAddress']= str_replace(' ', '', $isis_data['isisISAdjAreaAddress']);
 
     echo "\nFound adjacent " . $isis_data['isisISAdjIPAddrAddress'];
 
