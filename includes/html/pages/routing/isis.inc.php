@@ -51,7 +51,7 @@ foreach (IsisAdjacency::all() as $adj) {
             <td>' . $adj->isisISAdjNeighSysID . '</td>
             <td>' . $adj->isisISAdjNeighSysType . '</td>
             <td><strong><span style="color: ' . $color . ';">' . $adj->isisISAdjState . '</span></strong></td>
-            <td>' . formatUptime($adj->isisISAdjLastUpTime) . ' ago</td>
+            <td>' . formatUptime($adj->isisISAdjLastUpTime) . '</td>
         </tr>
         </tbody>';
 }
