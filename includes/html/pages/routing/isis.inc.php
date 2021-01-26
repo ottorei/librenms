@@ -1,8 +1,7 @@
 <?php
 
-use App\Models\Device;
-use App\Models\Port;
 use App\Models\IsisAdjacency;
+use App\Models\Port;
 
 echo '
 <div>
@@ -27,15 +26,14 @@ foreach (IsisAdjacency::all() as $adj) {
     //var_dump($adj);
     $port_collection = Port::where('port_id', $adj->port_id)->get();
 
-    if ($adj->isisISAdjState == "up") {
-        $color = "green";
-    }
-    else {
-        $color = "red";
+    if ($adj->isisISAdjState == 'up') {
+        $color = 'green';
+    } else {
+        $color = 'red';
     }
 
     // Loop through port collection, return last matching port
-    foreach($port_collection as $port) {
+    foreach ($port_collection as $port) {
         $interface_name = $port->getLabel();
     }
     echo '
@@ -44,11 +42,11 @@ foreach (IsisAdjacency::all() as $adj) {
             <td></td>
             <td>' . generate_device_link($device, 0, ['tab' => 'routing', 'proto' => 'isis']) . '</td>
             <td><a href="' . generate_url([
-                'page'=>'device', 
-                'device'=>$adj->device_id, 
-                'tab'=>'port', 
-                'port'=>$adj->port_id
-                ]) . '">' . $interface_name . '</a></td>
+        'page'=>'device',
+        'device'=>$adj->device_id,
+        'tab'=>'port',
+        'port'=>$adj->port_id,
+    ]) . '">' . $interface_name . '</a></td>
             <td>' . $adj->isisISAdjIPAddrAddress . '</td>
             <td>' . $adj->isisISAdjNeighSysID . '</td>
             <td>' . $adj->isisISAdjNeighSysType . '</td>
