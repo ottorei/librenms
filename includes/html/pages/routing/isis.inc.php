@@ -24,7 +24,7 @@ echo '
 foreach (IsisAdjacency::all() as $adj) {
     $device = device_by_id_cache($adj->device_id);
     //var_dump($adj);
-    $port_collection = Port::where('port_id', $adj->port_id)->get();
+    
 
     if ($adj->isisISAdjState == 'up') {
         $color = 'green';
@@ -32,10 +32,15 @@ foreach (IsisAdjacency::all() as $adj) {
         $color = 'red';
     }
 
+    $port_collection = Port::where('port_id', $adj->port_id)->get();
     // Loop through port collection, return last matching port
     foreach ($port_collection as $port) {
         $interface_name = $port->getLabel();
     }
+    if (empty($port_collection)) {
+        $interface_name = "Null";
+    }
+
     echo '
         <tbody>
         <tr>
