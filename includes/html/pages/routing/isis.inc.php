@@ -17,7 +17,7 @@ echo '
             <th>System ID</th>
             <th>System type</th>
             <th>State</th>
-            <th>Last changed</th>
+            <th>Last uptime</th>
           </tr>
         </thead>';
 

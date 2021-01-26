@@ -20,9 +20,6 @@ foreach ($adjacencies_poll as $key => $value) {
     $tmp_adjacencies[$index][] = $value;
 }
 
-// Debug
-//var_dump($adjacencies_poll);
-
 // Loop through all adjacencies and output their status
 foreach ($tmp_adjacencies as $key => $value) {
     //var_dump($value);
