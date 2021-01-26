@@ -34,11 +34,11 @@ foreach (IsisAdjacency::all() as $adj) {
         $color = 'red';
     }
 
-    $port_collection = Port::where('port_id', $adj->port_id)->get();
+    $port_collection = Port::where('port_id', $adj->port_id)->last();
     // Loop through port collection, return last matching port
-    foreach ($port_collection as $port) {
-        $interface_name = $port->getLabel();
-    }
+    //foreach ($port_collection as $port) {
+    //    $interface_name = $port->getLabel();
+    //}
 
     echo '
         <tbody>
