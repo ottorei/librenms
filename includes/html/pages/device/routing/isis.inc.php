@@ -23,9 +23,10 @@ echo '
         </thead>';
 
 foreach (IsisAdjacency::where('device_id', $device['device_id'])->get() as $adj) {
-    //$device = device_by_id_cache($adj->device_id);
-    //var_dump($adj);
     $port_collection = Port::where('port_id', $adj->port_id)->get();
+
+    // If ifIndex does not exist for example, because of SNMP interfaces filtering on the device
+    $interface_name = "";
 
     if ($adj->isisISAdjState == 'up') {
         $color = 'green';

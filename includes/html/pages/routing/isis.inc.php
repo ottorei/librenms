@@ -23,10 +23,10 @@ echo '
 
 foreach (IsisAdjacency::all() as $adj) {
     $device = device_by_id_cache($adj->device_id);
-    $interface_name = "";
-    //var_dump($adj);
-    
 
+    // If ifIndex does not exist for example, because of SNMP interfaces filtering on the device
+    $interface_name = "";
+  
     if ($adj->isisISAdjState == 'up') {
         $color = 'green';
     } else {
