@@ -1,6 +1,5 @@
 <?php
 
-use App\Models\Device;
 use App\Models\IsisAdjacency;
 use App\Models\Port;
 
