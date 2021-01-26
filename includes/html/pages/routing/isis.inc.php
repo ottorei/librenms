@@ -23,6 +23,7 @@ echo '
 
 foreach (IsisAdjacency::all() as $adj) {
     $device = device_by_id_cache($adj->device_id);
+    $interface_name = "";
     //var_dump($adj);
     
 
@@ -36,9 +37,6 @@ foreach (IsisAdjacency::all() as $adj) {
     // Loop through port collection, return last matching port
     foreach ($port_collection as $port) {
         $interface_name = $port->getLabel();
-    }
-    if (empty($port_collection)) {
-        $interface_name = "Null";
     }
 
     echo '
