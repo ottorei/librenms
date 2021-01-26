@@ -41,7 +41,7 @@ foreach (IsisAdjacency::all() as $adj) {
         $interface_name = $port->getLabel();
     }
     */
-    $interface_name = Port::query()->where('port_id', $adj->port_id)->first();
+    $interface_name = Port::query()->where('port_id', $adj->port_id)->first()->ifName;
 
     echo '
         <tbody>
