@@ -24,21 +24,14 @@ echo '
         </thead>';
 
 foreach (IsisAdjacency::where('device_id', $device['device_id'])->get() as $adj) {
-    $port_collection = Port::where('port_id', $adj->port_id)->get();
-
-    // If ifIndex does not exist for example, because of SNMP interfaces filtering on the device
-    $interface_name = '';
-
     if ($adj->isisISAdjState == 'up') {
         $color = 'green';
     } else {
         $color = 'red';
     }
 
-    // Loop through port collection, return last matching port
-    foreach ($port_collection as $port) {
-        $interface_name = $port->getLabel();
-    }
+    $interface_name = Port::query()->where('port_id', $adj->port_id)->first()->ifName;
+
     echo '
         <tbody>
         <tr>
