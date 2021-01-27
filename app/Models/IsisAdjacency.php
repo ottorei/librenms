@@ -8,7 +8,7 @@ class IsisAdjacency extends DeviceRelatedModel
 {
     use HasFactory;
 
-    public $primaryKey = 'id';
+    //public $primaryKey = 'id';
     public $timestamps = false;
 
     protected $fillable = [
