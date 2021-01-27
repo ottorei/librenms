@@ -27,7 +27,6 @@ namespace App\Http\Controllers\Device\Tabs;
 use App\Facades\DeviceCache;
 use App\Models\Component;
 use App\Models\Device;
-use App\Models\IsisAdjacency;
 use LibreNMS\Interfaces\UI\DeviceTab;
 
 class RoutingController implements DeviceTab
@@ -39,7 +38,7 @@ class RoutingController implements DeviceTab
         $device = DeviceCache::getPrimary();
         $this->tabs = [
             'ospf' => $device->ospfInstances()->count(),
-            'isis' => IsisAdjacency::where('device_id', $device->device_id)->count(),
+            'isis' => $device->isisAdjacencies()->count(),
             'bgp' => $device->bgppeers()->count(),
             'vrf' => $device->vrfs()->count(),
             'cef' => $device->cefSwitching()->count(),
