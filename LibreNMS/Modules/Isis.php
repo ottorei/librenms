@@ -44,6 +44,7 @@ class Isis implements Module
         // Loop through all adjacencies and output their status
         foreach ($adjacencies_poll as $key => $value) {
             //var_dump($value);
+            dd($value);
             $isis_data['isisISAdjState'] = $value['isisISAdjState'][1];
             $isis_data['isisISAdjNeighSysType'] = $value['isisISAdjNeighSysType'][1];
             $isis_data['isisISAdjNeighSysID'] = $value['isisISAdjNeighSysID'][1];
