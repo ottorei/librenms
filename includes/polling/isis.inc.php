@@ -1,6 +1,5 @@
 <?php
 
-
 use LibreNMS\OS;
 
 if (! $os instanceof OS) {

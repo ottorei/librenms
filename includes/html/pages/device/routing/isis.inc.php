@@ -33,9 +33,11 @@ foreach (IsisAdjacency::where('device_id', $device['device_id'])->with('Device')
     } else {
         $color = 'red';
     }
+  
     //dd($adj);
     $interface_name = $adj->device; //Port::query()->where('port_id', $adj->port_id)->first()->ifName;
     dd($interface_name);
+
     echo '
         <tbody>
         <tr>
