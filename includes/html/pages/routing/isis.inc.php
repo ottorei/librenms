@@ -22,7 +22,7 @@ echo '
           </tr>
         </thead>';
 
-foreach (IsisAdjacency::all()->with('device')->get() as $adj) {
+foreach (IsisAdjacency::all()->get() as $adj) {
     $device = device_by_id_cache($adj->device_id);
 
     if ($adj->isisISAdjState == 'up') {
