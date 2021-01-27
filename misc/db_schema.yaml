@@ -799,7 +799,7 @@ isis_adjacencies:
     - { Field: isisISAdjNeighSysType, Type: varchar(128), 'Null': false, Extra: '' }
     - { Field: isisISAdjNeighSysID, Type: varchar(128), 'Null': false, Extra: '' }
     - { Field: isisISAdjNeighPriority, Type: varchar(128), 'Null': false, Extra: '' }
-    - { Field: isisISAdjLastUpTime, Type: varchar(128), 'Null': false, Extra: '' }
+    - { Field: isisISAdjLastUpTime, Type: bigint unsigned, 'Null': false, Extra: '' }
     - { Field: isisISAdjAreaAddress, Type: varchar(128), 'Null': false, Extra: '' }
     - { Field: isisISAdjIPAddrType, Type: varchar(128), 'Null': false, Extra: '' }
     - { Field: isisISAdjIPAddrAddress, Type: varchar(128), 'Null': false, Extra: '' }
