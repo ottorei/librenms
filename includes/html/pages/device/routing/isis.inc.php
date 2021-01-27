@@ -22,7 +22,8 @@ echo '
           </tr>
         </thead>';
 
-foreach (IsisAdjacency::where('device_id', $device['device_id'])->with('port')->get() as $adj) {
+foreach (IsisAdjacency::where('device_id', $device['device_id'])->with('device')->get() as $adj) {
+  dd($adj);
     if ($adj->isisISAdjState == 'up') {
         $color = 'green';
     } else {
