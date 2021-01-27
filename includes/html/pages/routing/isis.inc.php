@@ -30,7 +30,7 @@ foreach (IsisAdjacency::all() as $adj) {
     } else {
         $color = 'red';
     }
-
+dd($adj->Device);
     echo '
         <tbody>
         <tr>
