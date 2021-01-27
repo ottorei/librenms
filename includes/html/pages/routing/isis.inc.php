@@ -23,8 +23,8 @@ echo '
         </thead>';
 
 foreach (IsisAdjacency::all() as $adj) {
-    $device = device_by_id_cache($adj->device_id);
-    dd($adj);
+    //$device = device_by_id_cache($adj->device_id);
+    //dd($adj);
     if ($adj->isisISAdjState == 'up') {
         $color = 'green';
     } else {
@@ -41,7 +41,7 @@ foreach (IsisAdjacency::all() as $adj) {
         'device'=>$adj->device_id,
         'tab'=>'port',
         'port'=>$adj->port_id,
-    ]) . '">' . $adj->port->ifName . '</a></td>
+    ]) . '">' . $adj->Device->port->ifName . '</a></td>
             <td>' . $adj->isisISAdjIPAddrAddress . '</td>
             <td>' . $adj->isisISAdjNeighSysID . '</td>
             <td>' . $adj->isisISAdjAreaAddress . '</td>
