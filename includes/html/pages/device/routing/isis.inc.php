@@ -22,13 +22,19 @@ echo '
           </tr>
         </thead>';
 
-foreach (IsisAdjacency::where('device_id', $device['device_id'])->with('device')->get() as $adj) {
+
+// FIXME: Can refer to ports, production.ERROR: Call to undefined relationship [port] on model [App\Models\IsisAdjacency]
+//foreach (IsisAdjacency::where('device_id', $device['device_id'])->with('device')->get() as $adj) {
+
+foreach (IsisAdjacency::where('device_id', $device['device_id'])->get() as $adj) {
   dd($adj);
     if ($adj->isisISAdjState == 'up') {
         $color = 'green';
     } else {
         $color = 'red';
     }
+
+    $interface_name = Port::query()->where('port_id', $adj->port_id)->first()->ifName;
 
     echo '
         <tbody>
@@ -40,7 +46,7 @@ foreach (IsisAdjacency::where('device_id', $device['device_id'])->with('device')
         'device'=>$adj->device_id,
         'tab'=>'port',
         'port'=>$adj->port_id,
-    ]) . '">' . $adj->port->ifName . '</a></td>
+    ]) . '">' . $interface_name . '</a></td>
             <td>' . $adj->isisISAdjIPAddrAddress . '</td>
             <td>' . $adj->isisISAdjNeighSysID . '</td>
             <td>' . $adj->isisISAdjAreaAddress . '</td>
