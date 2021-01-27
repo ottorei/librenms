@@ -20,7 +20,7 @@ class CreateIsisAdjacenciesTable extends Migration
             $table->string('isisISAdjNeighSysType', 128);
             $table->string('isisISAdjNeighSysID', 128);
             $table->string('isisISAdjNeighPriority', 128);
-            $table->bigint('isisISAdjLastUpTime', 128);
+            $table->unsignedBigInteger('isisISAdjLastUpTime', 128);
             $table->string('isisISAdjAreaAddress', 128);
             $table->string('isisISAdjIPAddrType', 128);
             $table->string('isisISAdjIPAddrAddress', 128);
