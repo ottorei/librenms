@@ -31,6 +31,8 @@ foreach (IsisAdjacency::all() as $adj) {
         $color = 'red';
     }
 
+    $interface_name = Port::query()->where('port_id', $adj->port_id)->first()->ifName;
+
     echo '
         <tbody>
         <tr>
@@ -41,7 +43,7 @@ foreach (IsisAdjacency::all() as $adj) {
         'device'=>$adj->device_id,
         'tab'=>'port',
         'port'=>$adj->port_id,
-    ]) . '">' . $adj->port->ifName . '</a></td>
+    ]) . '">' . $interface_name . '</a></td>
             <td>' . $adj->isisISAdjIPAddrAddress . '</td>
             <td>' . $adj->isisISAdjNeighSysID . '</td>
             <td>' . $adj->isisISAdjAreaAddress . '</td>
