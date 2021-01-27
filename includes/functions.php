@@ -355,7 +355,6 @@ function delete_device($id)
 
     //Remove IsisAdjacencies
     \App\Models\IsisAdjacency::where('device_id', $id)->delete();
-    \App\Models\IsisAdjacency::where('device_id', $id)->delete();
 
     //Remove Outages
     \App\Models\Availability::where('device_id', $id)->delete();
