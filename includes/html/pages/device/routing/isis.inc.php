@@ -22,14 +22,12 @@ echo '
           </tr>
         </thead>';
 
-foreach (IsisAdjacency::where('device_id', $device['device_id'])->get() as $adj) {
+foreach (IsisAdjacency::where('device_id', $device['device_id'])->with('port')->get() as $adj) {
     if ($adj->isisISAdjState == 'up') {
         $color = 'green';
     } else {
         $color = 'red';
     }
-
-    $interface_name = Port::query()->where('port_id', $adj->port_id)->first()->ifName;
 
     echo '
         <tbody>
@@ -41,7 +39,7 @@ foreach (IsisAdjacency::where('device_id', $device['device_id'])->get() as $adj)
         'device'=>$adj->device_id,
         'tab'=>'port',
         'port'=>$adj->port_id,
-    ]) . '">' . $interface_name . '</a></td>
+    ]) . '">' . $adj->port->ifName . '</a></td>
             <td>' . $adj->isisISAdjIPAddrAddress . '</td>
             <td>' . $adj->isisISAdjNeighSysID . '</td>
             <td>' . $adj->isisISAdjAreaAddress . '</td>
