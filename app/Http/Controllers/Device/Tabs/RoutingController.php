@@ -27,6 +27,7 @@ namespace App\Http\Controllers\Device\Tabs;
 use App\Facades\DeviceCache;
 use App\Models\Component;
 use App\Models\Device;
+use App\Models\isisAdjacency;
 use LibreNMS\Interfaces\UI\DeviceTab;
 
 class RoutingController implements DeviceTab
