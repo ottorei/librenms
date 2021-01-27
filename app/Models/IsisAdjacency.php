@@ -24,10 +24,12 @@ class IsisAdjacency extends DeviceRelatedModel
         'isisISAdjIPAddrAddress',
     ];
 
+    /*
     // ---- Define Relationships ----
 
     public function device()
     {
         return $this->belongsTo(\App\Models\Device::class, 'device_id');
     }
+    */
 }
