@@ -53,3 +53,5 @@ echo '</table>
     </div>
   </div>
 </div>';
+
+dd($adj->port);
