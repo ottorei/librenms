@@ -27,7 +27,7 @@ echo '
 //foreach (IsisAdjacency::where('device_id', $device['device_id'])->with('device')->get() as $adj) {
 
 foreach (IsisAdjacency::where('device_id', $device['device_id'])->get() as $adj) {
-  dd($adj);
+  //dd($adj);
     if ($adj->isisISAdjState == 'up') {
         $color = 'green';
     } else {
