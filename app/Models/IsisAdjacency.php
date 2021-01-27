@@ -28,6 +28,6 @@ class IsisAdjacency extends DeviceRelatedModel
 
     public function device()
     {
-        return $this->belongsTo(Device::class, 'device_id');
+        return $this->belongsTo(\App\Models\Device::class, 'device_id');
     }
 }
