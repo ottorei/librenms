@@ -35,7 +35,7 @@ foreach (IsisAdjacency::all() as $adj) {
         <tbody>
         <tr>
             <td></td>
-            <td>' . generate_device_link($adj->Device->hostname, 0, ['tab' => 'routing', 'proto' => 'isis']) . '</td>
+            <td>' . generate_device_link($adj->Device->device_id, 0, ['tab' => 'routing', 'proto' => 'isis']) . '</td>
             <td><a href="' . generate_url([
         'page'=>'device',
         'device'=>$adj->device_id,
