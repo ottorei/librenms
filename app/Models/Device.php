@@ -582,7 +582,7 @@ class Device extends BaseModel
 
     public function isisAdjacencies()
     {
-        return $this->hasMany(\App\Models\isisAdjacency::class, 'device_id');
+        return $this->hasMany(\App\Models\isisAdjacency::class, 'device_id', 'device_id');
     }
 
     public function netscalerVservers()
