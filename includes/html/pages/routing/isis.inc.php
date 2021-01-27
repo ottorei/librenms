@@ -23,7 +23,7 @@ echo '
         </thead>';
 
 foreach (IsisAdjacency::all() as $adj) {
-    //$device = device_by_id_cache($adj->device_id);
+    $device = device_by_id_cache($adj->device_id);
     //dd($adj);
     if ($adj->isisISAdjState == 'up') {
         $color = 'green';
@@ -35,7 +35,7 @@ foreach (IsisAdjacency::all() as $adj) {
         <tbody>
         <tr>
             <td></td>
-            <td>' . generate_device_link($adj->device_id, 0, ['tab' => 'routing', 'proto' => 'isis']) . '</td>
+            <td>' . generate_device_link($device, 0, ['tab' => 'routing', 'proto' => 'isis']) . '</td>
             <td><a href="' . generate_url([
         'page'=>'device',
         'device'=>$adj->device_id,
