@@ -30,7 +30,7 @@ foreach (IsisAdjacency::all() as $adj) {
     } else {
         $color = 'red';
     }
-dd($adj->Device);
+
     echo '
         <tbody>
         <tr>
@@ -41,7 +41,7 @@ dd($adj->Device);
         'device'=>$adj->device_id,
         'tab'=>'port',
         'port'=>$adj->port_id,
-    ]) . '">' . $adj->Device->port->ifName . '</a></td>
+    ]) . '">' . $adj->port->ifName . '</a></td>
             <td>' . $adj->isisISAdjIPAddrAddress . '</td>
             <td>' . $adj->isisISAdjNeighSysID . '</td>
             <td>' . $adj->isisISAdjAreaAddress . '</td>
