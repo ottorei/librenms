@@ -805,7 +805,6 @@ isis_adjacencies:
     - { Field: isisISAdjIPAddrAddress, Type: varchar(128), 'Null': false, Extra: '' }
   Indexes:
     PRIMARY: { Name: PRIMARY, Columns: [id], Unique: true, Type: BTREE }
-    isis_adjacencies_device_port_index: { Name: isis_adjacencies_device_port_index, Columns: [device_id, port_id], Unique: false, Type: BTREE }
 juniAtmVp:
   Columns:
     - { Field: id, Type: 'bigint unsigned', 'Null': false, Extra: auto_increment }
