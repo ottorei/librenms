@@ -4,15 +4,24 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-class OspfPort extends Model
+class IsisAdjacency extends DeviceRelatedModel
 {
     use HasFactory;
 
+    //public $primaryKey = 'id';
     public $timestamps = false;
+
     protected $fillable = [
         'device_id',
         'port_id',
-
+        'isisISAdjState',
+        'isisISAdjNeighSysType',
+        'isisISAdjNeighSysID',
+        'isisISAdjNeighPriority',
+        'isisISAdjLastUpTime',
+        'isisISAdjAreaAddress',
+        'isisISAdjIPAddrType',
+        'isisISAdjIPAddrAddress',
     ];
 
     // ---- Define Relationships ----

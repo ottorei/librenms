@@ -1,20 +1,9 @@
 <?php
 
-use App\Models\Ipv4Address;
 
-use LibreNMS\RRD\RrdDefinition;
+use LibreNMS\OS;
 
-// Get device model
-$device_model = DeviceCache::getPrimary();
-
-
-// Poll ISIS adjacencies
-$isis_adjs = snmpwalk_cache_oid($device, 'isisISAdj', [], 'ISIS-MIB');
-
-var_dump($isis_adjs);
-
-echo PHP_EOL;
-
-unset(
-    $isis_adjs
-);
+if (! $os instanceof OS) {
+    $os = OS::make($device);
+}
+(new \LibreNMS\Modules\Isis())->poll($os);
