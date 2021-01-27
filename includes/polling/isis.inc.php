@@ -87,5 +87,5 @@ unset(
     $adjacencies,
     $isis_data,
     $tmp_adjacencies,
-    $tmp_time,
+    $tmp_time
 );
