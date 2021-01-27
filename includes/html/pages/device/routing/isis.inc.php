@@ -24,7 +24,7 @@ echo '
 
 
 // FIXME: Can refer to ports, production.ERROR: Call to undefined relationship [port] on model [App\Models\IsisAdjacency]
-foreach (IsisAdjacency::where('device_id', $device['device_id'])->with('Device')->with('Port')->get() as $adj) {
+foreach (IsisAdjacency::where('device_id', $device['device_id'])->with('Device')->get() as $adj) {
 
 //foreach (IsisAdjacency::where('device_id', $device['device_id'])->get() as $adj) {
   //dd($adj);
@@ -34,7 +34,7 @@ foreach (IsisAdjacency::where('device_id', $device['device_id'])->with('Device')
         $color = 'red';
     }
 
-    $interface_name = $adj->port->ifName; //Port::query()->where('port_id', $adj->port_id)->first()->ifName;
+    $interface_name = $adj->port()->ifName; //Port::query()->where('port_id', $adj->port_id)->first()->ifName;
 
     echo '
         <tbody>
