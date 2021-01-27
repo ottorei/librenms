@@ -24,7 +24,7 @@ echo '
 
 foreach (IsisAdjacency::all() as $adj) {
     $device = device_by_id_cache($adj->device_id);
-
+    dd($adj);
     if ($adj->isisISAdjState == 'up') {
         $color = 'green';
     } else {
