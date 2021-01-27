@@ -39,7 +39,7 @@ class RoutingController implements DeviceTab
         $device = DeviceCache::getPrimary();
         $this->tabs = [
             'ospf' => $device->ospfInstances()->count(),
-            //'isis' => $device->isisAdjacencies()->count(),
+            'isis' => $device->isisAdjacencies()->count(),
             'bgp' => $device->bgppeers()->count(),
             'vrf' => $device->vrfs()->count(),
             'cef' => $device->cefSwitching()->count(),
