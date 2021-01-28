@@ -50,7 +50,7 @@ class Isis implements Module
             $isis_data['isisISAdjNeighSysID'] = end($value['isisISAdjNeighSysID']);
             $isis_data['isisISAdjNeighPriority'] = end($value['isisISAdjNeighPriority']);
             $isis_data['isisISAdjLastUpTime'] = end($value['isisISAdjLastUpTime']);
-            $isis_data['isisISAdjAreaAddress'] = end($value['isisISAdjAreaAddress']);
+            $isis_data['isisISAdjAreaAddress'] = end(end($value['isisISAdjAreaAddress']));
             $isis_data['isisISAdjIPAddrType'] = end(end($value['isisISAdjIPAddrType']));
             $isis_data['isisISAdjIPAddrAddress'] = IP::fromHexString(end(end($value['isisISAdjIPAddrAddress'])));
 
