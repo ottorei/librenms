@@ -69,7 +69,7 @@ class Isis implements Module
         foreach ($circuits_poll as $circuit => $circuit_data)
         {
             $isis_data['isisISAdjState'] = $value['isisISAdjState'][$circuit];
-            var_dump($isis_data);
+            var_dump($circuit);
         }
 
         // Loop through all adjacencies and output their status
