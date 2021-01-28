@@ -79,10 +79,10 @@ class Isis implements Module
                     $isis_data['isisISAdjIPAddrAddress'] = end($adjacencies_poll[$circuit]['isisISAdjIPAddrAddress']);
                 }
 
-                //var_dump($adjacencies_poll[$circuit]);
-
+                //var_dump($isis_data);
+                //var_dump($circuit_data);
             }
-
+                //var_dump($isis_data);
 
             // Translate system state codes into meaningful strings
             $isis_codes['1'] = 'L1';
@@ -110,11 +110,14 @@ class Isis implements Module
             // Format area address
             $isis_data['isisISAdjAreaAddress'] = str_replace(' ', '.', $isis_data['isisISAdjAreaAddress']);
 
-            echo "\nFound adjacent " . $isis_data['isisISAdjIPAddrAddress'];
+            //echo "\nFound adjacent " . $isis_data['isisISAdjIPAddrAddress'];
 
             // Get port_id from ifIndex
             $port_id = (int) $device->ports()->where('ifIndex', $key)->value('port_id');
 
+                var_dump($isis_data);
+
+        /*
             // Save data into the DB
             $adjacency = IsisAdjacency::updateOrCreate([
                 'device_id' => $device_id,
@@ -133,19 +136,11 @@ class Isis implements Module
             ]);
 
             $adjacencies->push($adjacency);
+        */
 
         }
 
-
-
-
-
-
-
-
-
-        //}
-
+        /* BUG: REMOVES ALL NOT-ESTABLISHED ADJACENCIES!
         // DB cleanup - remove all entries from the DB that were not present during the poll
         // => the adjacency no longer exists and should not be saved
         IsisAdjacency::query()
@@ -154,6 +149,8 @@ class Isis implements Module
 
         // TODO: Create RRD-files for some of the data?
 
+        */
+        
         $adjacency_count = $adjacencies->count();
         echo "\nTotal adjacencies: " . $adjacency_count;
     }
