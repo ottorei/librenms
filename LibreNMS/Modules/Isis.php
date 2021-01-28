@@ -57,9 +57,19 @@ class Isis implements Module
         $device_id = $os->getDeviceId();
 
         // Poll data from device
+        // Poll all ISIS enabled circuits from the device
+        $circuits_poll = $os->getCacheTable('ISIS-MIB::isisCirc', 'ISIS-MIB');
+
+        // Poll all available adjacencies
         $adjacencies_poll = $os->getCacheTable('ISIS-MIB::isisISAdj', 'ISIS-MIB');
         $adjacencies = collect();
         $isis_data = [];
+
+        dd($circuits_poll);
+        foreach ($circuits_poll as $circuit => $circuit_data)
+        {
+            
+        }
 
         // Loop through all adjacencies and output their status
         foreach ($adjacencies_poll as $key => $value) {
@@ -80,11 +90,16 @@ class Isis implements Module
             $isis_codes['3'] = 'L1L2';
             $isis_codes['4'] = 'unknown';
 
-            // Translate state codes into meaningful strings
-            $state_codes['1'] = 'down';
-            $state_codes['2'] = 'initializing';
-            $state_codes['3'] = 'up';
-            $state_codes['4'] = 'failed';
+            /** 
+            * Translate state codes into meaningful strings
+            * The most likely state is 'up' since the adjacency is lost after a configurable hold-time 
+            * this means that the state changes but it is possible that the polling is not completed in time
+            * to reflect this change.
+            */
+            $adjacency_state_codes['1'] = 'down';
+            $adjacency_state_codes['2'] = 'initializing';
+            $adjacency_state_codes['3'] = 'up';
+            $adjacency_state_codes['4'] = 'failed';
 
             // Remove spaces
             $isis_data['isisISAdjNeighSysID'] = str_replace(' ', '.', $isis_data['isisISAdjNeighSysID']);
@@ -107,7 +122,7 @@ class Isis implements Module
             ], [
                 'device_id' => $device_id,
                 'port_id' => $port_id,
-                'isisISAdjState' => $state_codes[$isis_data['isisISAdjState']],
+                'isisISAdjState' => $adjacency_state_codes[$isis_data['isisISAdjState']],
                 'isisISAdjNeighSysType' => $isis_codes[$isis_data['isisISAdjNeighSysType']],
                 'isisISAdjNeighSysID' => $isis_data['isisISAdjNeighSysID'],
                 'isisISAdjNeighPriority' => $isis_data['isisISAdjNeighPriority'],
