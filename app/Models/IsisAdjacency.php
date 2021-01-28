@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-class IsisAdjacency extends DeviceRelatedModel
+class IsisAdjacency extends PortRelatedModel
 {
     use HasFactory;
 
@@ -28,6 +28,6 @@ class IsisAdjacency extends DeviceRelatedModel
 
     public function device()
     {
-        return $this->belongsTo(\App\Models\Device::class, 'device_id');
+        return $this->belongsTo(\App\Models\Port::class, 'device_id');
     }
 }
