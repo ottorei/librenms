@@ -68,7 +68,8 @@ class Isis implements Module
         //dd($adjacencies_poll);
         foreach ($circuits_poll as $circuit => $circuit_data)
         {
-            $isis_data['isisISAdjState'] = $value['isisISAdjState'][$circuit];
+            $ifIndex = $circuit_data['isisCircIfIndex'];
+            $isis_data['isisISAdjState'] = $adjacencies_poll[$ifIndex]['isisISAdjState'];
             var_dump($circuit_data);
             
         }
