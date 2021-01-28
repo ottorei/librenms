@@ -1,7 +1,6 @@
 <?php
 
 use App\Models\IsisAdjacency;
-use App\Models\Port;
 
 if (! Auth::user()->hasGlobalRead()) {
   include 'includes/html/error-no-perm.inc.php';

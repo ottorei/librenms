@@ -24,13 +24,11 @@
 
 namespace LibreNMS\Modules;
 
-use App\Models\IsisAdjacency;
-use App\Facades\DeviceCache;
-use App\Observers\ModuleModelObserver;
-use LibreNMS\Interfaces\Module;
-use LibreNMS\Util\IP;
-use LibreNMS\OS;
 use App\Models\Device;
+use App\Models\IsisAdjacency;
+use LibreNMS\Interfaces\Module;
+use LibreNMS\OS;
+use LibreNMS\Util\IP;
 
 class Isis implements Module
 {
@@ -132,7 +130,6 @@ class Isis implements Module
 
         $adjacency_count = $adjacencies->count();
         echo "\nTotal adjacencies: " . $adjacency_count;
-
     }
 
     /**
