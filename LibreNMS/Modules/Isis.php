@@ -65,7 +65,10 @@ class Isis implements Module
         $adjacencies = collect();
         $isis_data = [];
 
-        // Loop through all configured adjacencies
+        // Get existing entries from DB
+        $adjacencies = IsisAdjacency::where('device_id', $device_id)->get();
+        var_dump($adjacencies);
+        // Loop through all configured adjacencies on the device
         foreach ($circuits_poll as $circuit => $circuit_data)
         {
             if ($circuit_data["isisCircPassiveCircuit"] != 1) {
@@ -77,6 +80,9 @@ class Isis implements Module
                     $isis_data['isisISAdjAreaAddress'] = end($adjacencies_poll[$circuit]['isisISAdjAreaAddress']);
                     $isis_data['isisISAdjIPAddrType'] = end($adjacencies_poll[$circuit]['isisISAdjIPAddrType']);
                     $isis_data['isisISAdjIPAddrAddress'] = end($adjacencies_poll[$circuit]['isisISAdjIPAddrAddress']);
+                } else {
+                    // Adjancency is configured but not available
+                    // --> Set the status of the adjacency to down
                 }
 
                 //var_dump($isis_data);
@@ -150,7 +156,7 @@ class Isis implements Module
         // TODO: Create RRD-files for some of the data?
 
         */
-        
+
         $adjacency_count = $adjacencies->count();
         echo "\nTotal adjacencies: " . $adjacency_count;
     }
