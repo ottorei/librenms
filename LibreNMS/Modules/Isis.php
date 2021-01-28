@@ -65,29 +65,24 @@ class Isis implements Module
         $adjacencies = collect();
         $isis_data = [];
 
-        //dd($adjacencies_poll);
+        // Loop through all configured adjacencies
         foreach ($circuits_poll as $circuit => $circuit_data)
         {
-            $ifIndex = $circuit_data['isisCircIfIndex'];
-            echo "Ifindex :" . $ifIndex;
+            if ($circuit_data["isisCircPassiveCircuit"] != 1) {
+                if ($adjacencies_poll[$circuit]['isisISAdjState']) {
+                    $isis_data['isisISAdjState'] = $adjacencies_poll[$circuit]['isisISAdjState'];
+                    $isis_data['isisISAdjNeighSysID'] = $adjacencies_poll[$circuit]['isisISAdjNeighSysID'];
+                    $isis_data['isisISAdjNeighPriority'] = $adjacencies_poll[$circuit]['isisISAdjNeighPriority'];
+                    $isis_data['isisISAdjLastUpTime'] = $adjacencies_poll[$circuit]['isisISAdjLastUpTime'];
+                    $isis_data['isisISAdjAreaAddress'] = end($adjacencies_poll[$circuit]['isisISAdjAreaAddress']);
+                    $isis_data['isisISAdjIPAddrType'] = end($adjacencies_poll[$circuit]['isisISAdjIPAddrType']);
+                    $isis_data['isisISAdjIPAddrAddress'] = end($adjacencies_poll[$circuit]['isisISAdjIPAddrAddress']);
+                }
 
-            $isis_data['isisISAdjState'] = $adjacencies_poll[$ifIndex]['isisISAdjState'];
-            var_dump($adjacencies_poll);
-            
-        }
-        var_dump($isis_data);
-        // Loop through all adjacencies and output their status
-        foreach ($adjacencies_poll as $key => $value) {
-            //var_dump($value);
-            //dd($value);
-            $isis_data['isisISAdjState'] = end($value['isisISAdjState']);
-            $isis_data['isisISAdjNeighSysType'] = end($value['isisISAdjNeighSysType']);
-            $isis_data['isisISAdjNeighSysID'] = end($value['isisISAdjNeighSysID']);
-            $isis_data['isisISAdjNeighPriority'] = end($value['isisISAdjNeighPriority']);
-            $isis_data['isisISAdjLastUpTime'] = end($value['isisISAdjLastUpTime']);
-            $isis_data['isisISAdjAreaAddress'] = end(end($value['isisISAdjAreaAddress']));
-            $isis_data['isisISAdjIPAddrType'] = end(end($value['isisISAdjIPAddrType']));
-            $isis_data['isisISAdjIPAddrAddress'] = IP::fromHexString(end(end($value['isisISAdjIPAddrAddress'])));
+                //var_dump($adjacencies_poll[$circuit]);
+
+            }
+
 
             // Translate system state codes into meaningful strings
             $isis_codes['1'] = 'L1';
@@ -95,9 +90,9 @@ class Isis implements Module
             $isis_codes['3'] = 'L1L2';
             $isis_codes['4'] = 'unknown';
 
-            /** 
+            /**
             * Translate state codes into meaningful strings
-            * The most likely state is 'up' since the adjacency is lost after a configurable hold-time 
+            * The most likely state is 'up' since the adjacency is lost after a configurable hold-time
             * this means that the state changes but it is possible that the polling is not completed in time
             * to reflect this change.
             */
@@ -138,7 +133,18 @@ class Isis implements Module
             ]);
 
             $adjacencies->push($adjacency);
+
         }
+
+
+
+
+
+
+
+
+
+        //}
 
         // DB cleanup - remove all entries from the DB that were not present during the poll
         // => the adjacency no longer exists and should not be saved
