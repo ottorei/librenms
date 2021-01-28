@@ -22,7 +22,7 @@ echo '
           </tr>
         </thead>';
 
-foreach (IsisAdjacency::all() as $adj) {
+foreach (IsisAdjacency::all()->with('port') as $adj) {
     $device = device_by_id_cache($adj->device_id);
     //dd($adj);
     if ($adj->isisISAdjState == 'up') {
@@ -31,7 +31,7 @@ foreach (IsisAdjacency::all() as $adj) {
         $color = 'red';
     }
 
-    $interface_name = Port::query()->where('port_id', $adj->port_id)->first()->ifName;
+    $interface_name = $adj->port->ifName;
 
     echo '
         <tbody>
