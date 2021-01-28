@@ -45,14 +45,14 @@ class Isis implements Module
         foreach ($adjacencies_poll as $key => $value) {
             //var_dump($value);
             dd($value);
-            $isis_data['isisISAdjState'] = $value['isisISAdjState'][1];
-            $isis_data['isisISAdjNeighSysType'] = $value['isisISAdjNeighSysType'][1];
-            $isis_data['isisISAdjNeighSysID'] = $value['isisISAdjNeighSysID'][1];
-            $isis_data['isisISAdjNeighPriority'] = $value['isisISAdjNeighPriority'][1];
-            $isis_data['isisISAdjLastUpTime'] = $value['isisISAdjLastUpTime'][1];
-            $isis_data['isisISAdjAreaAddress'] = $value['isisISAdjAreaAddress'][1][1];
-            $isis_data['isisISAdjIPAddrType'] = $value['isisISAdjIPAddrType'][1][1];
-            $isis_data['isisISAdjIPAddrAddress'] = IP::fromHexString($value['isisISAdjIPAddrAddress'][1][1]);
+            $isis_data['isisISAdjState'] = end($value['isisISAdjState']);
+            $isis_data['isisISAdjNeighSysType'] = end($value['isisISAdjNeighSysType']);
+            $isis_data['isisISAdjNeighSysID'] = end($value['isisISAdjNeighSysID']);
+            $isis_data['isisISAdjNeighPriority'] = end($value['isisISAdjNeighPriority']);
+            $isis_data['isisISAdjLastUpTime'] = end($value['isisISAdjLastUpTime']);
+            $isis_data['isisISAdjAreaAddress'] = end($value['isisISAdjAreaAddress']);
+            $isis_data['isisISAdjIPAddrType'] = end(end($value['isisISAdjIPAddrType']));
+            $isis_data['isisISAdjIPAddrAddress'] = IP::fromHexString(end(end($value['isisISAdjIPAddrAddress'])));
 
             // Translate system state codes into meaningful strings
             $isis_codes['1'] = 'L1';
