@@ -65,10 +65,10 @@ class Isis implements Module
         $adjacencies = collect();
         $isis_data = [];
 
-        dd($circuits_poll);
+        dd($adjacencies_poll);
         foreach ($circuits_poll as $circuit => $circuit_data)
         {
-            
+            //$isis_data['isisISAdjState'] = end($value['isisISAdjState']);
         }
 
         // Loop through all adjacencies and output their status
