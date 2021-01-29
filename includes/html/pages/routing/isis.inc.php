@@ -17,6 +17,7 @@ if (! Auth::user()->hasGlobalRead()) {
 
   if (! $vars['state']) {
       $filter = ['up','down'];
+      echo "<span class='pagemenu-selected'>";
   }
 
   if ($vars['state'] == 'all') {
