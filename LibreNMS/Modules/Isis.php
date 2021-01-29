@@ -96,7 +96,7 @@ class Isis implements Module
                 if ($circuit_data['isisCircPassiveCircuit'] != '1') {
                     //var_dump($adjacencies_poll[$circuit]['isisISAdjState']);
                     // Adjancy is UP
-                    if (end($adjacencies_poll[$circuit]['isisISAdjState']) == '3') {
+                    if (end($adjacencies_poll[$circuit]['isisISAdjState']) != '1') {
                         $isis_data['isisISAdjState'] = end($adjacencies_poll[$circuit]['isisISAdjState']);
                         $isis_data['isisISAdjNeighSysID'] = end($adjacencies_poll[$circuit]['isisISAdjNeighSysID']);
                         $isis_data['isisISAdjNeighSysType'] = end($adjacencies_poll[$circuit]['isisISAdjNeighSysType']);
@@ -106,18 +106,10 @@ class Isis implements Module
                         $isis_data['isisISAdjIPAddrType'] = end(end($adjacencies_poll[$circuit]['isisISAdjIPAddrType']));
                         $isis_data['isisISAdjIPAddrAddress'] = end(end($adjacencies_poll[$circuit]['isisISAdjIPAddrAddress']));
 
-                        //var_dump($isis_data);
-
                         // Format data
                         $isis_data['isisISAdjNeighSysID'] = str_replace(' ', '.', $isis_data['isisISAdjNeighSysID']);
                         $isis_data['isisISAdjLastUpTime'] = (int) $isis_data['isisISAdjLastUpTime'] / 100;
                         $isis_data['isisISAdjAreaAddress'] = str_replace(' ', '.', $isis_data['isisISAdjAreaAddress']);
-
-                        // Cleanup possible empty records. If the adjacency was missing other than port info but came up later,
-                        // it would create another row in the DB
-                        //IsisAdjacency::query()
-                        //    ->where(['device_id' => $device['device_id'], 'port_id' => $port_id])
-                        //    ->delete();
 
                         // Save data into the DB
                         $adjacency = IsisAdjacency::updateOrCreate([
