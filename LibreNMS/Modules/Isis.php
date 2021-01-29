@@ -117,7 +117,6 @@ class Isis implements Module
                             'isisISAdjIPAddrType' => $isis_data['isisISAdjIPAddrType'],
                             'isisISAdjIPAddrAddress' => IP::fromHexstring($isis_data['isisISAdjIPAddrAddress']),
                         ]);
-
                     } else {
                         /*
                         * Adjancency is configured on the device but not available

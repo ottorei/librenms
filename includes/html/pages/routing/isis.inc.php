@@ -5,57 +5,55 @@ use App\Models\IsisAdjacency;
 if (! Auth::user()->hasGlobalRead()) {
     include 'includes/html/error-no-perm.inc.php';
 } else {
+    $link_array = [
+        'page'     => 'routing',
+        'protocol' => 'isis',
+    ];
 
-  $link_array = [
-    'page'     => 'routing',
-    'protocol' => 'isis',
-  ];
+    print_optionbar_start('', '');
 
-  print_optionbar_start('', '');
+    echo '<span style="font-weight: bold;">Adjacencies</span> &#187; ';
 
-  echo '<span style="font-weight: bold;">Adjacencies</span> &#187; ';
+    if (! $vars['state']) {
+        $vars['state'] = 'all';
+    }
 
-  
-  if (! $vars['state']) {
-      $vars['state'] = 'all';
-  }
- 
-  if ($vars['state'] == 'all') {
-      $filter = ['up','down'];
-      echo "<span class='pagemenu-selected'>";
-  }
+    if ($vars['state'] == 'all') {
+        $filter = ['up', 'down'];
+        echo "<span class='pagemenu-selected'>";
+    }
 
-  echo generate_link('All', $vars, ['state' => 'all']);
-  if ($vars['state'] == 'all') {
-      echo '</span>';
-  }
+    echo generate_link('All', $vars, ['state' => 'all']);
+    if ($vars['state'] == 'all') {
+        echo '</span>';
+    }
 
-  echo ' | ';
+    echo ' | ';
 
-  if ($vars['state'] == 'up') {
-    $filter = ['up'];
-      echo "<span class='pagemenu-selected'>";
-  }
+    if ($vars['state'] == 'up') {
+        $filter = ['up'];
+        echo "<span class='pagemenu-selected'>";
+    }
 
-  echo generate_link('Up', $vars, ['state' => 'up']);
-  if ($vars['state'] == 'up') {
-      $filter = ['up'];
-      echo '</span>';
-  }
+    echo generate_link('Up', $vars, ['state' => 'up']);
+    if ($vars['state'] == 'up') {
+        $filter = ['up'];
+        echo '</span>';
+    }
 
-  echo ' | ';
+    echo ' | ';
 
-  if ($vars['state'] == 'down') {
-    echo "<span class='pagemenu-selected'>";
-  }
+    if ($vars['state'] == 'down') {
+        echo "<span class='pagemenu-selected'>";
+    }
 
-  echo generate_link('Down', $vars, ['state' => 'down']);
-  if ($vars['state'] == 'down') {
-      $filter = ['down'];
-      echo '</span>';
-  }
+    echo generate_link('Down', $vars, ['state' => 'down']);
+    if ($vars['state'] == 'down') {
+        $filter = ['down'];
+        echo '</span>';
+    }
 
-  print_optionbar_end();
+    print_optionbar_end();
 
     echo '
   <div>
