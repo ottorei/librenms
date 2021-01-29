@@ -13,6 +13,7 @@ if (! Auth::user()->hasGlobalRead()) {
 
   print_optionbar_start('', '');
 
+  echo '<span style="font-weight: bold;">BGP</span> &#187; ';
 
   if (! $vars['state']) {
       $vars['state'] = ['up','down'];
@@ -51,8 +52,6 @@ if (! Auth::user()->hasGlobalRead()) {
   }
 
   print_optionbar_end();
-
-  echo '<span style="font-weight: bold;">ISIS</span> &#187; ';
 
     echo '
   <div>
