@@ -36,6 +36,7 @@ class IsisAdjacency extends PortRelatedModel
     protected $fillable = [
         'device_id',
         'port_id',
+        'ifIndex',
         'isisISAdjState',
         'isisISAdjNeighSysType',
         'isisISAdjNeighSysID',

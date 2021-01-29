@@ -795,6 +795,7 @@ isis_adjacencies:
     - { Field: id, Type: int unsigned, 'Null': false, Extra: 'auto_increment' }
     - { Field: device_id, Type: int, 'Null': false, Extra: '' }
     - { Field: port_id, Type: int, 'Null': false, Extra: '' }
+    - { Field: ifIndex, Type: int, 'Null': false, Extra: '' }
     - { Field: isisISAdjState, Type: varchar(13), 'Null': false, Extra: '' }
     - { Field: isisISAdjNeighSysType, Type: varchar(128), 'Null': false, Extra: '' }
     - { Field: isisISAdjNeighSysID, Type: varchar(128), 'Null': false, Extra: '' }
@@ -807,6 +808,7 @@ isis_adjacencies:
     PRIMARY: { Name: PRIMARY, Columns: [id], Unique: true, Type: BTREE }
     isis_adjacencies_device_id_index: { Name: isis_adjacencies_device_id_index, Columns: [device_id], Unique: false, Type: BTREE }
     isis_adjacencies_port_id_index: { Name: isis_adjacencies_port_id_index, Columns: [port_id], Unique: false, Type: BTREE }
+    isis_adjacencies_ifIndex_index: { Name: isis_adjacencies_ifIndex_index, Columns: [port_id], Unique: false, Type: BTREE }
 juniAtmVp:
   Columns:
     - { Field: id, Type: 'bigint unsigned', 'Null': false, Extra: auto_increment }

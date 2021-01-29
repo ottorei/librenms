@@ -83,7 +83,7 @@ class Isis implements Module
         $adjacency_state_codes['4'] = 'failed';
 
         if ($os instanceof Junos) {
-            // Do not poll loopback interfaces
+            // Do not poll loopback interface
             unset($circuits_poll['16']);
         }
 
@@ -92,10 +92,7 @@ class Isis implements Module
             if (is_numeric($circuit)) {
                 echo "\nCircuit ID: " . $circuit;
                 $port_id = (int) $device->ports()->where('ifIndex', $circuit)->value('port_id');
-                if ($port_id == 0)
-                {
-                    $port_id = $circuit;
-                }
+
                 if ($circuit_data['isisCircPassiveCircuit'] != '1') {
                     var_dump($adjacencies_poll[$circuit]['isisISAdjState']);
                     // Adjancy is UP
@@ -126,10 +123,11 @@ class Isis implements Module
                         $adjacency = IsisAdjacency::updateOrCreate([
                             'device_id' => $device_id,
                             //'isisISAdjNeighSysID' => $isis_data['isisISAdjNeighSysID'],
-                            'port_id' => $port_id,
+                            'ifIndex' => $circuit,
                         ], [
                             'device_id' => $device_id,
                             'port_id' => $port_id,
+                            'ifIndex' => $circuit,
                             'isisISAdjState' => $adjacency_state_codes[$isis_data['isisISAdjState']],
                             'isisISAdjNeighSysType' => $isis_codes[$isis_data['isisISAdjNeighSysType']],
                             'isisISAdjNeighSysID' => $isis_data['isisISAdjNeighSysID'],
@@ -153,12 +151,12 @@ class Isis implements Module
                             $state = 'down';
                         }
                         $adjacency = IsisAdjacency::updateOrCreate(
-                                    ['device_id' => $device_id, 'port_id' => $port_id],
+                                    ['device_id' => $device_id, 'ifIndex' => $circuit],
                                     ['isisISAdjState' => 'down']
                             );
                         //$adjacencies->push($adjacency);
                     }
-                    $adjacencies->push($adjacency);
+                    //$adjacencies->push($adjacency);
                 }
             }
         }
