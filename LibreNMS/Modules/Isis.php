@@ -87,10 +87,6 @@ class Isis implements Module
             unset($circuits_poll['16']);
         }
 
-        // Get existing adjacencies of the device
-        //$adjacencies = IsisAdjacency::where('device_id', $device_id);
-        //dd($adjacencies);
-
         // Loop through all configured adjacencies on the device
         foreach ($circuits_poll as $circuit => $circuit_data) {
             if (is_numeric($circuit)) {
