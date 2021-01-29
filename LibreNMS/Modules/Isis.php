@@ -133,7 +133,7 @@ class Isis implements Module
                             'isisISAdjIPAddrType' => $isis_data['isisISAdjIPAddrType'],
                             'isisISAdjIPAddrAddress' => IP::fromHexstring($isis_data['isisISAdjIPAddrAddress']),
                         ]);
-                        $adjacencies->push($adjacency);
+                        
 
                     } else {
                     /*
@@ -152,6 +152,7 @@ class Isis implements Module
                                     ['isisISAdjState' => 'down']
                             );
                     }
+                    $adjacencies->push($adjacency);
                 }
             }
         }
