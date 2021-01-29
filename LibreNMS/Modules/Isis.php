@@ -71,17 +71,6 @@ class Isis implements Module
         $isis_codes['3'] = 'L1L2';
         $isis_codes['4'] = 'unknown';
 
-        /**
-         * Translate state codes into meaningful strings
-         * The most likely state is 'up' since the adjacency is lost after a configurable hold-time
-         * this means that the state changes but it is possible that the polling is not completed in time
-         * to reflect this change.
-         */
-        $adjacency_state_codes['1'] = 'down';
-        $adjacency_state_codes['2'] = 'initializing';
-        $adjacency_state_codes['3'] = 'up';
-        $adjacency_state_codes['4'] = 'failed';
-
         if ($os instanceof Junos) {
             // Do not poll loopback interface
             unset($circuits_poll['16']);
@@ -96,7 +85,7 @@ class Isis implements Module
                 if ($circuit_data['isisCircPassiveCircuit'] != '1') {
                     //var_dump($adjacencies_poll[$circuit]['isisISAdjState']);
                     // Adjancy is UP
-                    if (end($adjacencies_poll[$circuit]['isisISAdjState']) != '1') {
+                    if (end($adjacencies_poll[$circuit]['isisISAdjState']) == '3') {
                         $isis_data['isisISAdjState'] = end($adjacencies_poll[$circuit]['isisISAdjState']);
                         $isis_data['isisISAdjNeighSysID'] = end($adjacencies_poll[$circuit]['isisISAdjNeighSysID']);
                         $isis_data['isisISAdjNeighSysType'] = end($adjacencies_poll[$circuit]['isisISAdjNeighSysType']);
@@ -119,7 +108,7 @@ class Isis implements Module
                             'device_id' => $device_id,
                             'ifIndex' => $circuit,
                             'port_id' => $port_id,
-                            'isisISAdjState' => $adjacency_state_codes[$isis_data['isisISAdjState']],
+                            'isisISAdjState' => 'up',
                             'isisISAdjNeighSysType' => $isis_codes[$isis_data['isisISAdjNeighSysType']],
                             'isisISAdjNeighSysID' => $isis_data['isisISAdjNeighSysID'],
                             'isisISAdjNeighPriority' => $isis_data['isisISAdjNeighPriority'],
