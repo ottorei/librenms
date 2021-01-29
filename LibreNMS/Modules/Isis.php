@@ -142,7 +142,7 @@ class Isis implements Module
                         * Set the status of the adjacency to down
                         * Also if the adjacency was never up, create a record
                         */
-                        if ($circuit_data['isisCircAdminState'] == '1') {
+                        if ($circuit_data['isisCircAdminState'] != '1') {
                             $state = 'disabled';
                         } else {
                             $state = 'down';
