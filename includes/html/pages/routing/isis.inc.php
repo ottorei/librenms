@@ -72,7 +72,7 @@ if (! Auth::user()->hasGlobalRead()) {
             </tr>
           </thead>';
 
-    foreach (IsisAdjacency::where('state', $vars['state'])->with('port')->get() as $adj) {
+    foreach (IsisAdjacency::where('isisISAdjState', $vars['state'])->with('port')->get() as $adj) {
         $device = device_by_id_cache($adj->device_id);
         if ($adj->isisISAdjState == 'up') {
             $color = 'green';
