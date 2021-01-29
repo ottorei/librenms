@@ -116,6 +116,8 @@ class Isis implements Module
                             'device_id' => $device_id,
                             'ifIndex' => $circuit,
                         ], [
+                            'device_id' => $device_id,
+                            'ifIndex' => $circuit,
                             'port_id' => $port_id,
                             'isisISAdjState' => $adjacency_state_codes[$isis_data['isisISAdjState']],
                             'isisISAdjNeighSysType' => $isis_codes[$isis_data['isisISAdjNeighSysType']],
@@ -140,8 +142,11 @@ class Isis implements Module
                             $state = 'down';
                         }
                         $adjacency = IsisAdjacency::updateOrCreate([
-                            'device_id' => $device_id, 'ifIndex' => $circuit,
+                            'device_id' => $device_id,
+                            'ifIndex' => $circuit,
                         ], [
+                            'device_id' => $device_id,
+                            'ifIndex' => $circuit,
                             'port_id' => $port_id,
                             'isisISAdjState' => $state,
                         ]);
