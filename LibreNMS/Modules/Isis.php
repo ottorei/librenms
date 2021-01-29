@@ -122,12 +122,9 @@ class Isis implements Module
                         // Save data into the DB
                         $adjacency = IsisAdjacency::updateOrCreate([
                             'device_id' => $device_id,
-                            //'isisISAdjNeighSysID' => $isis_data['isisISAdjNeighSysID'],
                             'ifIndex' => $circuit,
                         ], [
-                            'device_id' => $device_id,
                             'port_id' => $port_id,
-                            'ifIndex' => $circuit,
                             'isisISAdjState' => $adjacency_state_codes[$isis_data['isisISAdjState']],
                             'isisISAdjNeighSysType' => $isis_codes[$isis_data['isisISAdjNeighSysType']],
                             'isisISAdjNeighSysID' => $isis_data['isisISAdjNeighSysID'],
@@ -138,24 +135,26 @@ class Isis implements Module
                             'isisISAdjIPAddrAddress' => IP::fromHexstring($isis_data['isisISAdjIPAddrAddress']),
                         ]);
 
-                    //$adjacencies->push($adjacency);
                     } else {
                         /*
-                        *Adjancency is configured on the device but not available
-                        *Update existing record to down state
-                        *Set the status of the adjacency to down
+                        * Adjancency is configured on the device but not available
+                        * Update existing record to down state
+                        * Set the status of the adjacency to down
+                        * Also if the adjacency was never up, create a record
                         */
                         if ($circuit_data['isisCircAdminState'] == '1') {
                             $state = 'disabled';
                         } else {
                             $state = 'down';
                         }
-                        $adjacency = IsisAdjacency::updateOrCreate(
-                                    ['device_id' => $device_id, 'ifIndex' => $circuit],
-                                    ['isisISAdjState' => 'down']
-                            );
-                        //$adjacencies->push($adjacency);
+                        $adjacency = IsisAdjacency::updateOrCreate([
+                            'device_id' => $device_id, 'ifIndex' => $circuit,
+                        ], [
+                            'port_id' => $port_id,
+                            'isisISAdjState' => $state,
+                        ]);
                     }
+
                     $adjacencies->push($adjacency);
                 }
             }
