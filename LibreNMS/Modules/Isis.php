@@ -142,10 +142,10 @@ class Isis implements Module
                     *Set the status of the adjacency to down
                     */
                             if ($circuit_data["isisCircAdminState"] == '1') {
-                            $state = 'disabled';
+                                $state = 'disabled';
                             }
                             else {
-                            $state = 'down';
+                                $state = 'down';
                             }
                             $adjacency = IsisAdjacency::updateOrCreate(
                                     ['device_id' => $device_id, 'port_id' => $port_id],
@@ -159,7 +159,7 @@ class Isis implements Module
         //BUG: REMOVES ALL NOT-ESTABLISHED ADJACENCIES!
         // DB cleanup - remove all entries from the DB that were not present during the poll
         // => the adjacency no longer exists and should not be saved
-        IsisAdjacency::query()
+        //IsisAdjacency::query()
         //    ->where(['device_id' => $device['device_id']])
         //    ->whereNotIn('isisISAdjIPAddrAddress', $adjacencies->pluck('isisISAdjIPAddrAddress'))->delete();
     }
