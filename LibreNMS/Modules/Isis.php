@@ -120,7 +120,7 @@ class Isis implements Module
                         $adjacency = IsisAdjacency::updateOrCreate([
                             'device_id' => $device_id,
                             //'isisISAdjNeighSysID' => $isis_data['isisISAdjNeighSysID'],
-                            'isisISAdjNeighSysID' => $isis_data['isisISAdjNeighSysID'],
+                            'port_id' => $port_id,
                         ], [
                             'device_id' => $device_id,
                             'port_id' => $port_id,
