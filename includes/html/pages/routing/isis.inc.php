@@ -5,6 +5,54 @@ use App\Models\IsisAdjacency;
 if (! Auth::user()->hasGlobalRead()) {
     include 'includes/html/error-no-perm.inc.php';
 } else {
+
+  $link_array = [
+    'page'     => 'routing',
+    'protocol' => 'bgp',
+  ];
+
+  print_optionbar_start('', '');
+
+
+  if (! $vars['state']) {
+      $vars['state'] = 'all';
+  }
+
+  if ($vars['state'] == 'all') {
+      echo "<span class='pagemenu-selected'>";
+  }
+
+  echo generate_link('All', $vars, ['type' => 'all']);
+  if ($vars['state'] == 'all') {
+      echo '</span>';
+  }
+
+  echo ' | ';
+
+  if ($vars['state'] == 'up') {
+      echo "<span class='pagemenu-selected'>";
+  }
+
+  echo generate_link('up', $vars, ['state' => 'up']);
+  if ($vars['state'] == 'up') {
+      echo '</span>';
+  }
+
+  echo ' | ';
+
+  if ($vars['state'] == 'up') {
+    echo "<span class='pagemenu-selected'>";
+  }
+
+  echo generate_link('down', $vars, ['state' => 'down']);
+  if ($vars['state'] == 'down') {
+      echo '</span>';
+  }
+
+  print_optionbar_end();
+
+  echo '<span style="font-weight: bold;">ISIS</span> &#187; ';
+
     echo '
   <div>
     <div class="panel panel-default">
@@ -24,7 +72,7 @@ if (! Auth::user()->hasGlobalRead()) {
             </tr>
           </thead>';
 
-    foreach (IsisAdjacency::with('port')->get()->sortBy('state') as $adj) {
+    foreach (IsisAdjacency::where('state', $vars['state'])->with('port')->get() as $adj) {
         $device = device_by_id_cache($adj->device_id);
         if ($adj->isisISAdjState == 'up') {
             $color = 'green';
