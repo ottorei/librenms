@@ -112,11 +112,11 @@ class Isis implements Module
                         $isis_data['isisISAdjLastUpTime'] = (int) $isis_data['isisISAdjLastUpTime'] / 100;
                         $isis_data['isisISAdjAreaAddress'] = str_replace(' ', '.', $isis_data['isisISAdjAreaAddress']);
 
-                        // Cleanup possible empty records. If the adjacency was missing other tha port info but came up later
+                        // Cleanup possible empty records. If the adjacency was missing other than port info but came up later,
                         // it would create another row in the DB
-                        IsisAdjacency::query()
-                            ->where(['device_id' => $device['device_id'], 'port_id' => $port_id])
-                            ->delete();
+                        //IsisAdjacency::query()
+                        //    ->where(['device_id' => $device['device_id'], 'port_id' => $port_id])
+                        //    ->delete();
 
                         // Save data into the DB
                         $adjacency = IsisAdjacency::updateOrCreate([
