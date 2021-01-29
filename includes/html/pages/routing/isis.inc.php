@@ -8,17 +8,18 @@ if (! Auth::user()->hasGlobalRead()) {
 
   $link_array = [
     'page'     => 'routing',
-    'protocol' => 'bgp',
+    'protocol' => 'isis',
   ];
 
   print_optionbar_start('', '');
 
 
   if (! $vars['state']) {
-      $vars['state'] = 'all';
+      $vars['state'] = ['up','down'];
   }
 
   if ($vars['state'] == 'all') {
+      $vars['state'] = ['up','down'];
       echo "<span class='pagemenu-selected'>";
   }
 
