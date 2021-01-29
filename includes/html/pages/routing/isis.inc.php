@@ -55,6 +55,7 @@ if (! Auth::user()->hasGlobalRead()) {
   }
 
   print_optionbar_end();
+  var_dump($filter);
 
     echo '
   <div>
