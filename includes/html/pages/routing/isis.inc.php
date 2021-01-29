@@ -16,7 +16,7 @@ if (! Auth::user()->hasGlobalRead()) {
   echo '<span style="font-weight: bold;">Adjacencies</span> &#187; ';
 
   
-  if (! isset$vars['state']) {
+  if (! $vars['state']) {
       $vars['state'] = 'all';
   }
  
