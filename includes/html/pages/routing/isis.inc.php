@@ -33,22 +33,25 @@ if (! Auth::user()->hasGlobalRead()) {
   echo ' | ';
 
   if ($vars['state'] == 'up') {
+    $filter = ['up'];
       echo "<span class='pagemenu-selected'>";
   }
 
   echo generate_link('Up', $vars, ['state' => 'up']);
   if ($vars['state'] == 'up') {
+      $filter = ['up'];
       echo '</span>';
   }
 
   echo ' | ';
 
-  if ($vars['state'] == 'up') {
+  if ($vars['state'] == 'down') {
     echo "<span class='pagemenu-selected'>";
   }
 
   echo generate_link('Down', $vars, ['state' => 'down']);
   if ($vars['state'] == 'down') {
+      $filter = ['down'];
       echo '</span>';
   }
 
