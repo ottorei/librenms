@@ -88,7 +88,7 @@ class Isis implements Module
         }
 
         // Get existing adjacencies of the device
-        $adjacencies = IsisAdjacency::where('device_id', $device_id);
+        //$adjacencies = IsisAdjacency::where('device_id', $device_id);
         //dd($adjacencies);
 
         // Loop through all configured adjacencies on the device
@@ -152,7 +152,7 @@ class Isis implements Module
                                     ['isisISAdjState' => 'down']
                             );
                     }
-                    $adjacencies->push($adjacency);
+                    //$adjacencies->push($adjacency);
                 }
             }
         }
