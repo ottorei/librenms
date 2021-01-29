@@ -28,6 +28,7 @@ use App\Models\Device;
 use App\Models\IsisAdjacency;
 use LibreNMS\Interfaces\Module;
 use LibreNMS\OS;
+use LibreNMS\OS\Junos;
 use LibreNMS\Util\IP;
 
 class Isis implements Module
@@ -56,7 +57,6 @@ class Isis implements Module
         $device = $os->getDevice();
         $device_id = $os->getDeviceId();
 
-        // Poll data from device
         // Poll all ISIS enabled circuits from the device
         $circuits_poll = $os->getCacheTable('ISIS-MIB::isisCirc', 'ISIS-MIB');
 
@@ -64,113 +64,104 @@ class Isis implements Module
         $adjacencies_poll = $os->getCacheTable('ISIS-MIB::isisISAdj', 'ISIS-MIB');
         $adjacencies = collect();
         $isis_data = [];
-//echo "Device ID :" . $device_id;
 
-        // Get existing entries from DB
-        $adjacencies = IsisAdjacency::where('device_id', $device_id)->get();
+        // Translate system state codes into meaningful strings
+        $isis_codes['1'] = 'L1';
+        $isis_codes['2'] = 'L2';
+        $isis_codes['3'] = 'L1L2';
+        $isis_codes['4'] = 'unknown';
 
-        foreach ($adjacencies as $adj)
-{
-        //var_dump($adj);
-}
+        /**
+        * Translate state codes into meaningful strings
+        * The most likely state is 'up' since the adjacency is lost after a configurable hold-time
+        * this means that the state changes but it is possible that the polling is not completed in time
+        * to reflect this change.
+        */
+        $adjacency_state_codes['1'] = 'down';
+        $adjacency_state_codes['2'] = 'initializing';
+        $adjacency_state_codes['3'] = 'up';
+        $adjacency_state_codes['4'] = 'failed';
+
+        if ($os instanceof Junos) {
+            // Do not poll loopback interfaces
+            unset($circuits_poll['16']);
+        }
+
+        // Get existing adjacencies of the device
+        $adjacencies = IsisAdjacency::where('device_id', $device_id);
+        dd($adjacencies);
 
         // Loop through all configured adjacencies on the device
         foreach ($circuits_poll as $circuit => $circuit_data)
         {
-            if ($circuit_data["isisCircPassiveCircuit"] != 1) {
-                if ($adjacencies_poll[$circuit]['isisISAdjState']) {
-                    $isis_data['isisISAdjState'] = end($adjacencies_poll[$circuit]['isisISAdjState']);
-                    $isis_data['isisISAdjNeighSysID'] = end($adjacencies_poll[$circuit]['isisISAdjNeighSysID']);
-                $isis_data['isisISAdjNeighSysType'] = end($adjacencies_poll[$circuit]['isisISAdjNeighSysType']);
-                    $isis_data['isisISAdjNeighPriority'] = end($adjacencies_poll[$circuit]['isisISAdjNeighPriority']);
-                    $isis_data['isisISAdjLastUpTime'] = end($adjacencies_poll[$circuit]['isisISAdjLastUpTime']);
-                    $isis_data['isisISAdjAreaAddress'] = end(end($adjacencies_poll[$circuit]['isisISAdjAreaAddress']));
-                    $isis_data['isisISAdjIPAddrType'] = end(end($adjacencies_poll[$circuit]['isisISAdjIPAddrType']));
-                    $isis_data['isisISAdjIPAddrAddress'] = end(end($adjacencies_poll[$circuit]['isisISAdjIPAddrAddress']));
-                } else {
-                    // Adjancency is configured but not available
-                    // --> Set the status of the adjacency to down
+            if (is_numeric($circuit)) {
+                echo "\nCircuit ID: " . $circuit;
+                $port_id = (int) $device->ports()->where('ifIndex', $circuit)->value('port_id');
+                if ($circuit_data["isisCircPassiveCircuit"] != '1') {
+                    var_dump($adjacencies_poll[$circuit]['isisISAdjState']);
+                    // Adjancy is UP
+                    if (end($adjacencies_poll[$circuit]['isisISAdjState']) == '3') {
+                        $isis_data['isisISAdjState'] = end($adjacencies_poll[$circuit]['isisISAdjState']);
+                        $isis_data['isisISAdjNeighSysID'] = end($adjacencies_poll[$circuit]['isisISAdjNeighSysID']);
+                        $isis_data['isisISAdjNeighSysType'] = end($adjacencies_poll[$circuit]['isisISAdjNeighSysType']);
+                        $isis_data['isisISAdjNeighPriority'] = end($adjacencies_poll[$circuit]['isisISAdjNeighPriority']);
+                        $isis_data['isisISAdjLastUpTime'] = end($adjacencies_poll[$circuit]['isisISAdjLastUpTime']);
+                        $isis_data['isisISAdjAreaAddress'] = end(end($adjacencies_poll[$circuit]['isisISAdjAreaAddress']));
+                        $isis_data['isisISAdjIPAddrType'] = end(end($adjacencies_poll[$circuit]['isisISAdjIPAddrType']));
+                        $isis_data['isisISAdjIPAddrAddress'] = end(end($adjacencies_poll[$circuit]['isisISAdjIPAddrAddress']));
+
+                        //var_dump($isis_data);
+
+                        // Format data
+                        $isis_data['isisISAdjNeighSysID'] = str_replace(' ', '.', $isis_data['isisISAdjNeighSysID']);
+                        $isis_data['isisISAdjLastUpTime'] = (int) $isis_data['isisISAdjLastUpTime'] / 100;
+                        $isis_data['isisISAdjAreaAddress'] = str_replace(' ', '.', $isis_data['isisISAdjAreaAddress']);
+
+                        // Save data into the DB
+                        $adjacency = IsisAdjacency::updateOrCreate([
+                            'device_id' => $device_id,
+                            'isisISAdjIPAddrAddress' => IP::fromHexstring($isis_data['isisISAdjIPAddrAddress']),
+                        ], [
+                            'device_id' => $device_id,
+                            'port_id' => $port_id,
+                            'isisISAdjState' => $adjacency_state_codes[$isis_data['isisISAdjState']],
+                            'isisISAdjNeighSysType' => $isis_codes[$isis_data['isisISAdjNeighSysType']],
+                            'isisISAdjNeighSysID' => $isis_data['isisISAdjNeighSysID'],
+                            'isisISAdjNeighPriority' => $isis_data['isisISAdjNeighPriority'],
+                            'isisISAdjLastUpTime' => $isis_data['isisISAdjLastUpTime'],
+                            'isisISAdjAreaAddress' => $isis_data['isisISAdjAreaAddress'],
+                            'isisISAdjIPAddrType' => $isis_data['isisISAdjIPAddrType'],
+                            'isisISAdjIPAddrAddress' => IP::fromHexstring($isis_data['isisISAdjIPAddrAddress']),
+                        ]);
+                        $adjacencies->push($adjacency);
+
+                    } else {
+                    /*
+                    *Adjancency is configured on the device but not available
+                    *Update existing record to down state
+                    *Set the status of the adjacency to down
+                    */
+                            if ($circuit_data["isisCircAdminState"] == '1') {
+                            $state = 'disabled';
+                            }
+                            else {
+                            $state = 'down';
+                            }
+                            $adjacency = IsisAdjacency::updateOrCreate(
+                                    ['device_id' => $device_id, 'port_id' => $port_id],
+                                    ['isisISAdjState' => 'down']
+                            );
+                    }
                 }
-
-                //var_dump($isis_data);
-                //var_dump($circuit_data);
             }
-                //var_dump($isis_data);
-
-            // Translate system state codes into meaningful strings
-            $isis_codes['1'] = 'L1';
-            $isis_codes['2'] = 'L2';
-            $isis_codes['3'] = 'L1L2';
-            $isis_codes['4'] = 'unknown';
-
-            /**
-            * Translate state codes into meaningful strings
-            * The most likely state is 'up' since the adjacency is lost after a configurable hold-time
-            * this means that the state changes but it is possible that the polling is not completed in time
-            * to reflect this change.
-            */
-            $adjacency_state_codes['1'] = 'down';
-            $adjacency_state_codes['2'] = 'initializing';
-            $adjacency_state_codes['3'] = 'up';
-            $adjacency_state_codes['4'] = 'failed';
-
-                if (! empty($isis_data)) {
-            //var_dump($isis_data);
-            // Remove spaces
-            $isis_data['isisISAdjNeighSysID'] = str_replace(' ', '.', $isis_data['isisISAdjNeighSysID']);
-
-            // Convert uptime into seconds
-            $isis_data['isisISAdjLastUpTime'] = (int) $isis_data['isisISAdjLastUpTime'] / 100;
-
-            // Format area address
-            $isis_data['isisISAdjAreaAddress'] = str_replace(' ', '.', $isis_data['isisISAdjAreaAddress']);
-
-            //echo "\nFound adjacent " . $isis_data['isisISAdjIPAddrAddress'];
-
-            // Get port_id from ifIndex
-            $port_id = (int) $device->ports()->where('ifIndex', $circuit)->value('port_id');
-
-             //var_dump($isis_data);
-
-
-            // Save data into the DB
-            $adjacency = IsisAdjacency::updateOrCreate([
-                'device_id' => $device_id,
-                'isisISAdjIPAddrAddress' => $isis_data['isisISAdjIPAddrAddress'],
-            ], [
-                'device_id' => $device_id,
-                'port_id' => $port_id,
-                'isisISAdjState' => $adjacency_state_codes[$isis_data['isisISAdjState']],
-                'isisISAdjNeighSysType' => $isis_codes[$isis_data['isisISAdjNeighSysType']],
-                'isisISAdjNeighSysID' => $isis_data['isisISAdjNeighSysID'],
-                'isisISAdjNeighPriority' => $isis_data['isisISAdjNeighPriority'],
-                'isisISAdjLastUpTime' => $isis_data['isisISAdjLastUpTime'],
-                'isisISAdjAreaAddress' => $isis_data['isisISAdjAreaAddress'],
-                'isisISAdjIPAddrType' => $isis_data['isisISAdjIPAddrType'],
-                'isisISAdjIPAddrAddress' => $isis_data['isisISAdjIPAddrAddress'],
-            ]);
-
-            $adjacencies->push($adjacency);
         }
 
-        }
-
-        //dd($isis_data);
-
-        /*
         //BUG: REMOVES ALL NOT-ESTABLISHED ADJACENCIES!
         // DB cleanup - remove all entries from the DB that were not present during the poll
         // => the adjacency no longer exists and should not be saved
         IsisAdjacency::query()
-            ->where(['device_id' => $device['device_id']])
-            ->whereNotIn('isisISAdjIPAddrAddress', $adjacencies->pluck('isisISAdjIPAddrAddress'))->delete();
-
-        // TODO: Create RRD-files for some of the data?
-
-        */
-
-        $adjacency_count = $adjacencies->count();
-        echo "\nTotal adjacencies: " . $adjacency_count;
+        //    ->where(['device_id' => $device['device_id']])
+        //    ->whereNotIn('isisISAdjIPAddrAddress', $adjacencies->pluck('isisISAdjIPAddrAddress'))->delete();
     }
 
     /**
