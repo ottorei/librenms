@@ -72,11 +72,11 @@ class Isis implements Module
         $isis_codes['4'] = 'unknown';
 
         /**
-        * Translate state codes into meaningful strings
-        * The most likely state is 'up' since the adjacency is lost after a configurable hold-time
-        * this means that the state changes but it is possible that the polling is not completed in time
-        * to reflect this change.
-        */
+         * Translate state codes into meaningful strings
+         * The most likely state is 'up' since the adjacency is lost after a configurable hold-time
+         * this means that the state changes but it is possible that the polling is not completed in time
+         * to reflect this change.
+         */
         $adjacency_state_codes['1'] = 'down';
         $adjacency_state_codes['2'] = 'initializing';
         $adjacency_state_codes['3'] = 'up';
@@ -92,12 +92,11 @@ class Isis implements Module
         //dd($adjacencies);
 
         // Loop through all configured adjacencies on the device
-        foreach ($circuits_poll as $circuit => $circuit_data)
-        {
+        foreach ($circuits_poll as $circuit => $circuit_data) {
             if (is_numeric($circuit)) {
                 echo "\nCircuit ID: " . $circuit;
                 $port_id = (int) $device->ports()->where('ifIndex', $circuit)->value('port_id');
-                if ($circuit_data["isisCircPassiveCircuit"] != '1') {
+                if ($circuit_data['isisCircPassiveCircuit'] != '1') {
                     var_dump($adjacencies_poll[$circuit]['isisISAdjState']);
                     // Adjancy is UP
                     if (end($adjacencies_poll[$circuit]['isisISAdjState']) == '3') {
@@ -133,27 +132,23 @@ class Isis implements Module
                             'isisISAdjIPAddrType' => $isis_data['isisISAdjIPAddrType'],
                             'isisISAdjIPAddrAddress' => IP::fromHexstring($isis_data['isisISAdjIPAddrAddress']),
                         ]);
-                      //$adjacencies->push($adjacency);
-
-
+                    //$adjacencies->push($adjacency);
                     } else {
-                    /*
-                    *Adjancency is configured on the device but not available
-                    *Update existing record to down state
-                    *Set the status of the adjacency to down
-                    */
-                            if ($circuit_data["isisCircAdminState"] == '1') {
-                                $state = 'disabled';
-                            }
-                            else {
-                                $state = 'down';
-                            }
-                            $adjacency = IsisAdjacency::updateOrCreate(
+                        /*
+                        *Adjancency is configured on the device but not available
+                        *Update existing record to down state
+                        *Set the status of the adjacency to down
+                        */
+                        if ($circuit_data['isisCircAdminState'] == '1') {
+                            $state = 'disabled';
+                        } else {
+                            $state = 'down';
+                        }
+                        $adjacency = IsisAdjacency::updateOrCreate(
                                     ['device_id' => $device_id, 'port_id' => $port_id],
                                     ['isisISAdjState' => 'down']
                             );
-//$adjacencies->push($adjacency);
-
+                        //$adjacencies->push($adjacency);
                     }
                     $adjacencies->push($adjacency);
                 }
