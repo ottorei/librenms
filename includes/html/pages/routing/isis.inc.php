@@ -15,12 +15,11 @@ if (! Auth::user()->hasGlobalRead()) {
 
   echo '<span style="font-weight: bold;">Adjacencies</span> &#187; ';
 
-  dd($vars);
+  
   if (! $vars['state']) {
       $vars['state'] == 'all';
-      $filter = ['up','down'];
   }
-
+  dd($vars);
   if ($vars['state'] == 'all') {
       $filter = ['up','down'];
       echo "<span class='pagemenu-selected'>";
