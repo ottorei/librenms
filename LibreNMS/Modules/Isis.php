@@ -92,6 +92,10 @@ class Isis implements Module
             if (is_numeric($circuit)) {
                 echo "\nCircuit ID: " . $circuit;
                 $port_id = (int) $device->ports()->where('ifIndex', $circuit)->value('port_id');
+                if ($port_id == 0)
+                {
+                    $port_id = $circuit;
+                }
                 if ($circuit_data['isisCircPassiveCircuit'] != '1') {
                     var_dump($adjacencies_poll[$circuit]['isisISAdjState']);
                     // Adjancy is UP
