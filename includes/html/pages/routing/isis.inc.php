@@ -22,7 +22,7 @@ if (! Auth::user()->hasGlobalRead()) {
       echo "<span class='pagemenu-selected'>";
   }
 
-  echo generate_link('All', $vars, ['type' => 'all']);
+  echo generate_link('All', $vars, ['state' => 'all']);
   if ($vars['state'] == 'all') {
       echo '</span>';
   }
