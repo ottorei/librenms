@@ -120,7 +120,7 @@ class Isis implements Module
                         // Save data into the DB
                         $adjacency = IsisAdjacency::updateOrCreate([
                             'device_id' => $device_id,
-                            'isisISAdjIPAddrAddress' => IP::fromHexstring($isis_data['isisISAdjIPAddrAddress']),
+                            'isisISAdjNeighSysID' => $isis_data['isisISAdjNeighSysID'],
                         ], [
                             'device_id' => $device_id,
                             'port_id' => $port_id,
@@ -133,7 +133,8 @@ class Isis implements Module
                             'isisISAdjIPAddrType' => $isis_data['isisISAdjIPAddrType'],
                             'isisISAdjIPAddrAddress' => IP::fromHexstring($isis_data['isisISAdjIPAddrAddress']),
                         ]);
-                        
+                      //$adjacencies->push($adjacency);
+
 
                     } else {
                     /*
@@ -151,8 +152,10 @@ class Isis implements Module
                                     ['device_id' => $device_id, 'port_id' => $port_id],
                                     ['isisISAdjState' => 'down']
                             );
+//$adjacencies->push($adjacency);
+
                     }
-                    //$adjacencies->push($adjacency);
+                    $adjacencies->push($adjacency);
                 }
             }
         }
