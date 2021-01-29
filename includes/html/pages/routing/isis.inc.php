@@ -13,7 +13,7 @@ if (! Auth::user()->hasGlobalRead()) {
 
   print_optionbar_start('', '');
 
-  echo '<span style="font-weight: bold;">BGP</span> &#187; ';
+  echo '<span style="font-weight: bold;">ISIS</span> &#187; ';
 
   if (! $vars['state']) {
       $filter = ['up','down'];
