@@ -89,7 +89,7 @@ class Isis implements Module
 
         // Get existing adjacencies of the device
         $adjacencies = IsisAdjacency::where('device_id', $device_id);
-        dd($adjacencies);
+        //dd($adjacencies);
 
         // Loop through all configured adjacencies on the device
         foreach ($circuits_poll as $circuit => $circuit_data)
@@ -156,12 +156,10 @@ class Isis implements Module
             }
         }
 
-        //BUG: REMOVES ALL NOT-ESTABLISHED ADJACENCIES!
-        // DB cleanup - remove all entries from the DB that were not present during the poll
-        // => the adjacency no longer exists and should not be saved
-        //IsisAdjacency::query()
-        //    ->where(['device_id' => $device['device_id']])
-        //    ->whereNotIn('isisISAdjIPAddrAddress', $adjacencies->pluck('isisISAdjIPAddrAddress'))->delete();
+        // Cleanup -> needs testing
+        IsisAdjacency::query()
+            ->where(['device_id' => $device['device_id']])
+            ->whereNotIn('port_id', $adjacencies->pluck('port_id'))->delete();
     }
 
     /**
