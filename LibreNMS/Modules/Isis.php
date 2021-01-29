@@ -90,11 +90,11 @@ class Isis implements Module
         // Loop through all configured adjacencies on the device
         foreach ($circuits_poll as $circuit => $circuit_data) {
             if (is_numeric($circuit)) {
-                echo "\nCircuit ID: " . $circuit;
+                echo "\nAdjacency found on ifIndex: " . $circuit;
                 $port_id = (int) $device->ports()->where('ifIndex', $circuit)->value('port_id');
 
                 if ($circuit_data['isisCircPassiveCircuit'] != '1') {
-                    var_dump($adjacencies_poll[$circuit]['isisISAdjState']);
+                    //var_dump($adjacencies_poll[$circuit]['isisISAdjState']);
                     // Adjancy is UP
                     if (end($adjacencies_poll[$circuit]['isisISAdjState']) == '3') {
                         $isis_data['isisISAdjState'] = end($adjacencies_poll[$circuit]['isisISAdjState']);
@@ -156,7 +156,7 @@ class Isis implements Module
                             );
                         //$adjacencies->push($adjacency);
                     }
-                    //$adjacencies->push($adjacency);
+                    $adjacencies->push($adjacency);
                 }
             }
         }
@@ -164,7 +164,7 @@ class Isis implements Module
         // Cleanup -> needs testing
         IsisAdjacency::query()
             ->where(['device_id' => $device['device_id']])
-            ->whereNotIn('port_id', $adjacencies->pluck('port_id'))->delete();
+            ->whereNotIn('ifIndex', $adjacencies->pluck('ifIndex'))->delete();
     }
 
     /**
