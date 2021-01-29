@@ -16,11 +16,11 @@ if (! Auth::user()->hasGlobalRead()) {
   echo '<span style="font-weight: bold;">BGP</span> &#187; ';
 
   if (! $vars['state']) {
-      $vars['state'] = ['up','down'];
+      $filter = ['up','down'];
   }
 
   if ($vars['state'] == 'all') {
-      $vars['state'] = ['up','down'];
+      $filter = ['up','down'];
       echo "<span class='pagemenu-selected'>";
   }
 
@@ -35,7 +35,7 @@ if (! Auth::user()->hasGlobalRead()) {
       echo "<span class='pagemenu-selected'>";
   }
 
-  echo generate_link('up', $vars, ['state' => 'up']);
+  echo generate_link('Up', $vars, ['state' => 'up']);
   if ($vars['state'] == 'up') {
       echo '</span>';
   }
@@ -46,7 +46,7 @@ if (! Auth::user()->hasGlobalRead()) {
     echo "<span class='pagemenu-selected'>";
   }
 
-  echo generate_link('down', $vars, ['state' => 'down']);
+  echo generate_link('Down', $vars, ['state' => 'down']);
   if ($vars['state'] == 'down') {
       echo '</span>';
   }
@@ -72,7 +72,7 @@ if (! Auth::user()->hasGlobalRead()) {
             </tr>
           </thead>';
 
-    foreach (IsisAdjacency::where('isisISAdjState', $vars['state'])->with('port')->get() as $adj) {
+    foreach (IsisAdjacency::where('isisISAdjState', $filter)->with('port')->get() as $adj) {
         $device = device_by_id_cache($adj->device_id);
         if ($adj->isisISAdjState == 'up') {
             $color = 'green';
