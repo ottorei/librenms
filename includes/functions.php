@@ -887,11 +887,6 @@ function send_mail($emails, $subject, $message, $html = false)
     return 'No contacts found';
 }
 
-function formatCiscoHardware(&$device, $short = false)
-{
-    return \LibreNMS\Util\Rewrite::ciscoHardware($device, $short);
-}
-
 function hex2str($hex)
 {
     $string = '';
