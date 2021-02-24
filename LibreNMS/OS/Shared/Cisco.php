@@ -322,6 +322,13 @@ class Cisco extends OS implements OSDiscovery, ProcessorDiscovery, MempoolsDisco
             foreach ($portAuthSessionEntry as $index => $portAuthSessionEntryParameters) {
                 [$ifIndex, $auth_id] = explode('.', str_replace("'", '', $index));
                 $session_info = $cafSessionMethodsInfoEntry->get($ifIndex . '.' . $auth_id);
+
+                # Workaround: Catalyst 9300 devices do not respond to cafSessionMethodsInfoEntry OIDs.
+                if (empty($session_info)) {
+                    $session_info['authc_status'] = '';
+                    $session_info['method'] = '';
+                }
+
                 $mac_address = strtolower(implode(array_map('zeropad', explode(':', $portAuthSessionEntryParameters['cafSessionClientMacAddress']))));
 
                 $nac->put($mac_address, new PortsNac([
