@@ -188,6 +188,12 @@ function preg_match_any($subject, $regexes)
  */
 function compare_var($a, $b, $comparison = '=')
 {
+    // handle PHP8 change to implicit casting
+    if (is_numeric($a) || is_numeric($b)) {
+        $a = cast_number($a);
+        $b = is_array($b) ? $b : cast_number($b);
+    }
+
     switch ($comparison) {
         case '=':
             return $a == $b;
@@ -1756,10 +1762,10 @@ function printChangedStats($update_only = false)
     global $snmp_stats_last, $db_stats_last;
     $output = sprintf(
         '>> SNMP: [%d/%.2fs] MySQL: [%d/%.2fs]',
-        array_sum($snmp_stats['ops']) - array_sum($snmp_stats_last['ops']),
-        array_sum($snmp_stats['time']) - array_sum($snmp_stats_last['time']),
-        array_sum($db_stats['ops']) - array_sum($db_stats_last['ops']),
-        array_sum($db_stats['time']) - array_sum($db_stats_last['time'])
+        array_sum($snmp_stats['ops'] ?? []) - array_sum($snmp_stats_last['ops'] ?? []),
+        array_sum($snmp_stats['time'] ?? []) - array_sum($snmp_stats_last['time'] ?? []),
+        array_sum($db_stats['ops'] ?? []) - array_sum($db_stats_last['ops'] ?? []),
+        array_sum($db_stats['time'] ?? []) - array_sum($db_stats_last['time'] ?? [])
     );
 
     foreach (app('Datastore')->getStats() as $datastore => $stats) {
