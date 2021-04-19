@@ -140,9 +140,18 @@ class ModuleTestHelper
         $this->json_file = $path;
     }
 
-    public function captureFromDevice($device_id, $write = true, $prefer_new = false)
+    public function captureFromDevice($device_id, $write = true, $prefer_new = false, $full = false)
     {
-        $snmp_oids = $this->collectOids($device_id);
+        if ($full) {
+            $snmp_oids[] = [
+                'oid' => '.',
+                'method' => 'walk',
+                'mib' => null,
+                'mibdir' => null,
+            ];
+        } else {
+            $snmp_oids = $this->collectOids($device_id);
+        }
 
         $device = device_by_id_cache($device_id, true);
         DeviceCache::setPrimary($device_id);
@@ -504,7 +513,7 @@ class ModuleTestHelper
      *
      * @param Snmpsim $snmpsim
      * @param bool $no_save
-     * @return array
+     * @return array|null
      * @throws FileNotFoundException
      */
     public function generateTestData(Snmpsim $snmpsim, $no_save = false)
@@ -667,7 +676,7 @@ class ModuleTestHelper
      * Mostly used for testing
      *
      * @param int $device_id The test device id
-     * @param array modules to capture data for (should be a list of modules that were actually run)
+     * @param array $modules to capture data for (should be a list of modules that were actually run)
      * @param string $key a key to store the data under the module key (usually discovery or poller)
      * @return array The dumped data keyed by module -> table
      */

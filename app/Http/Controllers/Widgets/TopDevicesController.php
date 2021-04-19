@@ -29,11 +29,11 @@ use App\Models\Mempool;
 use App\Models\Port;
 use App\Models\Processor;
 use App\Models\Storage;
-use Auth;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
 use LibreNMS\Util\Html;
 use LibreNMS\Util\StringHelpers;
@@ -137,7 +137,7 @@ class TopDevicesController extends WidgetController
             ->where('devices.last_polled', '>', Carbon::now()->subMinutes($settings['time_interval']))
             ->when($settings['device_group'], function ($query) use ($settings) {
                 /** @var Builder<\App\Models\DeviceRelatedModel> $query */
-                $query->inDeviceGroup($settings['device_group']);
+                return $query->inDeviceGroup($settings['device_group']);
             });
     }
 
@@ -182,7 +182,6 @@ class TopDevicesController extends WidgetController
     {
         $settings = $this->getSettings();
 
-        /** @var Builder $query */
         $query = Port::hasAccess(Auth::user())->with(['device' => function ($query) {
             $query->select('device_id', 'hostname', 'sysName', 'status', 'os');
         }])
@@ -212,6 +211,7 @@ class TopDevicesController extends WidgetController
         $query = $this->deviceQuery()->orderBy('uptime', $sort)->limit($settings['device_count']);
 
         $results = $query->get()->map(function ($device) {
+            /** @var Device $device */
             return $this->standardRow($device, 'device_uptime', ['tab' => 'graphs', 'group' => 'system']);
         });
 
@@ -226,6 +226,7 @@ class TopDevicesController extends WidgetController
         $query = $this->deviceQuery()->orderBy('last_ping_timetaken', $sort)->limit($settings['device_count']);
 
         $results = $query->get()->map(function ($device) {
+            /** @var Device $device */
             return $this->standardRow($device, 'device_ping_perf', ['tab' => 'graphs', 'group' => 'poller']);
         });
 
@@ -236,7 +237,7 @@ class TopDevicesController extends WidgetController
     {
         $settings = $this->getSettings();
 
-        /** @var Builder $query */
+        /** @var Processor $query */
         $query = $this->withDeviceQuery(Processor::hasAccess(Auth::user()), (new Processor)->getTable())
             ->orderByRaw('AVG(`processor_usage`) ' . $sort)
             ->limit($settings['device_count']);
@@ -252,7 +253,7 @@ class TopDevicesController extends WidgetController
     {
         $settings = $this->getSettings();
 
-        /** @var Builder $query */
+        /** @var Mempool $query */
         $query = $this->withDeviceQuery(Mempool::hasAccess(Auth::user()), (new Mempool)->getTable())
             ->orderBy('mempool_perc', $sort)
             ->limit($settings['device_count']);
@@ -268,10 +269,10 @@ class TopDevicesController extends WidgetController
     {
         $settings = $this->getSettings();
 
-        /** @var Builder $query */
         $query = $this->deviceQuery()->orderBy('last_polled_timetaken', $sort)->limit($settings['device_count']);
 
         $results = $query->get()->map(function ($device) {
+            /** @var Device $device */
             return $this->standardRow($device, 'device_poller_perf', ['tab' => 'graphs', 'group' => 'poller']);
         });
 
@@ -282,7 +283,6 @@ class TopDevicesController extends WidgetController
     {
         $settings = $this->getSettings();
 
-        /** @var Builder $query */
         $query = Storage::hasAccess(Auth::user())->with(['device' => function ($query) {
             $query->select('device_id', 'hostname', 'sysName', 'status', 'os');
         }])

@@ -98,11 +98,6 @@ function array_sort_by_column($array, $on, $order = SORT_ASC)
     return $new_array;
 }
 
-function mac_clean_to_readable($mac)
-{
-    return \LibreNMS\Util\Rewrite::readableMac($mac);
-}
-
 function only_alphanumeric($string)
 {
     return preg_replace('/[^a-zA-Z0-9]/', '', $string);
@@ -308,7 +303,7 @@ function renamehost($id, $new, $source = 'console')
 {
     $host = gethostbyid($id);
 
-    if (! is_dir(get_rrd_dir($new)) && rename(get_rrd_dir($host), get_rrd_dir($new)) === true) {
+    if (! is_dir(Rrd::dirFromHost($new)) && rename(Rrd::dirFromHost($host), Rrd::dirFromHost($new)) === true) {
         dbUpdate(['hostname' => $new, 'ip' => null], 'devices', 'device_id=?', [$id]);
         log_event("Hostname changed -> $new ($source)", $id, 'system', 3);
 
@@ -322,8 +317,6 @@ function renamehost($id, $new, $source = 'console')
 
 function device_discovery_trigger($id)
 {
-    global $debug;
-
     if (isCli() === false) {
         ignore_user_abort(true);
         set_time_limit(0);
@@ -394,7 +387,7 @@ function delete_device($id)
         }
     }
 
-    $ex = shell_exec("bash -c '( [ ! -d " . trim(get_rrd_dir($host)) . ' ] || rm -vrf ' . trim(get_rrd_dir($host)) . " 2>&1 ) && echo -n OK'");
+    $ex = shell_exec("bash -c '( [ ! -d " . trim(Rrd::dirFromHost($host)) . ' ] || rm -vrf ' . trim(Rrd::dirFromHost($host)) . " 2>&1 ) && echo -n OK'");
     $tmp = explode("\n", $ex);
     if ($tmp[sizeof($tmp) - 1] != 'OK') {
         $ret .= "Could not remove files:\n$ex\n";
@@ -412,7 +405,7 @@ function delete_device($id)
  *
  * @param string $host dns name or ip address
  * @param string $snmp_version If this is empty, try v2c,v3,v1.  Otherwise, use this specific version.
- * @param string $port the port to connect to for snmp
+ * @param int $port the port to connect to for snmp
  * @param string $transport udp or tcp
  * @param string $poller_group the poller group this device will belong to
  * @param bool $force_add add even if the device isn't reachable
@@ -428,7 +421,7 @@ function delete_device($id)
  * @throws InvalidPortAssocModeException The given port association mode was invalid
  * @throws SnmpVersionUnsupportedException The given snmp version was invalid
  */
-function addHost($host, $snmp_version = '', $port = '161', $transport = 'udp', $poller_group = '0', $force_add = false, $port_assoc_mode = 'ifIndex', $additional = [])
+function addHost($host, $snmp_version = '', $port = 161, $transport = 'udp', $poller_group = '0', $force_add = false, $port_assoc_mode = 'ifIndex', $additional = [])
 {
     // Test Database Exists
     if (host_exists($host)) {
@@ -544,11 +537,6 @@ function deviceArray($host, $community, $snmpver, $port = 161, $transport = 'udp
 
     return $device;
 }//end deviceArray()
-
-function formatUptime($diff, $format = 'long')
-{
-    return Time::formatInterval($diff, $format);
-}
 
 function isSNMPable($device)
 {
@@ -713,11 +701,6 @@ function isDomainResolves($domain)
     $records = dns_get_record($domain);  // returns array or false
 
     return ! empty($records);
-}
-
-function hoststatus($id)
-{
-    return dbFetchCell('SELECT `status` FROM `devices` WHERE `device_id` = ?', [$id]);
 }
 
 function match_network($nets, $ip, $first = false)
@@ -1179,9 +1162,8 @@ function get_guzzle_proxy()
 
     $tmp = rtrim($proxy, '/');
     $proxy = str_replace(['http://', 'https://'], '', $tmp);
-    if (! empty($proxy)) {
-        return 'tcp://' . $proxy;
-    }
+
+    return empty($proxy) ? '' : ('tcp://' . $proxy);
 }
 
 /**
@@ -1213,27 +1195,6 @@ function target_to_id($target)
     }
 
     return $target;
-}
-
-function id_to_target($id)
-{
-    if ($id[0] == 'g') {
-        $id = 'g:' . dbFetchCell('SELECT name FROM device_groups WHERE id = ?', [substr($id, 1)]);
-    } else {
-        $id = dbFetchCell('SELECT hostname FROM devices WHERE device_id = ?', [$id]);
-    }
-
-    return $id;
-}
-
-function first_oid_match($device, $list)
-{
-    foreach ($list as $item) {
-        $tmp = trim(snmp_get($device, $item, '-Ovq'), '" ');
-        if (! empty($tmp)) {
-            return $tmp;
-        }
-    }
 }
 
 function fix_integer_value($value)
@@ -1666,6 +1627,12 @@ function q_bridge_bits2indices($hex_data)
      * ie. '9a00' -> '100110100000' -> array(1, 4, 5, 7)
     */
     $hex_data = str_replace(' ', '', $hex_data);
+
+    // we need an even number of digits for hex2bin
+    if (strlen($hex_data) % 2 === 1) {
+        $hex_data = '0' . $hex_data;
+    }
+
     $value = hex2bin($hex_data);
     $length = strlen($value);
     $indices = [];
@@ -1679,52 +1646,6 @@ function q_bridge_bits2indices($hex_data)
     }
 
     return $indices;
-}
-
-/**
- * @param array $device
- * @param int|string $raw_value The value returned from snmp
- * @param int $capacity the normalized capacity
- * @return int the toner level as a percentage
- */
-function get_toner_levels($device, $raw_value, $capacity)
-{
-    // -3 means some toner is left
-    if ($raw_value == '-3') {
-        return 50;
-    }
-
-    // -2 means unknown
-    if ($raw_value == '-2') {
-        return false;
-    }
-
-    // -1 mean no restrictions
-    if ($raw_value == '-1') {
-        return 0;  // FIXME: is 0 what we should return?
-    }
-
-    // Non-standard snmp values
-    if ($device['os'] == 'ricoh' || $device['os'] == 'nrg' || $device['os'] == 'lanier') {
-        if ($raw_value == '-100') {
-            return 0;
-        }
-    } elseif ($device['os'] == 'brother') {
-        if (! Str::contains($device['hardware'], 'MFC-L8850')) {
-            switch ($raw_value) {
-                case '0':
-                    return 100;
-                case '1':
-                    return 5;
-                case '2':
-                    return 0;
-                case '3':
-                    return 1;
-            }
-        }
-    }
-
-    return round($raw_value / $capacity * 100);
 }
 
 /**
@@ -2192,22 +2113,6 @@ function lock_and_purge_query($table, $sql, $msg)
     }
 
     return -1;
-}
-
-/**
- * Convert space separated hex OID content to character
- *
- * @param string $hex_string
- * @return string $chr_string
- */
-function hexbin($hex_string)
-{
-    $chr_string = '';
-    foreach (explode(' ', $hex_string) as $a) {
-        $chr_string .= chr(hexdec($a));
-    }
-
-    return $chr_string;
 }
 
 /**
