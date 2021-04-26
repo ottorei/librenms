@@ -42,7 +42,7 @@ foreach (IsisAdjacency::where('device_id', $device['device_id'])->with('port')->
         <tr>
             <td></td>
             <td>' . generate_device_link($device, 0, ['tab' => 'routing', 'proto' => 'isis']) . '</td>
-            <td><a href="' . generate_url([
+            <td><a href="' . \LibreNMS\Util\Url::generate([
         'page'=>'device',
         'device'=>$adj->device_id,
         'tab'=>'port',
