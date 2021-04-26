@@ -100,7 +100,7 @@ if (! Auth::user()->hasGlobalRead()) {
               <td>' . $adj->isisISAdjAreaAddress . '</td>
               <td>' . $adj->isisISAdjNeighSysType . '</td>
               <td><strong><span style="color: ' . $color . ';">' . $adj->isisISAdjState . '</span></strong></td>
-              <td>' . formatUptime($adj->isisISAdjLastUpTime) . '</td>
+              <td>' . \LibreNMS\Util\Time::formatInterval($adj->isisISAdjLastUpTime) . '</td>
           </tr>
           </tbody>';
     }
