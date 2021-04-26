@@ -1,7 +1,6 @@
 <?php
 
 use App\Models\IsisAdjacency;
-use App\Models\Port;
 
 echo '
 <div>
@@ -22,20 +21,13 @@ echo '
           </tr>
         </thead>';
 
-// FIXME: Can refer to ports, production.ERROR: Call to undefined relationship [Port] on model [App\Models\IsisAdjacency]
-//foreach (IsisAdjacency::where('device_id', $device['device_id'])->with('Device')->get() as $adj) {
-
 foreach (IsisAdjacency::where('device_id', $device['device_id'])->with('port')->get() as $adj) {
-    //dd($adj);
     if ($adj->isisISAdjState == 'up') {
         $color = 'green';
     } else {
         $color = 'red';
     }
-
-    //dd($adj);
     $interface_name = $adj->port->ifName;
-    //dd($interface_name);
 
     echo '
         <tbody>
@@ -53,7 +45,7 @@ foreach (IsisAdjacency::where('device_id', $device['device_id'])->with('port')->
             <td>' . $adj->isisISAdjAreaAddress . '</td>
             <td>' . $adj->isisISAdjNeighSysType . '</td>
             <td><strong><span style="color: ' . $color . ';">' . $adj->isisISAdjState . '</span></strong></td>
-            <td>' . formatUptime($adj->isisISAdjLastUpTime) . '</td>
+            <td>' . \LibreNMS\Util\Time::formatInterval($adj->isisISAdjLastUpTime) . '</td>
         </tr>
         </tbody>';
 }
