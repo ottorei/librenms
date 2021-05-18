@@ -42,6 +42,7 @@ class Isis implements Module
      */
     public function discover(OS $os)
     {
+        $device_array = $os->getDeviceArray();
         $device_id = $os->getDeviceId();
         $options = [
             'filter' => [
@@ -56,7 +57,7 @@ class Isis implements Module
         // Check if the device has any ISIS enabled interfaces
         $circuits_poll = snmpwalk_group($device_array, 'ISIS-MIB::isisCirc', 'ISIS-MIB');
 
-        // No ISIS enabled interfaces -> delete the module
+        // No ISIS enabled interfaces -> delete the component
         if (empty($circuits_poll)) {
             if (isset($components[$device_id])) {
                 foreach ($components[$device_id] as $component_id => $_unused) {
@@ -65,7 +66,7 @@ class Isis implements Module
                 echo "\nISIS components deleted"
             }
 
-        // ISIS enabled interfaces found -> create the module
+        // ISIS enabled interfaces found -> create the component
         } else {
             if (isset($components[$device_id])) {
                 $isis_component = $components[$device_id];
