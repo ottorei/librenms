@@ -27,6 +27,7 @@ namespace LibreNMS\Modules;
 use App\Models\Device;
 use App\Models\IsisAdjacency;
 use Illuminate\Support\Arr;
+use LibreNMS\Component;
 use LibreNMS\Interfaces\Module;
 use LibreNMS\OS;
 use LibreNMS\OS\Junos;
