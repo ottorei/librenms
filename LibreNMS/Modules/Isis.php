@@ -76,7 +76,7 @@ class Isis implements Module
 
         $component->setComponentPrefs($device_id, $isis_component);
         echo "\nISIS component updated";
-
+        }
     }
 
     /**
