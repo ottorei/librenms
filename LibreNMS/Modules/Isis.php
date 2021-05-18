@@ -52,7 +52,7 @@ class Isis implements Module
             ],
         ];
 
-        $component = new LibreNMS\Component();
+        $component = new Component();
         $components = $component->getComponents($device_id, $options);
 
         // Check if the device has any ISIS enabled interfaces
@@ -109,7 +109,7 @@ class Isis implements Module
             ],
         ];
 
-        $component = new LibreNMS\Component();
+        $component = new Component();
         $components = $component->getComponents($device_id, $options);
 
         if (! empty($components)) {
