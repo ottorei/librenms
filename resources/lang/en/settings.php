@@ -499,6 +499,9 @@ return [
             'ipv6-addresses' => [
                 'description' => 'IPv6 Addresses',
             ],
+            'isis' => [
+                'description' => 'ISIS',
+            ],
             'junose-atm-vp' => [
                 'description' => 'Junose ATM VP',
             ],
