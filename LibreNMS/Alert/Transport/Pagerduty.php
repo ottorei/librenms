@@ -68,7 +68,7 @@ class Pagerduty extends Transport
         ];
 
         // EU service region
-        if($config['region'] == 'EU') {
+        if ($config['region'] == 'EU') {
             $url = 'https://events.eu.pagerduty.com/v2/enqueue';
         }
 
@@ -76,7 +76,7 @@ class Pagerduty extends Transport
         else {
             $url = 'https://events.pagerduty.com/v2/enqueue';
         }
-        
+
         $client = new Client();
 
         $request_opts = ['json' => $data];
@@ -123,7 +123,7 @@ class Pagerduty extends Transport
                     'options' => [
                         'EU' => 'EU',
                         'US' => 'US',
-                    ]
+                    ],
                 ],
                 [
                     'title' => 'Account',
