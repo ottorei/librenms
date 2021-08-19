@@ -101,7 +101,7 @@ class Pagerduty extends Transport
             'config' => [
                 [
                     'title' => 'Authorize',
-                    'descr' => 'EU Service Region',
+                    'descr' => 'EU: Alert with PagerDuty',
                     'type'  => 'oauth',
                     'icon'  => 'pagerduty-white.svg',
                     'class' => 'btn-success',
@@ -109,11 +109,11 @@ class Pagerduty extends Transport
                 ],
                 [
                     'title' => 'Authorize',
-                    'descr' => 'US Service Region',
+                    'descr' => 'US: Alert with PagerDuty',
                     'type'  => 'oauth',
                     'icon'  => 'pagerduty-white.svg',
                     'class' => 'btn-success',
-                    'url'   => 'https://connect.us.pagerduty.com/connect?vendor=' . self::$integrationKey . '&callback=',
+                    'url'   => 'https://connect.pagerduty.com/connect?vendor=' . self::$integrationKey . '&callback=',
                 ],
                 [
                     'title' => 'Service Region',
