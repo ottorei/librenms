@@ -100,7 +100,7 @@ class Pagerduty extends Transport
         return [
             'config' => [
                 [
-                    'title' => 'EU: Authorize',
+                    'title' => 'Authorize (EU)',
                     'descr' => 'Alert with PagerDuty',
                     'type'  => 'oauth',
                     'icon'  => 'pagerduty-white.svg',
@@ -108,7 +108,7 @@ class Pagerduty extends Transport
                     'url'   => 'https://connect.eu.pagerduty.com/connect?vendor=' . self::$integrationKey . '&callback=',
                 ],
                 [
-                    'title' => 'US: Authorize',
+                    'title' => 'Authorize (US)',
                     'descr' => 'Alert with PagerDuty',
                     'type'  => 'oauth',
                     'icon'  => 'pagerduty-white.svg',
