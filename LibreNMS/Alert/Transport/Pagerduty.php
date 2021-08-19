@@ -11,7 +11,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>. */
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>. */
 
 /**
  * PagerDuty Generic-API Transport
@@ -48,8 +48,8 @@ class Pagerduty extends Transport
     }
 
     /**
-     * @param $obj
-     * @param $config
+     * @param array $obj
+     * @param array $config
      * @return bool|string
      */
     public function contactPagerduty($obj, $config)
@@ -67,7 +67,16 @@ class Pagerduty extends Transport
             ],
         ];
 
-        $url = 'https://events.pagerduty.com/v2/enqueue';
+        // EU service region
+        if($config['region'] == 'EU') {
+            $url = 'https://events.eu.pagerduty.com/v2/enqueue';
+        }
+
+        // US service region
+        else {
+            $url = 'https://events.pagerduty.com/v2/enqueue';
+        }
+        
         $client = new Client();
 
         $request_opts = ['json' => $data];
@@ -92,11 +101,29 @@ class Pagerduty extends Transport
             'config' => [
                 [
                     'title' => 'Authorize',
-                    'descr' => 'Alert with PagerDuty',
+                    'descr' => 'EU Service Region',
                     'type'  => 'oauth',
                     'icon'  => 'pagerduty-white.svg',
                     'class' => 'btn-success',
-                    'url'   => 'https://connect.pagerduty.com/connect?vendor=' . self::$integrationKey . '&callback=',
+                    'url'   => 'https://connect.eu.pagerduty.com/connect?vendor=' . self::$integrationKey . '&callback=',
+                ],
+                [
+                    'title' => 'Authorize',
+                    'descr' => 'US Service Region',
+                    'type'  => 'oauth',
+                    'icon'  => 'pagerduty-white.svg',
+                    'class' => 'btn-success',
+                    'url'   => 'https://connect.us.pagerduty.com/connect?vendor=' . self::$integrationKey . '&callback=',
+                ],
+                [
+                    'title' => 'Service Region',
+                    'name' => 'region',
+                    'description' => 'PagerDuty service regions allow customers to choose the geographic region of the PagerDuty data centers that host the customer’s account.',
+                    'type' => 'select',
+                    'options' => [
+                        'EU' => 'EU',
+                        'US' => 'US',
+                    ]
                 ],
                 [
                     'title' => 'Account',
@@ -114,7 +141,9 @@ class Pagerduty extends Transport
                     'name'  => 'service_key',
                 ],
             ],
-            'validation' => [],
+            'validation' => [
+                'region' => 'in:EU,US',
+            ],
         ];
     }
 
