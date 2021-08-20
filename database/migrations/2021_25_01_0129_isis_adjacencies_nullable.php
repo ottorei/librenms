@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class IsisAdjacenciesPortNullable extends Migration
+class IsisAdjacenciesNullable extends Migration
 {
     /**
      * Run the migrations.
@@ -22,7 +22,6 @@ class IsisAdjacenciesPortNullable extends Migration
             $table->integer('isisISAdjAreaAddress')->nullable()->change();
             $table->integer('isisISAdjIPAddrType')->nullable()->change();
             $table->integer('isisISAdjIPAddrAddress')->nullable()->change();
-
         });
     }
 
