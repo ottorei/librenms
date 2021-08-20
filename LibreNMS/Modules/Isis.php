@@ -125,10 +125,10 @@ class Isis implements Module
                     'isisCircAdminState' => $circuit_data['isisCircAdminState'],
                     'isisISAdjState' => $adjacency_data['isisISAdjState'] ?? $circuit_data['isisCircAdminState'],
                     'isisISAdjNeighSysType' => Arr::get($this->isis_codes, $adjacency_data['isisISAdjNeighSysType'] ?? null, 'unknown'),
-                    'isisISAdjNeighSysID' => str_replace(' ', '.', trim($adjacency_data['isisISAdjNeighSysID'] ?? '')),
+                    'isisISAdjNeighSysID' => str_replace(' ', '.', trim($adjacency_data['isisISAdjNeighSysID'] ?? 'unknown')),
                     'isisISAdjNeighPriority' => $adjacency_data['isisISAdjNeighPriority'],
                     'isisISAdjLastUpTime' => $this->parseAdjacencyTime($adjacency_data),
-                    'isisISAdjAreaAddress' => str_replace(' ', '.', trim($adjacency_data['isisISAdjAreaAddress'] ?? '')),
+                    'isisISAdjAreaAddress' => str_replace(' ', '.', trim($adjacency_data['isisISAdjAreaAddress'] ?? 'unknown')),
                     'isisISAdjIPAddrType' => $adjacency_data['isisISAdjIPAddrType'] ?? null,
                     'isisISAdjIPAddrAddress' => (string) IP::fromHexstring($adjacency_data['isisISAdjIPAddrAddress'] ?? null, true),
                 ]));
