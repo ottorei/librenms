@@ -125,7 +125,7 @@ class Isis implements Module
                     'isisCircAdminState' => $circuit_data['isisCircAdminState'],
                     'isisISAdjState' => $adjacency_data['isisISAdjState'] ?? $circuit_data['isisCircAdminState'],
                     'isisISAdjNeighSysType' => Arr::get($this->isis_codes, Arr::last($adjacency_data['isisISAdjNeighSysType']) ?? null, 'unknown'),
-                    'isisISAdjNeighSysID' => str_replace(' ', '.', trim($adjacency_data['isisISAdjNeighSysID'] ?? null, 'unknown'),
+                    'isisISAdjNeighSysID' => str_replace(' ', '.', trim($adjacency_data['isisISAdjNeighSysID'] ?? null, 'unknown')),
                     'isisISAdjNeighPriority' => $adjacency_data['isisISAdjNeighPriority'] ?? null, 'unknown',
                     'isisISAdjLastUpTime' => $this->parseAdjacencyTime($adjacency_data),
                     'isisISAdjAreaAddress' => str_replace(' ', '.', trim($adjacency_data['isisISAdjAreaAddress'] ?? null, 'unknown')),
