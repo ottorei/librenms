@@ -633,7 +633,9 @@
                     }
                     
                     $(`#widget_title_${id}`).html(data.title);
-                    $widget_body.parent().data('settings', data.show_settings).data('refresh', data.settings.refresh);
+                    //$widget_body.parent().data('settings', data.show_settings).data('refresh', data.settings.refresh);
+                    $widget_body.html(data.html).parent().data('settings', data.show_settings);
+                    $widget_body.html(data.html).parent().data('refresh', data.settings.refresh);
                 } else {
                     $widget_body.html(`<div class="alert alert-info">${data.message}</div>`);
                 }
