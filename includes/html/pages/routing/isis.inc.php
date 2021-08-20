@@ -84,6 +84,11 @@ if (! Auth::user()->hasGlobalRead()) {
         }
 
         $interface_name = $adj->port->ifName;
+        $port_link = 'unknown';
+
+        if ($adj->port) {
+          $port_link = \LibreNMS\Util\Url::portLink($adj->port);
+        }
 
         echo '
           <tbody>
