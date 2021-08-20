@@ -130,7 +130,7 @@ class Isis implements Module
                     'isisISAdjLastUpTime' => $this->parseAdjacencyTime($adjacency_data),
                     'isisISAdjAreaAddress' => str_replace(' ', '.', trim($adjacency_data['isisISAdjAreaAddress'] ?? 'unknown')),
                     'isisISAdjIPAddrType' => $adjacency_data['isisISAdjIPAddrType'] ?? 'unknown',
-                    'isisISAdjIPAddrAddress' => (string) IP::fromHexstring($adjacency_data['isisISAdjIPAddrAddress'] ?? true),
+                    'isisISAdjIPAddrAddress' => (string) IP::fromHexstring($adjacency_data['isisISAdjIPAddrAddress'] ?? null, true),
                 ]));
             }
         }
