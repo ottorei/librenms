@@ -29,18 +29,13 @@ foreach (IsisAdjacency::where('device_id', $device['device_id'])->with('port')->
         $color = 'red';
     }
     $interface_name = $adj->port->ifName;
-    $port_link = 'unknown';
-
-    if ($adj->port) {
-      $port_link = \LibreNMS\Util\Url::portLink($adj->port);
-    }
 
     echo '
         <tbody>
         <tr>
             <td></td>
             <td>' . generate_device_link($device, 0, ['tab' => 'routing', 'proto' => 'isis']) . '</td>
-             <td>' . $port_link . '</td>
+             <td>' . \LibreNMS\Util\Url::portLink($adj->port) . '</td>
             <td>' . $adj->isisISAdjIPAddrAddress . '</td>
             <td>' . $adj->isisISAdjNeighSysID . '</td>
             <td>' . $adj->isisISAdjAreaAddress . '</td>
