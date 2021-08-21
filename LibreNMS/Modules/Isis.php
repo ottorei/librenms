@@ -25,7 +25,7 @@
 namespace LibreNMS\Modules;
 
 use App\Models\IsisAdjacency;
-use App\Observers\MempoolObserver;
+use App\Observers\ModuleModelObserver;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use LibreNMS\DB\SyncsModels;
@@ -59,7 +59,7 @@ class Isis implements Module
             ? $os->discoverIsIs()
             : $this->discoverIsIsMib($os);
 
-        MempoolObserver::observe('\App\Models\IsIsAdjacency');
+        ModuleModelObserver::observe('\App\Models\IsisAdjacency');
         $this->syncModels($os->getDevice(), 'isisAdjacencies', $adjacencies);
     }
 
@@ -94,6 +94,9 @@ class Isis implements Module
     public function cleanup(OS $os)
     {
         $os->getDevice()->isisAdjacencies()->delete();
+
+        // clean up legacy components from old code
+        $os->getDevice()->components()->where('type', 'ISIS')->delete();
     }
 
     public function discoverIsIsMib(OS $os): Collection
