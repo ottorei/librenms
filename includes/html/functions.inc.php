@@ -813,6 +813,12 @@ function alert_details($details)
             $fallback = false;
         }
 
+        if ($tmp_alerts['isisISAdjState']) {
+            $fault_detail .= "Adjacent " . $tmp_alerts['isisISAdjIPAddrAddress'];
+            $fault_detail .= ', Interface' . \LibreNMS\Util\Url::portLink($tmp_alerts['port_id']);
+            $fallback = false;
+        }
+
         if ($tmp_alerts['type'] && $tmp_alerts['label']) {
             if ($tmp_alerts['error'] == '') {
                 $fault_detail .= ' ' . $tmp_alerts['type'] . ' - ' . $tmp_alerts['label'] . ';&nbsp;';
