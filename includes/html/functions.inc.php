@@ -760,8 +760,14 @@ function alert_details($details)
         }
 
         if ($tmp_alerts['port_id']) {
-            $tmp_alerts = cleanPort($tmp_alerts);
-            $fault_detail .= generate_port_link($tmp_alerts) . ';&nbsp;';
+            if ($tmp_alerts['isisISAdjState']) {
+                $fault_detail .= 'Adjacent ' . $tmp_alerts['isisISAdjIPAddrAddress'];
+                $fault_detail .= ', Interface ' . \LibreNMS\Util\Url::portLink($tmp_alerts['port_id']);
+            }
+            else {
+                $tmp_alerts = cleanPort($tmp_alerts);
+                $fault_detail .= generate_port_link($tmp_alerts) . ';&nbsp;';
+            }
             $fallback = false;
         }
 
@@ -810,12 +816,6 @@ function alert_details($details)
                 "'>" . $tmp_alerts['bgpPeerIdentifier'] . '</a>';
             $fault_detail .= ', AS' . $tmp_alerts['bgpPeerRemoteAs'];
             $fault_detail .= ', State ' . $tmp_alerts['bgpPeerState'];
-            $fallback = false;
-        }
-
-        if ($tmp_alerts['isisISAdjState']) {
-            $fault_detail .= 'Adjacent ' . $tmp_alerts['isisISAdjIPAddrAddress'];
-            $fault_detail .= ', Interface ' . \LibreNMS\Util\Url::portLink($tmp_alerts['port_id']);
             $fallback = false;
         }
 
