@@ -111,13 +111,13 @@ class Isis implements Module
 
             // No ISIS enabled interfaces -> delete the component
             foreach ($circuits as $circuit_id => $circuit_data) {
-                if (! (isset($circuit_data['isisCircIfIndex'])) || $circuit_data['isisCircPassiveCircuit'] == 'true') {
+                if (! isset($circuit_data['isisCircIfIndex'])) {
                     continue;
                 }
 
-                //if ($os instanceof Junos && $circuit_id == 16) {
-                //    continue; // Do not poll loopback interface
-                //}
+                if ($circuit_data['isisCircPassiveCircuit']) {
+                    continue; // Do not poll passive interfaces
+                }
 
                 $adjacency_data = Arr::last($adjacencies_data[$circuit_id] ?? [[]]);
 
