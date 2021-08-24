@@ -762,7 +762,7 @@ function alert_details($details)
         if ($tmp_alerts['port_id']) {
             if ($tmp_alerts['isisISAdjState']) {
                 $fault_detail .= 'Adjacent ' . $tmp_alerts['isisISAdjIPAddrAddress'];
-                $fault_detail .= ', Interface ' . \LibreNMS\Util\Url::portLink($tmp_alerts['port_id']);
+                $fault_detail .= ', Interface ' . \LibreNMS\Util\Url::portLink(cleanPort($tmp_alerts));
             }
             else {
                 $tmp_alerts = cleanPort($tmp_alerts);
