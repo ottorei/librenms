@@ -111,7 +111,7 @@ class Isis implements Module
 
             // No ISIS enabled interfaces -> delete the component
             foreach ($circuits as $circuit_id => $circuit_data) {
-                if (! isset($circuit_data['isisCircIfIndex'])) {
+                if (! isset($circuit_data['isisCircIfIndex'] && $circuit_data['isisCircPassiveCircuit']) = false) {
                     continue;
                 }
 
