@@ -197,9 +197,9 @@ if ($device['type'] == 'wireless' && $device['os'] == 'arubaos') {
             dbUpdate(['deleted' => 1], 'access_points', '`accesspoint_id` = ?', [$ap_db[$z]['accesspoint_id']]);
         }
     }
-    
+
     // Cleanup, delete access points which are online on this controller but marked as offline on any other one
-    AccessPoint::where('mac_addr', $local_ap_macs)
+    AccessPoint::where(['mac_addr' => $local_ap_macs, 'deleted' => '1'])
         ->whereNotIn('device_id', [$device['device_id']])
         ->delete();
 }
