@@ -135,7 +135,7 @@ if ($device['type'] == 'wireless' && $device['os'] == 'arubaos') {
             $foundid = 0;
 
             for ($z = 0; $z < sizeof($ap_db); $z++) {
-                if ($ap_db[$z]['name'] == $name && $ap_db[$z]['radio_number'] == $radionum) {
+                if ($ap_db[$z]['mac'] == $mac && $ap_db[$z]['radio_number'] == $radionum) {
                     $foundid = $ap_db[$z]['accesspoint_id'];
                     $ap_db[$z]['seen'] = 1;
                     continue;
