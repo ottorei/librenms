@@ -1,6 +1,6 @@
 <?php
 
-use LibreNMS\Models\AccessPoint;
+use app\Models\AccessPoint;
 use LibreNMS\RRD\RrdDefinition;
 
 if ($device['type'] == 'wireless' && $device['os'] == 'arubaos') {
