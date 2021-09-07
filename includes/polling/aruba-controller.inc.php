@@ -194,7 +194,7 @@ if ($device['type'] == 'wireless' && $device['os'] == 'arubaos') {
             dbUpdate(['deleted' => 1], 'access_points', '`accesspoint_id` = ?', [$ap_db[$z]['accesspoint_id']]);
         }
         // Check if the AP is online on another controller
-        $online_elsewhere = AccessPoint::select('accesspoint_id')->where(['deleted' => '0', 'mac_addr' => $ap_db[$z]['mac']])
+        $online_elsewhere = AccessPoint::select('accesspoint_id')->where(['deleted' => '1', 'mac_addr' => $ap_db[$z]['mac']])
             ->whereNotIn('device_id', [$ap_db[$z]['device_id']])
             ->get();
     
