@@ -188,16 +188,18 @@ if ($device['type'] == 'wireless' && $device['os'] == 'arubaos') {
         }//end foreach
     }//end foreach
 
+    $local_ap_macs = [];
+
     // mark APs which are not on this controller anymore as deleted
     for ($z = 0; $z < sizeof($ap_db); $z++) {
+        $local_ap_macs[] = $ap_db[$z]['mac_addr'];
         if (! isset($ap_db[$z]['seen']) && $ap_db[$z]['deleted'] == 0) {
             dbUpdate(['deleted' => 1], 'access_points', '`accesspoint_id` = ?', [$ap_db[$z]['accesspoint_id']]);
         }
-        // Check if the AP is online on another controller
-        $online_elsewhere = AccessPoint::select('accesspoint_id')->where(['deleted' => '1', 'mac_addr' => $ap_db[$z]['mac_addr']])
-            ->whereNotIn('device_id', [$ap_db[$z]['device_id']])
-            ->get();
-    
-        AccessPoint::where('accesspoint_id', $online_elsewhere->toArray())->delete();
     }
+    
+    // Cleanup, delete access points which are online on this controller but marked as offline on any other one
+    AccessPoint::where('mac_addr', $local_ap_macs)
+        ->whereNotIn('device_id', [$device['device_id']])
+        ->delete();
 }
