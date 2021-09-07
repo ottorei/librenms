@@ -1,5 +1,6 @@
 <?php
 
+use LibreNMS\Models\AccessPoint;
 use LibreNMS\RRD\RrdDefinition;
 
 if ($device['type'] == 'wireless' && $device['os'] == 'arubaos') {
@@ -192,5 +193,11 @@ if ($device['type'] == 'wireless' && $device['os'] == 'arubaos') {
         if (! isset($ap_db[$z]['seen']) && $ap_db[$z]['deleted'] == 0) {
             dbUpdate(['deleted' => 1], 'access_points', '`accesspoint_id` = ?', [$ap_db[$z]['accesspoint_id']]);
         }
+        // Check if the AP is online on another controller
+        $online_elsewhere = AccessPoint::select('accesspoint_id')->where(['deleted' => '0', 'mac_addr' => $ap_db[$z]['mac']])
+            ->whereNotIn('device_id', [$ap_db[$z]['device_id']])
+            ->get();
+    
+        AccessPoint::where('accesspoint_id', $online_elsewhere)->delete();
     }
-}//end if
+}
