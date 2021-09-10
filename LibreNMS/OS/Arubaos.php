@@ -18,6 +18,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  * @link       https://www.librenms.org
+ *
  * @copyright  2017 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
@@ -25,11 +26,8 @@
 namespace LibreNMS\OS;
 
 use App\Models\AccessPoint;
-use App\Observers\ModuleModelObserver;
-use LibreNMS\RRD\RrdDefinition;
-use Illuminate\Support\Collection;
-
 use App\Models\Device;
+use Illuminate\Support\Collection;
 use LibreNMS\Device\WirelessSensor;
 use LibreNMS\Interfaces\Discovery\OSDiscovery;
 use LibreNMS\Interfaces\Discovery\Sensors\WirelessApCountDiscovery;
@@ -230,8 +228,8 @@ class Arubaos extends OS implements
         $access_points = new Collection;
 
         // Loop through polled data
-        foreach($wlsxWlanRadioTable as $ap => $val1) {
-            foreach($wlsxWlanRadioTable[$ap]['wlanAPRadioAPName'] as $radio_id => $val2) {
+        foreach ($wlsxWlanRadioTable as $ap => $val1) {
+            foreach ($wlsxWlanRadioTable[$ap]['wlanAPRadioAPName'] as $radio_id => $val2) {
                 $attributes = [
                     'device_id' => $this->getDeviceId(),
                     'name' => $wlsxWlanRadioTable[$ap]['wlanAPRadioAPName'][$radio_id],
@@ -247,7 +245,7 @@ class Arubaos extends OS implements
                     'nummonbssid' => $wlsxWlanRadioTable[$ap]['wlanAPRadioNumMonitoredBSSIDs'][$radio_id],
                     'interference' => $wlsxWlanAPChStatsTable[$ap]['wlanAPChInterferenceIndex'][$radio_id],
                 ];
-                
+
                 //d_echo($attributes);
 
                 // Update RRD
@@ -258,7 +256,7 @@ class Arubaos extends OS implements
                 // Cleanup duplicate entries from other controllers
             }
         }
+
         return $access_points;
     }
-
 }
