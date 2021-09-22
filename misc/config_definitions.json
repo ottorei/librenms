@@ -864,7 +864,16 @@
         },
         "default_port_group": {
             "default": 0,
-            "type": "integer"
+            "type": "select-dynamic",
+            "group": "discovery",
+            "section": "networks",
+            "order": 0,
+            "options": {
+                "target": "port-group"
+            },
+            "validate": {
+                "value": "integer|zero_or_exists:port_groups,id"
+            }
         },
         "device_location_map_open": {
             "order": 2,
@@ -4241,7 +4250,7 @@
             "type": "oxidized-maps",
             "validate": {
                 "value": "array",
-                "value.*": "array|keys_in:hostname,sysName,sysDescr,hardware,os,location,ip",
+                "value.*": "array|keys_in:hostname,sysName,sysDescr,sysObjectID,hardware,os,location,ip",
                 "value.*.*": "array|min:1",
                 "value.*.*.*": "array|size:2|keys_in:match,regex,value",
                 "value.*.*.*.value": "required|string",
