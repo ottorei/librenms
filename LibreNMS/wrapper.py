@@ -10,7 +10,7 @@
                 Distributed poller code (c) 2015, GPLv3, Daniel Preussker <f0o@devilcode.org>
                 All code parts that belong to Daniel are enclosed in EOC comments
 
- Date:          Jul 2021
+ Date:          Sep 2021
 
  Usage:         This program accepts three command line arguments
                 - the number of threads (defaults to 1 for discovery / service, and 16 for poller)
@@ -56,9 +56,9 @@ from LibreNMS.command_runner import command_runner
 
 logger = logging.getLogger(__name__)
 
-PER_DEVICE_TIMEOUT = (
-    900  # Timeout in seconds for any poller / service / discovery action per device
-)
+# Timeout in seconds for any poller / service / discovery action per device
+# Should be higher than stepping which defaults to 300
+PER_DEVICE_TIMEOUT = 900
 
 # 5 = no new discovered devices, 6 = unreachable device
 VALID_EXIT_CODES = [0, 5, 6]
@@ -68,6 +68,7 @@ DISTRIBUTED_POLLING = False  # Is overriden by config.php
 REAL_DURATION = 0
 DISCOVERED_DEVICES_COUNT = 0
 PER_DEVICE_DURATION = {}
+ERRORS = 0
 
 MEMC = None
 IS_NODE = None
@@ -179,7 +180,13 @@ def print_worker(print_queue, wrapper_type):  # Type: Queue  # Type: str
             else:
                 memc_touch(NODES_TAG, wrappers[wrapper_type]["memc_touch_time"])
             try:
-                worker_id, device_id, elapsed_time = print_queue.get(False)
+                (
+                    worker_id,
+                    device_id,
+                    elapsed_time,
+                    command,
+                    exit_code,
+                ) = print_queue.get(False)
             except:
                 pass
                 try:
@@ -188,7 +195,7 @@ def print_worker(print_queue, wrapper_type):  # Type: Queue  # Type: str
                     pass
                 continue
         else:
-            worker_id, device_id, elapsed_time = print_queue.get()
+            worker_id, device_id, elapsed_time, command, exit_code = print_queue.get()
         # EOC
 
         global REAL_DURATION
@@ -198,7 +205,7 @@ def print_worker(print_queue, wrapper_type):  # Type: Queue  # Type: str
         REAL_DURATION += elapsed_time
         PER_DEVICE_DURATION[device_id] = elapsed_time
         DISCOVERED_DEVICES_COUNT += 1
-        if elapsed_time < STEPPING:
+        if elapsed_time < STEPPING and exit_code in VALID_EXIT_CODES:
             logger.info(
                 "worker {} finished device {} in {} seconds".format(
                     worker_id, device_id, elapsed_time
@@ -206,11 +213,11 @@ def print_worker(print_queue, wrapper_type):  # Type: Queue  # Type: str
             )
         else:
             logger.warning(
-                "worker {} finished device {} in {} seconds".format(
-                    worker_id, device_id, elapsed_time
+                "worker {} finished device {} in {} seconds with exit code {}".format(
+                    worker_id, device_id, elapsed_time, exit_code
                 )
-                % (worker_id, device_id, elapsed_time)
             )
+            logger.debug("Command was {}".format(command))
         print_queue.task_done()
 
 
@@ -226,6 +233,8 @@ def poll_worker(
     This function will fork off single instances of the php process, record
     how long it takes, and push the resulting reports to the printer queue
     """
+
+    global ERRORS
 
     while True:
         device_id = poll_queue.get()
@@ -278,7 +287,12 @@ def poll_worker(
                     valid_exit_codes=VALID_EXIT_CODES,
                 )
                 if exit_code not in [0, 6]:
-                    logger.error("Process exited with code {}".format(exit_code))
+                    logger.error(
+                        "Thread {} exited with code {}".format(
+                            threading.current_thread().name, exit_code
+                        )
+                    )
+                    ERRORS += 1
                     logger.error(output)
                 elif exit_code == 5:
                     logger.info("Unreachable device {}".format(device_id))
@@ -290,7 +304,13 @@ def poll_worker(
 
                 elapsed_time = int(time.time() - start_time)
                 print_queue.put(
-                    [threading.current_thread().name, device_id, elapsed_time]
+                    [
+                        threading.current_thread().name,
+                        device_id,
+                        elapsed_time,
+                        command,
+                        exit_code,
+                    ]
                 )
             except (KeyboardInterrupt, SystemExit):
                 raise
@@ -460,12 +480,17 @@ def wrapper(
     poll_queue = queue.Queue()
     print_queue = queue.Queue()
 
+    # Don't have more threads than workers
+    amount_of_devices = len(devices_list)
+    if amount_of_workers > amount_of_devices:
+        amount_of_workers = amount_of_devices
+
     logger.info(
         "starting the {} check at {} with {} threads for {} devices".format(
             wrapper_type,
             time.strftime("%Y-%m-%d %H:%M:%S"),
             amount_of_workers,
-            len(devices_list),
+            amount_of_devices,
         )
     )
 
@@ -502,11 +527,13 @@ def wrapper(
 
     total_time = int(time.time() - s_time)
 
-    logger.info(
-        "{}-wrapper checked {} devices in {} seconds with {} workers".format(
-            wrapper_type, DISCOVERED_DEVICES_COUNT, total_time, amount_of_workers
-        )
+    end_msg = "{}-wrapper checked {} devices in {} seconds with {} workers with {} errors".format(
+        wrapper_type, DISCOVERED_DEVICES_COUNT, total_time, amount_of_workers, ERRORS
     )
+    if ERRORS == 0:
+        logger.info(end_msg)
+    else:
+        logger.error(end_msg)
 
     #  <<<EOC
     if DISTRIBUTED_POLLING or memc_alive(wrapper_type):
