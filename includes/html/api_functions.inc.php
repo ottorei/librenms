@@ -1447,8 +1447,9 @@ function list_oxidized(Illuminate\Http\Request $request)
                 }
             }
         }
-        //Exclude groups from being sent to Oxidized
-        if (in_array($output['group'], Config::get('oxidized.ignore_groups'))) {
+        //Exclude groups from being sent to Oxidized or explicitly enable them
+        if (in_array($output['group'], Config::get('oxidized.ignore_groups')) || 
+            (!empty(Config::get('oxidized.enabled_groups')) && !in_array($output['group'], Config::get('oxidized.enabled_groups'))) {
             continue;
         }
 

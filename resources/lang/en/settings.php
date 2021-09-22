@@ -950,6 +950,10 @@ return [
                 'description' => 'Do not backup these Oxidized groups',
                 'help' => 'Groups (set via Variable Mapping) excluded from being sent to Oxidized',
             ],
+            'enable_groups' => [
+                'description' => 'Backup only these Oxidized groups. All groups are enabled if left empty.',
+                'help' => 'Only groups (set via Variable Mapping) included are being sent to Oxidized',
+            ],
             'enabled' => [
                 'description' => 'Enable Oxidized support',
             ],
