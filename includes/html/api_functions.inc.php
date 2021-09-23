@@ -1412,7 +1412,7 @@ function list_oxidized(Illuminate\Http\Request $request)
              ->whereNotIn('os', Config::get('oxidized.ignore_os', []))
              ->whereIn('')
              ->whereAttributeDisabled('override_Oxidized_disable')
-             ->whereInDeviceGroup(Config::get('oxidized.explicit_groups'), $device_groups)
+             ->whereInDeviceGroup(Config::get('oxidized.explicit_groups', $device_groups))
              ->select(['hostname', 'sysName', 'sysDescr', 'sysObjectID', 'hardware', 'os', 'ip', 'location_id'])
              ->get();
 
