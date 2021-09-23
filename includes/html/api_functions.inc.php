@@ -1397,12 +1397,6 @@ function get_oxidized_config(Illuminate\Http\Request $request)
 function list_oxidized(Illuminate\Http\Request $request)
 {
     $return = [];
-    $device_groups = [];
-
-    foreach(DeviceGroup::all() as $dev_grp) {
-        $device_groups[] = $dev_grp->id;
-    }
-
     $devices = Device::query()
              ->where('disabled', 0)
              ->when($request->route('hostname'), function ($query, $hostname) {
@@ -1411,7 +1405,6 @@ function list_oxidized(Illuminate\Http\Request $request)
              ->whereNotIn('type', Config::get('oxidized.ignore_types', []))
              ->whereNotIn('os', Config::get('oxidized.ignore_os', []))
              ->whereAttributeDisabled('override_Oxidized_disable')
-             ->whereInDeviceGroup(Config::get('oxidized.explicit_groups', $device_groups))
              ->select(['hostname', 'sysName', 'sysDescr', 'sysObjectID', 'hardware', 'os', 'ip', 'location_id'])
              ->get();
 
@@ -1424,7 +1417,7 @@ function list_oxidized(Illuminate\Http\Request $request)
         ];
 
         // Pre-populate the group with the default
-        if (Config::get('oxidized.group_support') === true && ! empty(Config::get('oxidized.default_group')) && ! empty($explicit_groups)) {
+        if (Config::get('oxidized.group_support') === true && ! empty(Config::get('oxidized.default_group'))) {
             $output['group'] = Config::get('oxidized.default_group');
         }
 

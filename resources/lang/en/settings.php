@@ -950,10 +950,6 @@ return [
                 'description' => 'Do not backup these Oxidized groups',
                 'help' => 'Groups (set via Variable Mapping) excluded from being sent to Oxidized',
             ],
-            'explicit_groups' => [
-                'description' => 'Only backup these LibreNMS groups and feed their data to Oxidized',
-                'help' => 'Explicitly enabled LibreNMS groups which are sent to Oxidized',
-            ],
             'enabled' => [
                 'description' => 'Enable Oxidized support',
             ],
