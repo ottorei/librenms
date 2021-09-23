@@ -1399,7 +1399,7 @@ function list_oxidized(Illuminate\Http\Request $request)
     $return = [];
     $device_groups = [];
 
-    foreach(DeviceGroup::all()->get() as $dev_grp) {
+    foreach(DeviceGroup::all() as $dev_grp) {
         $device_groups[] = $dev_grp->id;
     }
 
