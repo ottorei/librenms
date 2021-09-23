@@ -4190,7 +4190,7 @@
             "section": "oxidized",
             "order": 5
         },
-        "oxidized.enable_groups": {
+        "oxidized.explicit_groups": {
             "default": [],
             "type" : "array",
             "group": "external",
