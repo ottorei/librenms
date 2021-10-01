@@ -1398,7 +1398,7 @@ function list_oxidized_groups(Illuminate\Http\Request $request)
 {
     $return = [];
 
-    $device_groups = DeviceGroup::all();
+    $device_groups = DeviceGroup::find(40);
 
     foreach($device_groups as $dev_grp) {
         foreach ($dev_grp->devices as $device) {
