@@ -1398,7 +1398,7 @@ function list_oxidized_groups(Illuminate\Http\Request $request)
 {
     $return = [];
 
-    $device_groups = DeviceGroup::all()->limit(2);
+    $device_groups = DeviceGroup::all();
 
     foreach($device_groups as $dev_grp) {
         foreach ($dev_grp->devices as $device) {
@@ -1409,6 +1409,7 @@ function list_oxidized_groups(Illuminate\Http\Request $request)
                 'os' => $device->os,
             ];
             $return[] = $output;
+            return response()->json($return, 200, [], JSON_PRETTY_PRINT);
         }
     }
 
