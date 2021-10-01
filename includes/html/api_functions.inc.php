@@ -1399,7 +1399,7 @@ function list_oxidized_groups(Illuminate\Http\Request $request)
     $return = [];
 
     //$device_groups = DeviceGroup::all();
-    $device_groups = DeviceGroup::whereIn('name', Config::get('oxidized.enabled_groups', []));
+    $device_groups = DeviceGroup::whereIn('name', Config::get('oxidized.enabled_groups', []))->get();
 
     foreach($device_groups as $dev_grp) {
         foreach ($dev_grp->devices as $device) {
