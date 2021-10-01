@@ -1394,6 +1394,27 @@ function get_oxidized_config(Illuminate\Http\Request $request)
     }
 }
 
+function list_oxidized_groups(Illuminate\Http\Request $request)
+{
+    $return = [];
+
+    $device_groups == DeviceGroups::all()->get();
+
+    foreach($device_groups as $dev_grp) {
+        foreach ($dev_grp->devices as $device) {
+            $output = [
+                'group' => $dev_grp->name;
+                'hostname' => $device->hostname;
+                'ip' => $device->ip;
+                'os' => $device->os;
+            ];
+        }
+        $return[] = $output;
+    }
+
+    return response()->json($return, 200, [], JSON_PRETTY_PRINT);
+}
+
 function list_oxidized(Illuminate\Http\Request $request)
 {
     $return = [];
