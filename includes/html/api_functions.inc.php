@@ -1401,15 +1401,15 @@ function list_oxidized_groups(Illuminate\Http\Request $request)
     $device_groups == DeviceGroup::all();
 
     foreach($device_groups as $dev_grp) {
-        foreach ($dev_grp->devices() as $device) {
+        foreach ($dev_grp->devices as $device) {
             $output = [
                 'group' => $dev_grp->name,
                 'hostname' => $device->hostname,
                 'ip' => $device->ip,
                 'os' => $device->os,
             ];
+            $return[] = $output;
         }
-        $return[] = $output;
     }
 
     return response()->json($return, 200, [], JSON_PRETTY_PRINT);
