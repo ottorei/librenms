@@ -1399,7 +1399,7 @@ function list_oxidized_groups(Illuminate\Http\Request $request)
     $return = [];
 
     # OS-mappings for Oxidized
-    $os_map = ['ciscowlc'] = 'aireos';
+    $os_map['ciscowlc'] = 'aireos';
 
     $device_groups = DeviceGroup::whereIn('name', Config::get('oxidized.enabled_groups', []))->get();
 
