@@ -9,6 +9,7 @@ from collections import deque
 from logging.handlers import RotatingFileHandler
 from math import ceil
 from queue import Queue
+from subprocess import check_output
 from time import time
 
 from .command_runner import command_runner
@@ -148,31 +149,28 @@ def check_for_file(file):
 
 
 def get_config_data(base_dir):
-    check_for_file(os.path.join(base_dir, ".env"))
+    env_path = os.path.join(base_dir, ".env")
+    check_for_file(env_path)
 
     try:
         import dotenv
 
-        env_path = "{}/.env".format(base_dir)
         logger.info("Attempting to load .env from '%s'", env_path)
         dotenv.load_dotenv(dotenv_path=env_path, verbose=True)
 
         if not os.getenv("NODE_ID"):
             logger.critical(".env does not contain a valid NODE_ID setting.")
 
-    except ImportError as exc:
+    except (ImportError, ModuleNotFoundError) as exc:
         logger.critical(
-            'Could not import "%s" - Please check that the poller user can read the file, and that composer install has been run recently\nAdditional info: %s'
+            'Could not import "%s" - Please check that the poller user can read the file, and python-dotenv/python3-dotenv is installed\nAdditional info: %s'
             % (env_path, exc)
         )
         logger.debug("Traceback:", exc_info=True)
 
     config_cmd = ["/usr/bin/env", "php", "%s/config_to_json.php" % base_dir]
     try:
-        exit_code, output = command_runner(config_cmd, timeout=300)
-        if exit_code == 0:
-            return json.loads(output)
-        raise EnvironmentError
+        return json.loads(check_output(config_cmd).decode())
     except Exception as exc:
         logger.critical("ERROR: Could not execute command [%s]: %s" % (config_cmd, exc))
         logger.debug("Traceback:", exc_info=True)
