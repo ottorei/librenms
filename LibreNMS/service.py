@@ -324,7 +324,6 @@ class Service:
     _fp = False
     _started = False
     start_time = 0
-    queue_workers = {}
     queue_managers = {}
     poller_manager = None
     discovery_manager = None
@@ -419,31 +418,27 @@ class Service:
             raise RuntimeWarning("Not allowed to start Poller twice")
         self._started = True
 
-        logger.debug("Starting up queue workers...")
+        logger.debug("Starting up queue managers...")
 
-        # initialize and start the workers
-        if self.config.poller.enabled:
-            self.queue_workers["poller"] = LibreNMS.PollerQueueManager(
-                self.config, self._lm
-            )
-        if self.config.discovery.enabled:
-            self.queue_workers["discovery"] = LibreNMS.DiscoveryQueueManager(
-                self.config, self._lm
-            )
+        # initialize and start the worker pools
+        self.poller_manager = LibreNMS.PollerQueueManager(self.config, self._lm)
+        self.queue_managers["poller"] = self.poller_manager
+        self.discovery_manager = LibreNMS.DiscoveryQueueManager(self.config, self._lm)
+        self.queue_managers["discovery"] = self.discovery_manager
         if self.config.alerting.enabled:
-            self.queue_workers["alerting"] = LibreNMS.AlertQueueManager(
+            self.queue_managers["alerting"] = LibreNMS.AlertQueueManager(
                 self.config, self._lm
             )
         if self.config.services.enabled:
-            self.queue_workers["services"] = LibreNMS.ServicesQueueManager(
+            self.queue_managers["services"] = LibreNMS.ServicesQueueManager(
                 self.config, self._lm
             )
         if self.config.billing.enabled:
-            self.queue_workers["billing"] = LibreNMS.BillingQueueManager(
+            self.queue_managers["billing"] = LibreNMS.BillingQueueManager(
                 self.config, self._lm
             )
         if self.config.ping.enabled:
-            self.queue_workers["ping"] = LibreNMS.PingQueueManager(
+            self.queue_managers["ping"] = LibreNMS.PingQueueManager(
                 self.config, self._lm
             )
         if self.config.update_enabled:
@@ -452,8 +447,6 @@ class Service:
         self.systemd_watchdog_timer.start()
         if self.config.watchdog_enabled:
             self.watchdog_timer.start()
-
-        self.start_worker_timers()
 
         logger.info("LibreNMS Service: {} started!".format(self.config.unique_name))
         logger.info(
@@ -488,19 +481,6 @@ class Service:
                     if not self.is_master:
                         logger.info(
                             "{} is now the master dispatcher".format(self.config.name)
-                        )
-                        # When the node is the master one, start all queuemanagers
-                        self.queue_managers["alerting"] = LibreNMS.AlertQueueManager(
-                            self.config, self._lm
-                        )
-                        self.queue_managers["services"] = LibreNMS.ServicesQueueManager(
-                            self.config, self._lm
-                        )
-                        self.queue_managers["billing"] = LibreNMS.BillingQueueManager(
-                            self.config, self._lm
-                        )
-                        self.queue_managers["ping"] = LibreNMS.PingQueueManager(
-                            self.config, self._lm
                         )
                         self.is_master = True
                         self.start_dispatch_timers()
@@ -541,13 +521,13 @@ class Service:
 
     # ------------ Discovery ------------
     def dispatch_immediate_discovery(self, device_id, group):
-        if not self.queue_workers["discovery"].is_locked(device_id):
-            self.discovery_worker.post_work(device_id, group)
+        if not self.discovery_manager.is_locked(device_id):
+            self.discovery_manager.post_work(device_id, group)
 
     # ------------ Polling ------------
     def dispatch_immediate_polling(self, device_id, group):
-        if not self.queue_workers["poller"].is_locked(device_id):
-            self.queue_workers["poller"].post_work(device_id, group)
+        if not self.poller_manager.is_locked(device_id):
+            self.poller_manager.post_work(device_id, group)
 
             if self.config.debug:
                 cur_time = time.time()
@@ -752,16 +732,6 @@ class Service:
             "Shutdown of %s/%s complete", os.getpid(), threading.current_thread().name
         )
         self.exit(0)
-
-    def start_worker_timers(self):
-        """
-        Start worker timers and begin popping work from queues.
-        """
-        for worker in self.queue_workers.values():
-            try:
-                worker.start()
-            except AttributeError:
-                pass
 
     def start_dispatch_timers(self):
         """
