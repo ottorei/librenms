@@ -625,7 +625,7 @@
 
         $.ajax({
             type: 'POST',
-            url: ajax_url + '/dash/' + data_type,
+            url: `${ajax_url}/dash/${data_type}`,
             data: {
                 id: id,
                 dimensions: {x: $widget_body.width(), y: $widget_body.height()},
@@ -638,7 +638,7 @@
                     $widget_body.html(data.html);
                     $widget_body.parent().data('settings', data.show_settings).data('refresh', data.settings.refresh);
                 } else {
-                    $widget_body.html('<div class="alert alert-info">' + data.message + '</div>');
+                    $widget_body.html(`<div class="alert alert-info">${data.message}</div>`);
                 }
             },
             error: function (data) {

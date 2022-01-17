@@ -4224,7 +4224,7 @@
                 "value.*": "exists:devices,type"
             }
         },
-        "oxidized.only_device_groups": {
+        "oxidized.enabled_groups": {
             "default": [],
             "type": "array",
             "group": "external",

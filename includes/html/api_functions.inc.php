@@ -1443,6 +1443,31 @@ function get_oxidized_config(Illuminate\Http\Request $request)
     }
 }
 
+function list_oxidized_groups(Illuminate\Http\Request $request)
+{
+    $return = [];
+
+    # OS-mappings for Oxidized
+    $os_map['ciscowlc'] = 'aireos';
+
+    $device_groups = DeviceGroup::whereIn('name', Config::get('oxidized.enabled_groups', []))->get();
+
+    foreach($device_groups as $dev_grp) {
+        foreach ($dev_grp->devices as $device) {
+            $output = [
+                'group' => $dev_grp->name,
+                'hostname' => $device->hostname,
+                'ip' => $device->ip,
+                'os' => $os_map[$device->os] ?? $device->os,
+            ];
+            $return[] = $output;
+            //return response()->json($return, 200, [], JSON_PRETTY_PRINT);
+        }
+    }
+
+    return response()->json($return, 200, [], JSON_PRETTY_PRINT);
+}
+
 function list_oxidized(Illuminate\Http\Request $request)
 {
     $return = [];
