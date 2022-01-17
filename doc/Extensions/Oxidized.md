@@ -231,6 +231,27 @@ groups:
     password: <password>
 ```
 
+## Using LibreNMS device groups for Oxidized
+
+If you wish to use the device grouping abilities of LibreNMS itself to map devices to Oxidized groups
+you can enable a special mode for this use case. Enabling this device group mode bypasses all other
+Oxidized mappings except the os-mappings. Using this mode might be useful for some situations when there are advanced grouping rules
+in use which utilize combinations of multiple device properties at the same time.
+
+Enabling the explicit device group mode can be done by stating which groups should be used. 
+
+!!! setting "external/oxidized"
+    ```bash
+    config:set oxidized.only_device_groups.+ 'Customer A: Special-devices'
+    config:set oxidized.only_device_groups.+ 'Customer B: Special-devices'
+    ```
+The mode can be disabled by clearing the array.
+
+!!! setting "external/oxidized"
+    ```bash
+    config:set oxidized.only_device_groups
+    ```
+
 ## Miscellaneous
 
 If you have devices which you do not wish to appear in Oxidized then
