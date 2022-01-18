@@ -1471,7 +1471,7 @@ function list_oxidized_groups(Illuminate\Http\Request $request)
 function list_oxidized(Illuminate\Http\Request $request)
 {
     $return = [];
-    $device_groups = DeviceGroup::whereIn('name', Config::get('oxidized.only_device_groups', []))->get();
+    $device_groups = DeviceGroup::whereIn('name', Config::get('oxidized.enabled_groups', []))->get();
 
     if ($device_groups->isNotEmpty()) {
         $os_maps = [];
