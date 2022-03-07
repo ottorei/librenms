@@ -9,6 +9,7 @@
  */
 
 use App\Models\Device;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Str;
 use LibreNMS\Config;
 use LibreNMS\Exceptions\HostExistsException;
@@ -18,7 +19,6 @@ use LibreNMS\Exceptions\HostUnreachablePingException;
 use LibreNMS\Exceptions\InvalidPortAssocModeException;
 use LibreNMS\Exceptions\SnmpVersionUnsupportedException;
 use LibreNMS\Modules\Core;
-use LibreNMS\Util\Debug;
 use LibreNMS\Util\IPv4;
 use LibreNMS\Util\IPv6;
 use LibreNMS\Util\Proxy;
@@ -180,7 +180,7 @@ function compare_var($a, $b, $comparison = '=')
             return ! Str::endsWith($a, $b);
         case 'regex':
             return (bool) preg_match($b, $a);
-        case 'not regex':
+        case 'not_regex':
             return ! ((bool) preg_match($b, $a));
         case 'in_array':
             return in_array($a, $b);
@@ -294,68 +294,16 @@ function device_discovery_trigger($id)
 
 function delete_device($id)
 {
-    if (App::runningInConsole() === false) {
-        ignore_user_abort(true);
-        set_time_limit(0);
+    $device = DeviceCache::get($id);
+    if (! $device->exists) {
+        return 'No such device.';
     }
 
-    $ret = '';
-
-    $host = dbFetchCell('SELECT hostname FROM devices WHERE device_id = ?', [$id]);
-    if (empty($host)) {
-        return 'No such host.';
+    if ($device->delete()) {
+        return "Removed device $device->hostname\n";
     }
 
-    // Remove IPv4/IPv6 addresses before removing ports as they depend on port_id
-    dbQuery('DELETE `ipv4_addresses` FROM `ipv4_addresses` INNER JOIN `ports` ON `ports`.`port_id`=`ipv4_addresses`.`port_id` WHERE `device_id`=?', [$id]);
-    dbQuery('DELETE `ipv6_addresses` FROM `ipv6_addresses` INNER JOIN `ports` ON `ports`.`port_id`=`ipv6_addresses`.`port_id` WHERE `device_id`=?', [$id]);
-
-    //Remove IsisAdjacencies
-    \App\Models\IsisAdjacency::where('device_id', $id)->delete();
-
-    //Remove Outages
-    \App\Models\Availability::where('device_id', $id)->delete();
-    \App\Models\DeviceOutage::where('device_id', $id)->delete();
-
-    \App\Models\Port::where('device_id', $id)
-        ->with('device')
-        ->select(['port_id', 'device_id', 'ifIndex', 'ifName', 'ifAlias', 'ifDescr'])
-        ->chunk(100, function ($ports) use (&$ret) {
-            foreach ($ports as $port) {
-                $port->delete();
-                $ret .= "Removed interface $port->port_id (" . $port->getLabel() . ")\n";
-            }
-        });
-
-    // Remove sensors manually due to constraints
-    foreach (dbFetchRows('SELECT * FROM `sensors` WHERE `device_id` = ?', [$id]) as $sensor) {
-        $sensor_id = $sensor['sensor_id'];
-        dbDelete('sensors_to_state_indexes', '`sensor_id` = ?', [$sensor_id]);
-    }
-    $fields = ['device_id', 'host'];
-
-    $db_name = dbFetchCell('SELECT DATABASE()');
-    foreach ($fields as $field) {
-        foreach (dbFetch('SELECT TABLE_NAME FROM information_schema.columns WHERE table_schema = ? AND column_name = ?', [$db_name, $field]) as $table) {
-            $table = $table['TABLE_NAME'];
-            $entries = (int) dbDelete($table, "`$field` =  ?", [$id]);
-            if ($entries > 0 && Debug::isEnabled()) {
-                $ret .= "$field@$table = #$entries\n";
-            }
-        }
-    }
-
-    $ex = shell_exec("bash -c '( [ ! -d " . trim(Rrd::dirFromHost($host)) . ' ] || rm -vrf ' . trim(Rrd::dirFromHost($host)) . " 2>&1 ) && echo -n OK'");
-    $tmp = explode("\n", $ex);
-    if ($tmp[sizeof($tmp) - 1] != 'OK') {
-        $ret .= "Could not remove files:\n$ex\n";
-    }
-
-    $ret .= "Removed device $host\n";
-    log_event("Device $host has been removed", 0, 'system', 3);
-    oxidized_reload_nodes();
-
-    return $ret;
+    return "Failed to remove device $device->hostname";
 }
 
 /**
@@ -942,26 +890,6 @@ function set_curl_proxy($curl)
     \LibreNMS\Util\Proxy::applyToCurl($curl);
 }
 
-/**
- * Return the proxy url in guzzle format
- *
- * @return 'tcp://' + $proxy
- */
-function get_guzzle_proxy()
-{
-    return \LibreNMS\Util\Proxy::forGuzzle();
-}
-
-/**
- * Return the proxy url
- *
- * @return array|bool|false|string
- */
-function get_proxy()
-{
-    return \LibreNMS\Util\Proxy::get();
-}
-
 function target_to_id($target)
 {
     if ($target[0] . $target[1] == 'g:') {
@@ -1036,23 +964,6 @@ function host_exists($hostname, $sysName = null)
     }
 
     return dbFetchCell($query, $params) > 0;
-}
-
-function oxidized_reload_nodes()
-{
-    if (Config::get('oxidized.enabled') === true && Config::get('oxidized.reload_nodes') === true && Config::has('oxidized.url')) {
-        $oxidized_reload_url = Config::get('oxidized.url') . '/reload.json';
-        $ch = curl_init($oxidized_reload_url);
-
-        curl_setopt($ch, CURLOPT_TIMEOUT, 5);
-        curl_setopt($ch, CURLOPT_TIMEOUT_MS, 5000);
-        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 5);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
-        curl_setopt($ch, CURLOPT_HEADER, 1);
-        curl_exec($ch);
-        curl_close($ch);
-    }
 }
 
 /**
@@ -1436,9 +1347,9 @@ function cache_mac_oui()
             //$mac_oui_url_mirror = 'https://raw.githubusercontent.com/wireshark/wireshark/master/manuf';
 
             echo '  -> Downloading ...' . PHP_EOL;
-            $get = Requests::get($mac_oui_url, [], ['proxy' => get_proxy()]);
+            $get = Http::withOptions(['proxy' => Proxy::forGuzzle()])->get($mac_oui_url);
             echo '  -> Processing CSV ...' . PHP_EOL;
-            $csv_data = $get->body;
+            $csv_data = $get->body();
             foreach (explode("\n", $csv_data) as $csv_line) {
                 unset($oui);
                 $entry = str_getcsv($csv_line, "\t");
@@ -1494,8 +1405,8 @@ function cache_peeringdb()
             $ix_keep = [];
             foreach (dbFetchRows('SELECT `bgpLocalAs` FROM `devices` WHERE `disabled` = 0 AND `ignore` = 0 AND `bgpLocalAs` > 0 AND (`bgpLocalAs` < 64512 OR `bgpLocalAs` > 65535) AND `bgpLocalAs` < 4200000000 GROUP BY `bgpLocalAs`') as $as) {
                 $asn = $as['bgpLocalAs'];
-                $get = Requests::get($peeringdb_url . '/net?depth=2&asn=' . $asn, [], ['proxy' => get_proxy()]);
-                $json_data = $get->body;
+                $get = Http::withOptions(['proxy' => Proxy::forGuzzle()])->get($peeringdb_url . '/net?depth=2&asn=' . $asn);
+                $json_data = $get->body();
                 $data = json_decode($json_data);
                 $ixs = $data->{'data'}[0]->{'netixlan_set'};
                 foreach ($ixs as $ix) {
@@ -1515,8 +1426,8 @@ function cache_peeringdb()
                         $pdb_ix_id = dbInsert($insert, 'pdb_ix');
                     }
                     $ix_keep[] = $pdb_ix_id;
-                    $get_ix = Requests::get("$peeringdb_url/netixlan?ix_id=$ixid", [], ['proxy' => get_proxy()]);
-                    $ix_json = $get_ix->body;
+                    $get_ix = Http::withOptions(['proxy' => Proxy::forGuzzle()])->get("$peeringdb_url/netixlan?ix_id=$ixid");
+                    $ix_json = $get_ix->body();
                     $ix_data = json_decode($ix_json);
                     $peers = $ix_data->{'data'};
                     foreach ($peers as $index => $peer) {
@@ -1691,35 +1602,12 @@ function is_disk_valid($disk, $device)
 }
 
 /**
- * Queues a hostname to be refreshed by Oxidized
- * Settings: oxidized.url
+ * Take a BGP error code and subcode to return a string representation of it
  *
- * @param  string  $hostname
- * @param  string  $msg
- * @param  string  $username
- * @return bool
- */
-function oxidized_node_update($hostname, $msg, $username = 'not_provided')
-{
-    // Work around https://github.com/rack/rack/issues/337
-    $msg = str_replace('%', '', $msg);
-    $postdata = ['user' => $username, 'msg' => $msg];
-    $oxidized_url = Config::get('oxidized.url');
-    if (! empty($oxidized_url)) {
-        Requests::put("$oxidized_url/node/next/$hostname", [], json_encode($postdata), ['proxy' => Proxy::get($oxidized_url)]);
-
-        return true;
-    }
-
-    return false;
-}//end oxidized_node_update()
-
-/**
  * @params int code
  * @params int subcode
  *
  * @return string
- *                Take a BGP error code and subcode to return a string representation of it
  */
 function describe_bgp_error_code($code, $subcode)
 {
