@@ -100,8 +100,8 @@ modules:
                     oid: panLcLogRate
                     num_oid: '.1.3.6.1.4.1.25461.2.3.30.1.1.0'
                     index: 'panLcLogRate.{{ $index }}'
-                    descr: Log collection write rate
-                    group: Log collection
+                    descr: Log Collection Write Rate
+                    group: Log Collection
         load:
             data:
                 -
