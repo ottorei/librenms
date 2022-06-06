@@ -580,6 +580,13 @@
             "order": 0,
             "type": "text"
         },
+        "auth_ldap_require_groupmembership": {
+            "default": true,
+            "group": "auth",
+            "section": "ldap",
+            "order": 4,
+            "type": "boolean"
+        },
         "auth_ldap_starttls": {
             "default": "disabled",
             "group": "auth",
@@ -3510,6 +3517,13 @@
                 "custom8": "Custom 8"
             }
         },
+        "http_auth_header": {
+            "default": "REMOTE_USER",
+            "group": "auth",
+            "section": "general",
+            "order": 4,
+            "type": "text"
+        },
         "html_dir": {
             "type": "directory"
         },
@@ -5226,7 +5240,14 @@
             "section": "snmp",
             "order": 20,
             "type": "array",
-            "default": null
+            "default": []
+        },
+        "snmp.oids.unordered": {
+            "group": "poller",
+            "section": "snmp",
+            "order": 21,
+            "type": "array",
+            "default": []
         },
         "snmp.timeout": {
             "group": "poller",
