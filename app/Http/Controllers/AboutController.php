@@ -72,9 +72,9 @@ class AboutController extends Controller
             'project_name' => Config::get('project_name'),
 
             'version_local' => $version->local(),
-            'version_mysql' => $version->databaseServer(),
+            'version_database' => $version->databaseServer(),
             'version_php' => phpversion(),
-            'version_laravel' => App::VERSION(),
+            'version_laravel' => App::version(),
             'version_python' => $version->python(),
             'version_webserver' => $request->server('SERVER_SOFTWARE'),
             'version_rrdtool' => Rrd::version(),
