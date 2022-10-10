@@ -1971,6 +1971,11 @@ function update_device(Illuminate\Http\Request $request)
     $hostname = $request->route('hostname');
     // use hostname as device_id if it's all digits
     $device_id = ctype_digit($hostname) ? $hostname : getidbyname($hostname);
+
+    if Device::where('device_id', $device_id)->doesntExist() {
+        return api_error(404, 'Device does not exists');
+    }
+
     $data = json_decode($request->getContent(), true);
     $bad_fields = ['device_id', 'hostname'];
     if (empty($data['field'])) {
@@ -1998,7 +2003,7 @@ function update_device(Illuminate\Http\Request $request)
 
                 $update[$field] = $field_data;
             }
-            if (dbUpdate($update, 'devices', '`device_id`=?', [$device_id]) > 0) {
+            if (dbUpdate($update, 'devices', '`device_id`=?', [$device_id]) >= 0) {
                 return api_success_noresult(200, 'Device fields have been updated');
             } else {
                 return api_error(500, 'Device fields failed to be updated');
@@ -2006,7 +2011,7 @@ function update_device(Illuminate\Http\Request $request)
         } else {
             return api_error(500, 'Device fields failed to be updated as the number of fields (' . count($data['field']) . ') does not match the supplied data (' . count($data['data']) . ')');
         }
-    } elseif (dbUpdate([$data['field'] => $data['data']], 'devices', '`device_id`=?', [$device_id]) > 0) {
+    } elseif (dbUpdate([$data['field'] => $data['data']], 'devices', '`device_id`=?', [$device_id]) >= 0) {
         return api_success_noresult(200, 'Device ' . $data['field'] . ' field has been updated');
     } else {
         return api_error(500, 'Device ' . $data['field'] . ' field failed to be updated');
