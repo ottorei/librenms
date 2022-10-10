@@ -1973,7 +1973,7 @@ function update_device(Illuminate\Http\Request $request)
     $device_id = ctype_digit($hostname) ? $hostname : getidbyname($hostname);
 
     if (Device::where('device_id', $device_id)->doesntExist()) {
-        return api_error(404, 'Device does not exists');
+        return api_error(404, 'Device does not exist');
     }
 
     $data = json_decode($request->getContent(), true);
