@@ -331,6 +331,15 @@ return [
             'description' => 'Bind username',
             'help' => 'Used to query the AD server when no user is logged in (alerts, API, etc)',
         ],
+        'auth_ad_starttls' => [
+            'description' => 'Use STARTTLS',
+            'help' => 'Use STARTTLS to secure the connection.  Alternative to LDAPS.',
+            'options' => [
+                'disabled' => 'Disabled',
+                'optional' => 'Optional',
+                'required' => 'Required',
+            ],
+        ],
         'auth_ldap_cache_ttl' => [
             'description' => 'LDAP cache expiration',
             'help' => 'Temporarily stores LDAP query results.  Improves speeds, but the data may be stale.',
@@ -489,8 +498,8 @@ return [
             'cisco-qfp' => [
                 'description' => 'Cisco QFP',
             ],
-            'cisco-sla' => [
-                'description' => 'Cisco SLA',
+            'slas' => [
+                'description' => 'Service Level Agreement Tracking',
             ],
             'cisco-pw' => [
                 'description' => 'Cisco PW',
@@ -577,9 +586,6 @@ return [
             'stp' => [
                 'description' => 'STP',
             ],
-            'toner' => [
-                'description' => 'Toner',
-            ],
             'ucd-diskio' => [
                 'description' => 'UCD DiskIO',
             ],
@@ -594,6 +600,12 @@ return [
             ],
             'wireless' => [
                 'description' => 'Wireless',
+            ],
+            'xdsl' => [
+                'description' => 'xDSL',
+            ],
+            'printer-supplies' => [
+                'description' => 'Printer Supplies',
             ],
         ],
         'distributed_poller' => [
@@ -615,6 +627,10 @@ return [
         'email_auto_tls' => [
             'description' => 'Auto TLS support',
             'help' => 'Tries to use TLS before falling back to un-encrypted',
+        ],
+        'email_attach_graphs' => [
+            'description' => 'Attach graph images',
+            'help' => 'This will generate a graph when the alert is raised and attach it and embed it in the email.',
         ],
         'email_backend' => [
             'description' => 'How to deliver mail',
@@ -1082,9 +1098,6 @@ return [
             'junose-atm-vp' => [
                 'description' => 'JunOS ATM VP',
             ],
-            'toner' => [
-                'description' => 'Toner',
-            ],
             'ucd-diskio' => [
                 'description' => 'UCD DiskIO',
             ],
@@ -1109,8 +1122,8 @@ return [
             'cisco-cef' => [
                 'description' => 'Cisco CEF',
             ],
-            'cisco-sla' => [
-                'description' => 'Cisco SLA',
+            'slas' => [
+                'description' => 'Service Level Agreement Tracking',
             ],
             'cisco-mac-accounting' => [
                 'description' => 'Cisco MAC Accounting',
@@ -1163,9 +1176,6 @@ return [
             'applications' => [
                 'description' => 'Applications',
             ],
-            'mib' => [
-                'description' => 'MIB',
-            ],
             'stp' => [
                 'description' => 'STP',
             ],
@@ -1181,13 +1191,19 @@ return [
             'mpls' => [
                 'description' => 'MPLS',
             ],
+            'xdsl' => [
+                'description' => 'xDSL',
+            ],
+            'printer-supplies' => [
+                'description' => 'Printer Supplies',
+            ],
         ],
         'ports_fdb_purge' => [
             'description' => 'Port FDB entries older than',
             'help' => 'Cleanup done by daily.sh',
         ],
         'ports_purge' => [
-            'description' => 'Ports older than',
+            'description' => 'Purge ports deleted',
             'help' => 'Cleanup done by daily.sh',
         ],
         'prometheus' => [

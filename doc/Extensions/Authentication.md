@@ -87,7 +87,7 @@ DB_PASSWORD="DBPASS"
 
 Config option: `active_directory`
 
-Install __php_ldap__  or __php7.0-ldap__, making sure to install the
+Install __php-ldap__  or __php8.1-ldap__, making sure to install the
 same version as PHP.
 
 If you have issues with secure LDAP try setting
@@ -159,6 +159,13 @@ $config['auth_ad_group_filter'] = "(objectclass=group)";
 This yields `(&(objectclass=user)(sAMAccountName=$username))` for the
 user filter and `(&(objectclass=group)(sAMAccountName=$group))` for
 the group filter.
+
+### SELinux configuration
+
+On RHEL / CentOS / Fedora, in order for LibreNMS to reach Active Directory, you need to allow LDAP requests in SELinux:
+```
+setsebool -P httpd_can_connect_ldap 1
+```
 
 ## LDAP Authentication
 
@@ -248,6 +255,13 @@ $config['auth_ldap_groups'] = [
     '{admin_group}' => ['level' => 10],
     '{global_readonly_group}' => ['level' => 5],
 ];
+```
+
+### SELinux configuration
+
+On RHEL / CentOS / Fedora, in order for LibreNMS to reach LDAP, you need to allow LDAP requests in SELinux:
+```
+setsebool -P httpd_can_connect_ldap 1
 ```
 
 ## Radius Authentication
