@@ -169,22 +169,27 @@ Once the LibreNMS service is installed, the cron scripts used by LibreNMS to sta
 A systemd unit file is provided - the sysv and upstart init scripts
 could also be used with a little modification.
 
-### systemd
+### systemd service
 
 A systemd unit file can be found in `misc/librenms.service`. To
-install run `cp /opt/librenms/misc/librenms.service
-/etc/systemd/system/librenms.service && systemctl enable --now
-librenms.service`
+install run:
+```bash
+cp /opt/librenms/misc/librenms.service /etc/systemd/system/librenms.service && systemctl enable --now librenms.service
+```
 
-### systemd-watchdog
+### systemd service with watchdog
+
+This service file is an alternative to the above service file. It uses the systemd WatchdogSec= option to restart the service if it does not receive a keep-alive from the running process.
 
 A systemd unit file can be found in `misc/librenms-watchdog.service`. To
-install run `cp /opt/librenms/misc/librenms-watchdog.service
-/etc/systemd/system/librenms-watchdog.service && systemctl enable --now
-librenms-watchdog.service`
+install run:
+```bash
+cp /opt/librenms/misc/librenms-watchdog.service /etc/systemd/system/librenms.service && systemctl enable --now librenms.service
+```
 
 This requires: python3-systemd (or python-systemd on older systems)
 or https://pypi.org/project/systemd-python/
+If you run this systemd service without python3-systemd it will restart every 30 seconds.
 
 ### OS-Specific Instructions
 
@@ -236,7 +241,7 @@ available, but the testing package is working fine, you can grab it on
 <https://packages.debian.org/fr/buster/all/python3-dotenv/download> (the
 package may be updated and have a new version number).
 
-```
+```bash
 apt install python3 python-mysqldb
 cd /tmp
 wget http://ftp.fr.debian.org/debian/pool/main/p/python-dotenv/python3-dotenv_0.9.1-1_all.deb

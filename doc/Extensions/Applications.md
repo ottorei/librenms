@@ -816,6 +816,56 @@ You may need to configure `$server` or `$port`.
 
 Verify it is working by running `/usr/lib/check_mk_agent/local/gpsd`
 
+## HV Monitor
+
+HV Monitor provides a generic way to monitor hypervisors. Currently
+CBSD+bhyve on FreeBSD and Libvirt+QEMU on Linux are support.
+
+For more information see
+HV::Monitor on
+[Github](https://github.com/VVelox/HV-Monitor)
+or [MetaCPAN](https://metacpan.org/dist/HV-Monitor).
+
+### SNMP Extend
+
+1. Install the SNMP Extend.
+
+For Debian based systems this is as below.
+
+```
+apt-get install zlib1g-dev cpanminus libjson-perl
+cpanm HV::Monitor
+```
+
+And on FreeBSD as below.
+
+```
+pkg install p5-App-cpanminus p5-JSON p5-MIME-Base64 p5-Gzip-Faster
+cpanm HV::Monitor
+```
+
+2. Set it up to be be ran by cron by root. Yes, you can directly call
+   this script from SNMPD, but be aware, especially with Libvirt,
+   there is a very real possibility of the snmpget timing out,
+   especially if a VM is spinning up/down as virsh domstats can block
+   for a few seconds or so then.
+
+```
+*/5 * * * * /usr/local/bin/hv_monitor > /var/cache/hv_monitor.json -c 2> /dev/null
+```
+
+3. Setup snmpd.conf as below.
+
+```
+extend hv-monitor /bin/cat
+/var/cache/hv_monitor.json
+
+```
+
+4. Restart SNMPD.
+
+5. Either wait for it to be re-discovered or manually enable it.
+
 ## Icecast
 
 Shell script that reports load average/memory/open-files stats of Icecast
@@ -1593,10 +1643,21 @@ extend postgres /etc/snmp/postgres
 6. Verify the path to check_postgres.pl in /etc/snmp/postgres is
 correct.
 
-7. If you wish it to ignore the database postgres for totalling up the
-stats, set ignorePG to 1(the default) in /etc/snmp/postgres. If you
-are using netdata or the like, you may wish to set this or otherwise
-that total will be very skewed on systems with light or moderate usage.
+7. (Optional) If you wish to change the DB username (default: pgsql), enable
+the postgres DB in totalling (e.g. set ignorePG to 0, default: 1), or set a
+hostname for check_postgres.pl to connect to (default: the Unix Socket postgresql
+is running on), then create the file /etc/snmp/postgres.config with the following
+contents (note that not all of them need be defined, just whichever you'd like to
+change):
+```
+DBuser=monitoring
+ignorePG=0
+DBhost=localhost
+```
+
+Note that if you are using netdata or the like, you may wish to set ignorePG
+to 1 or otherwise that total will be very skewed on systems with light or
+moderate usage.
 
 The application should be auto-discovered as described at the top of
 the page. If it is not, please follow the steps set out under `SNMP
@@ -2656,6 +2717,44 @@ chmod +x /etc/snmp/voipmon-stats.sh
 ```
 extend voipmon /etc/snmp/voipmon-stats.sh
 ```
+
+## Wireguard
+
+The wireguard application polls the Wireguard service and scrapes all client statistics for all interfaces configured as Wireguard interfaces.
+
+### SNMP Extend
+
+1. Copy the python script, wireguard.py, to the desired host
+```
+wget https://github.com/librenms/librenms-agent/raw/master/snmp/wireguard.py -O /etc/snmp/wireguard.py
+```
+
+2. Make the script executable
+```
+chmod +x /etc/snmp/wireguard.py
+```
+
+3. Edit your snmpd.conf file and add:
+```
+extend wireguard /etc/snmp/wireguard.py
+```
+
+4. Create a /etc/snmp/wireguard.json file and specify:
+a.) (optional) "wg_cmd" - String path to the wg binary ["/usr/bin/wg"]
+b.) "public_key_to_arbitrary_name" - A dictionary to convert between the publickey assigned to the client (specified in the wireguard interface conf file) to an arbitrary, friendly name.  The friendly names MUST be unique within each interface.  Also note that the interface name and friendly names are used in the RRD filename, so using special characters is highly discouraged.
+```
+{
+    "wg_cmd": "/bin/wg",
+    "public_key_to_arbitrary_name": {
+        "wg0": {
+            "z1iSIymFEFi/PS8rR19AFBle7O4tWowMWuFzHO7oRlE=": "client1",
+            "XqWJRE21Fw1ke47mH1yPg/lyWqCCfjkIXiS6JobuhTI=": "server.domain.com"
+        }
+    }
+}
+```
+
+5. Restart snmpd.
 
 ## ZFS
 

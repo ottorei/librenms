@@ -417,6 +417,19 @@ $graphs['sagan'] = [
     'uptime',
     'alert',
 ];
+$graphs['hv-monitor'] = [
+    'status',
+    'memory',
+    'pmem',
+    'time',
+    'pcpu',
+    'flt',
+    'csw',
+    'cow',
+    'etimes',
+    'snaps',
+    'snaps_size',
+];
 $graphs['pwrstatd'] = [
     'wattage',
     'voltage',
@@ -427,6 +440,10 @@ $graphs['systemd'] = [
     'sub',
     'active',
     'load',
+];
+$graphs['wireguard'] = [
+    'traffic',
+    'time',
 ];
 
 echo '<div class="panel panel-default">';

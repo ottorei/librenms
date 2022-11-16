@@ -154,7 +154,7 @@ function discover_device(&$device, $force_module = false)
             } catch (Throwable $e) {
                 // isolate module exceptions so they don't disrupt the polling process
                 Log::error("%rError discovering $module module for {$device['hostname']}.%n $e", ['color' => true]);
-                Log::event("Error discovering $module module. Check log file for more details.", $device['device_id'], 'discovery', Alert::ERROR);
+                \App\Models\Eventlog::log("Error discovering $module module. Check log file for more details.", $device['device_id'], 'discovery', Alert::ERROR);
                 report($e);
             }
 
@@ -968,7 +968,15 @@ function discovery_process(&$valid, $os, $sensor_class, $pre_cache)
                         $value = $user_function($value);
                     }
 
-                    $uindex = str_replace('{{ $index }}', $index, isset($data['index']) ? $data['index'] : $index);
+                    $uindex = $index;
+                    if (isset($data['index'])) {
+                        if (Str::contains($data['index'], '{{')) {
+                            $uindex = trim(YamlDiscovery::replaceValues('index', $index, null, $data, $pre_cache));
+                        } else {
+                            $uindex = $data['index'];
+                        }
+                    }
+
                     discover_sensor($valid['sensor'], $sensor_class, $device, $oid, $uindex, $sensor_name, $descr, $divisor, $multiplier, $low_limit, $low_warn_limit, $warn_limit, $high_limit, $value, 'snmp', $entPhysicalIndex, $entPhysicalIndex_measured, $user_function, $group, $data['rrd_type']);
 
                     if ($sensor_class === 'state') {
