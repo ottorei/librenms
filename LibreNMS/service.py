@@ -73,6 +73,7 @@ class ServiceConfig(DBConfig):
 
     debug = False
     log_level = logging.INFO
+    poller_log_level = logging.INFO
     max_db_failures = 5
 
     alerting = PollerConfig(1, 60)
