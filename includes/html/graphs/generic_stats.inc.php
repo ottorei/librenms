@@ -115,20 +115,25 @@ $rrd_optionsb .= ' LINE1.25:' . $id . '#' . $colour . ":'$descr'";
 
 if ($height > 25) {
     $rrd_options .= ' DEF:' . $id . "1h=$filename:$ds:AVERAGE:step=3600";
-    $rrd_options .= ' DEF:' . $id . "1d=$filename:$ds:AVERAGE:step=86400";
     $rrd_options .= ' VDEF:' . $id . '50th=' . $id . ',50,PERCENTNAN';
     $rrd_options .= ' VDEF:' . $id . '25th=' . $id . ',25,PERCENTNAN';
     $rrd_options .= ' VDEF:' . $id . '75th=' . $id . ',75,PERCENTNAN';
 
-    // weekly breaks and causes issues if it is less than 8 days
-    $time_diff = $vars['to'] - $vars['from'];
-    if ($time_diff >= 691200) {
-        $rrd_options .= ' DEF:' . $id . "1w=$filename:$ds:AVERAGE:step=604800";
+    // the if is needed as with out it the group page will case an error
+    // devices/group=1/format=graph_poller_perf/from=-24hour/to=now/
+    if (is_numeric($vars['to']) && is_numeric($vars['from'])) {
+        $time_diff = $vars['to'] - $vars['from'];
+    } else {
+        $time_diff = 1;
     }
-
     // displays nan if less than 17 hours
     if ($time_diff >= 61200) {
         $rrd_options .= ' DEF:' . $id . "1d=$filename:$ds:AVERAGE:step=86400";
+    }
+
+    // weekly breaks and causes issues if it is less than 8 days
+    if ($time_diff >= 691200) {
+        $rrd_options .= ' DEF:' . $id . "1w=$filename:$ds:AVERAGE:step=604800";
     }
 
     $rrd_optionsb .= ' GPRINT:' . $id . ':LAST:%5.' . $float_precision . 'lf%s' . $units . ' GPRINT:' . $id . ':MIN:%5.' . $float_precision . 'lf%s' . $units;
