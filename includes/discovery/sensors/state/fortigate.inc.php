@@ -43,6 +43,7 @@ if ($systemMode == 'activePassive' || $systemMode == 'activeActive') {
 
         // Setup a sensor for the cluster sync state
         $fgHaStatsSyncStatus_num = '.1.3.6.1.4.1.12356.101.13.2.1.1.12';
+        $cur_oid = $fgHaStatsSyncStatus_num . $index
         $fgHaStatsSyncStatus_txt = 'fgHaStatsSyncStatus';
         $stateName = 'haSyncStatus ' . $index;
         $descr = 'HA sync status ' . $cluster_member_name;
@@ -77,7 +78,7 @@ if ($systemMode == 'activePassive' || $systemMode == 'activeActive') {
             'HA'
         );
 
-        create_sensor_to_state_index($device, $stateName, $index);
+        create_sensor_to_state_index($device, $stateName, $cur_oid);
     }
 }
 
