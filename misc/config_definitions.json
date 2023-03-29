@@ -1784,6 +1784,13 @@
             "default": null,
             "type": "array"
         },
+        "graph_stat_percentile_disable": {
+            "default": false,
+            "group": "webui",
+            "section": "graph",
+            "order": 7,
+            "type": "boolean"
+        },
         "graph_colours.blues": {
             "default": [
                 "A9A9F2",
@@ -5286,6 +5293,13 @@
             "default": 1200,
             "type": "integer",
             "units": "seconds"
+        },
+        "snmp.max_oid": {
+            "group": "poller",
+            "section": "snmp",
+            "order": 5,
+            "type": "integer",
+            "default": 10
         },
         "snmp.max_repeaters": {
             "group": "poller",
