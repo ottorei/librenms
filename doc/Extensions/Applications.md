@@ -2042,6 +2042,50 @@ systemctl reload snmpd
 7. You're now ready to enable the application in LibreNMS.
 
 
+## Privoxy
+
+For this to work, the following log items need enabled for Privoxy.
+
+```
+debug     2 # show each connection status
+debug   512 # Common Log Format
+debug  1024 # Log the destination for requests Privoxy didn't let through, and the reason why.
+debug  4096 # Startup banner and warnings
+debug  8192 # Non-fatal errors
+```
+
+### SNMP Extend
+
+1. Download the extend and make sure it is executable.
+```
+wget https://github.com/librenms/librenms-agent/raw/master/snmp/privoxy -O /etc/snmp/privoxy
+chmod +x /etc/snmp/privoxy
+```
+
+2. Install the depdenencies.
+```
+# FreeBSD
+pkg install p5-File-ReadBackwards p5-Time-Piece p5-JSON p5-IPC-Run3 p5-Gzip-Faster p5-MIME-Base64
+# Debian
+apt-get install cpanminus zlib1g
+cpanm File::ReadBackwards Time::Piece JSON IPC::Run3 MIME::Base64 Gzip::Faster
+```
+
+3. Add the extend to snmpd.conf and restart snmpd.
+```
+extend privoxy /etc/snmp/privoxy
+```
+
+If your logfile is not at `/var/log/privoxy/logfile`, that may be
+changed via the `-f` option.
+
+If `privoxy-log-parser.pl` is not found in your standard `$PATH`
+setting, you may will need up call the extend via `/usr/bin/env` with
+a `$PATH` set to something that includes it.
+
+Once that is done, just wait for the server to be rediscovered or just
+enable it manually.
+
 ## Pwrstatd
 
 Pwrstatd (commonly known as powerpanel) is an application/service available from CyberPower to monitor their PSUs over USB.  It is currently capable of reading the status of only one PSU connected via USB at a time.  The powerpanel software is available here:
@@ -2508,6 +2552,101 @@ Also if the system you are using uses non-static device naming based
 on bus information, it may be worthwhile just using the SN as the
 device ID is going to be irrelevant in that case.
 
+## Sneck
+
+This is for replacing Nagios/Icinga or the LibreNMS service
+integration in regards to NRPE. This allows LibreNMS to query what
+checks were ran on the server and keep track of totals of OK, WARNING,
+CRITICAL, and UNKNOWN statuses.
+
+The big advantage over this compared to a NRPE are as below.
+
+- It does not need to know what checks are configured on it.
+- Also does not need to wait for the tests to run as sneck is meant to
+  be ran via cron and the then return the cache when queried via SNMP,
+  meaning a lot faster response time, especially if slow checks are
+  being performed.
+- Works over proxied SNMP connections.
+
+Included are alert examples. Although for setting up custom ones, the
+metrics below are provided.
+
+| Metric              | Description                                                                                                           |
+|---------------------|-----------------------------------------------------------------------------------------------------------------------|
+| ok                  | Total OK checks                                                                                                       |
+| warning             | Total WARNING checks                                                                                                  |
+| critical            | Total CRITICAL checks                                                                                                 |
+| unknown             | Total UNKNOWN checks                                                                                                  |
+| errored             | Total checks that errored                                                                                             |
+| time_to_polling     | Differnce in seconds between when polling data was generated and when polled                                          |
+| time_to_polling_abs | The absolute value of time_to_polling.                                                                                |
+| check_$CHECK        | Exit status of a specific check `$CHECK` is equal to the name of the check in question. So `foo` would be `check_foo` |
+
+The standard Nagios/Icinga style exit codes are used and those are as
+below.
+
+| Exit | Meaning  |
+|------|----------|
+| 0    | okay     |
+| 1    | warning  |
+| 2    | critical |
+| 3+   | unknown  |
+
+To use `time_to_polling`, it will need to enabled via setting the
+config item below. The default is false. Unless set to true, this
+value will default to 0. If enabling this, one will want to make sure
+that NTP is in use every were or it will alert if it goes over a
+difference of 540s.
+
+```
+lnms config:set app.sneck.polling_time_diff true
+```
+
+For more information on Sneck, check it out at
+[MetaCPAN](https://metacpan.org/dist/Monitoring-Sneck) or
+[Github](https://github.com/VVelox/Monitoring-Sneck).
+
+For poking systems using Sneck, also check out boop_snoot
+if one wants to query those systems via the CLI. Docs on it
+at [MetaCPAN](https://metacpan.org/dist/Monitoring-Sneck-Boop_Snoot) and
+[Github](https://github.com/VVelox/Monitoring-Sneck-Boop_Snoot).
+
+### SNMP Extend
+
+1. Install the extend.
+
+```
+# FreeBSD
+pkg install p5-JSON p5-File-Slurp p5-MIME-Base64 p5-Gzip-Faster p5-App-cpanminus
+cpanm Monitoring::Sneck
+# Debian based systems
+apt-get install zlib1g-dev cpanminus
+cpanm Monitoring::Sneck
+```
+
+2. Configure any of the checks you want to run in
+   `/usr/local/etc/sneck.conf`. You con find it documented
+   [here](https://metacpan.org/pod/Monitoring::Sneck#CONFIG-FORMAT).
+
+3. Set it up in cron. This will mean you don't need to wait for all
+   the checks to complete when polled via SNMP, which for like SMART
+   or other long running checks will mean it timing out. Also means it
+   does not need called via sudo as well.
+
+```
+*/5 * * * * /usr/bin/env PATH=/sbin:/bin:/usr/sbin:/usr/bin:/usr/local/sbin:/usr/local/bin /usr/local/bin/sneck -u 2> /dev/null > /dev/null
+```
+
+4. Set it up in the snmpd config and restart snmpd. The `-c` flag will
+   tell read it to read from cache instead of rerunning the checks.
+
+```
+extend sneck /usr/bin/env PATH=/sbin:/bin:/usr/sbin:/usr/bin:/usr/local/sbin:/usr/local/bin /usr/local/bin/sneck -c
+```
+
+5. In LibreNMS, enable the application for the server in question or wait for auto
+   discovery to find it.
+
 ## Squid
 
 ### SNMP Proxy
@@ -2666,6 +2805,20 @@ setup. If the default does not work, check the docs for it at
 [MetaCPAN for
 suricata_stat_check](https://metacpan.org/dist/Suricata-Monitoring/view/bin/suricata_stat_check)
 
+
+## Suricata Extract
+
+### SNMP
+
+1. Add the following to your snmpd config and restart. Path may have
+to be adjusted depending on where `suricata_extract_submit_extend` is
+installed to.
+```
+extend suricata_extract /usr/local/bin/suricata_extract_submit_extend
+```
+
+Then just wait for the system to be rediscovered or enable it manually
+for the server in question.
 
 ## Systemd
 
