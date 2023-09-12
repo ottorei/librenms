@@ -33,7 +33,7 @@
                  "value": "array",
                  "value.*": "string"
              }
-        },	
+        },
         "alert_colour.ok": {
             "default": "#00ff00",
             "type": "color"
@@ -436,10 +436,15 @@
             "group": "auth",
             "section": "ad",
             "order": 4,
-            "type": "ldap-groups",
+            "type": "group-role-map",
+            "options": {
+                "groupPlaceholder": "Group Name"
+            },
             "validate": {
                 "value": "array",
-                "value.*": "array"
+                "value.*": "array",
+                "value.*.roles": "array|required",
+                "value.*.roles.*": "string"
             }
         },
         "auth_ad_user_filter": {
@@ -576,10 +581,15 @@
             "group": "auth",
             "section": "ldap",
             "order": 4,
-            "type": "ldap-groups",
+            "type": "group-role-map",
+            "options": {
+                "groupPlaceholder": "Group DN"
+            },
             "validate": {
                 "value": "array",
-                "value.*": "array"
+                "value.*": "array",
+                "value.*.roles": "array|required",
+                "value.*.roles.*": "string"
             }
         },
         "auth_ldap_port": {
@@ -5106,6 +5116,20 @@
             "group": "auth",
             "section": "general",
             "order": 7,
+            "type": "boolean"
+        },
+        "radius.default_roles": {
+            "default": [],
+            "group": "auth",
+            "section": "radius",
+            "order": 3,
+            "type": "array"
+        },
+        "radius.enforce_roles": {
+            "default": true,
+            "group": "auth",
+            "section": "radius",
+            "order": 4,
             "type": "boolean"
         },
         "rancid_configs": {

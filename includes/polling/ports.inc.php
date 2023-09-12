@@ -665,17 +665,19 @@ foreach ($ports as $port) {
         $tune_port = false;
         foreach ($data_oids as $oid) {
             $current_oid = $this_port[$oid] ?? null;
+
             if ($oid == 'ifAlias') {
-                if (! empty($device['attribs']['ifName:' . $port['ifName']])) {
-                    $this_port['ifAlias'] = $port['ifAlias'];
+                $ifAlias_override = DeviceCache::getPrimary()->getAttrib('ifName:' . $port['ifName']);
+                if ($ifAlias_override !== null) {
+                    // handle legacy '1' setting, otherwise use value set by override
+                    $current_oid = $ifAlias_override === '1' ? $port['ifAlias'] : $ifAlias_override;
                 } else {
-                    $this_port['ifAlias'] = \LibreNMS\Util\StringHelpers::inferEncoding($this_port['ifAlias']);
+                    $current_oid = \LibreNMS\Util\StringHelpers::inferEncoding($this_port['ifAlias']);
                 }
             }
             if ($oid == 'ifSpeed') {
-                if (! empty($device['attribs']['ifSpeed:' . $port['ifName']])) {
-                    $this_port['ifSpeed'] = $port['ifSpeed'];
-                }
+                $ifSpeed_override = DeviceCache::getPrimary()->getAttrib('ifSpeed:' . $port['ifName']);
+                $current_oid = $ifSpeed_override ?? $current_oid;
             }
 
             if ($port[$oid] != $current_oid && ! isset($current_oid)) {
@@ -698,6 +700,7 @@ foreach ($ports as $port) {
 
                 // set the update data
                 $port['update'][$oid] = $current_oid;
+                $this_port[$oid] = $current_oid;
 
                 // store the previous values for alerting
                 if (in_array($oid, ['ifOperStatus', 'ifAdminStatus', 'ifSpeed'])) {
