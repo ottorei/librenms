@@ -1481,7 +1481,10 @@ function list_oxidized_groups(Illuminate\Http\Request $request)
     $return = [];
 
     # OS-mappings for Oxidized
-    $os_map['ciscowlc'] = 'aireos';
+    $os_maps = [];
+    foreach (Config::get('oxidized.maps.os.os', []) as $os) {
+        $os_maps[$os["match"]] = $os["value"];
+    }
 
     $device_groups = DeviceGroup::whereIn('name', Config::get('oxidized.enabled_groups', []))->get();
 
@@ -1491,7 +1494,7 @@ function list_oxidized_groups(Illuminate\Http\Request $request)
                 'group' => $dev_grp->name,
                 'hostname' => $device->hostname,
                 'ip' => $device->ip,
-                'os' => $os_map[$device->os] ?? $device->os,
+                'os' => $os_maps[$device->os] ?? $device->os,
             ];
             $return[] = $output;
             //return response()->json($return, 200, [], JSON_PRETTY_PRINT);
