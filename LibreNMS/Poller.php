@@ -32,10 +32,8 @@ use App\Models\Eventlog;
 use App\Polling\Measure\Measurement;
 use App\Polling\Measure\MeasurementManager;
 use Carbon\Carbon;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Str;
 use LibreNMS\Enum\Severity;
-use LibreNMS\Exceptions\PollerException;
 use LibreNMS\Polling\ConnectivityHelper;
 use LibreNMS\Polling\Result;
 use LibreNMS\RRD\RrdDefinition;
@@ -89,7 +87,7 @@ class Poller
 
         $this->logger->info("Starting polling run:\n");
 
-        foreach ($this->buildDeviceQuery()->pluck('device_id') as $device_id) {
+        foreach (Device::whereDeviceSpec($this->device_spec)->pluck('device_id') as $device_id) {
             $results->markAttempted();
             $this->initDevice($device_id);
             PollingDevice::dispatch($this->device);
@@ -226,32 +224,11 @@ class Poller
         return false;
     }
 
-    private function buildDeviceQuery(): Builder
-    {
-        $query = Device::query();
-
-        if (empty($this->device_spec)) {
-            throw new PollerException('Invalid device spec');
-        } elseif ($this->device_spec == 'all') {
-            return $query;
-        } elseif ($this->device_spec == 'even') {
-            return $query->whereRaw('device_id % 2 = 0');
-        } elseif ($this->device_spec == 'odd') {
-            return $query->whereRaw('device_id % 2 = 1');
-        } elseif (is_numeric($this->device_spec)) {
-            return $query->where('device_id', $this->device_spec);
-        } elseif (Str::contains($this->device_spec, '*')) {
-            return $query->where('hostname', 'like', str_replace('*', '%', $this->device_spec));
-        }
-
-        return $query->where('hostname', $this->device_spec);
-    }
-
     private function initDevice(int $device_id): void
     {
         \DeviceCache::setPrimary($device_id);
         $this->device = \DeviceCache::getPrimary();
-        $this->device->ip = $this->device->overwrite_ip ?: Dns::lookupIp($this->device);
+        $this->device->ip = $this->device->overwrite_ip ?: Dns::lookupIp($this->device) ?: $this->device->ip;
 
         $this->deviceArray = $this->device->toArray();
         if ($os_group = Config::get("os.{$this->device->os}.group")) {
@@ -337,7 +314,7 @@ EOH, $this->device->hostname, $group ? " ($group)" : '', $this->device->device_i
             'rrd_def' => RrdDefinition::make()->addDataset('poller', 'GAUGE', 0),
             'module' => 'ALL',
         ], [
-            'poller' => $this->device->last_ping_timetaken,
+            'poller' => $this->device->last_polled_timetaken,
         ]);
 
         $this->os->enableGraph('poller_perf');
