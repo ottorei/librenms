@@ -42,8 +42,8 @@ use LibreNMS\Exceptions\InvalidTableColumnException;
 use LibreNMS\Util\Graph;
 use LibreNMS\Util\IP;
 use LibreNMS\Util\IPv4;
+use LibreNMS\Util\Mac;
 use LibreNMS\Util\Number;
-use LibreNMS\Util\Rewrite;
 
 function api_success($result, $result_name, $message = null, $code = 200, $count = null, $extra = null): JsonResponse
 {
@@ -413,6 +413,7 @@ function add_device(Illuminate\Http\Request $request)
             'hostname',
             'display',
             'overwrite_ip',
+            'location_id',
             'port',
             'transport',
             'poller_group',
@@ -426,6 +427,10 @@ function add_device(Illuminate\Http\Request $request)
             'cryptopass',
             'cryptoalgo',
         ]));
+
+        if (! empty($data['location'])) {
+            $device->location_id = \App\Models\Location::firstOrCreate(['location' => $data['location']])->id;
+        }
 
         // uses different name in legacy call
         if (! empty($data['version'])) {
@@ -1083,7 +1088,7 @@ function get_port_info(Illuminate\Http\Request $request)
  */
 function search_ports(Illuminate\Http\Request $request): JsonResponse
 {
-    $columns = validate_column_list($request->get('columns'), 'ports', ['device_id', 'port_id', 'ifIndex', 'ifName']);
+    $columns = validate_column_list($request->get('columns'), 'ports', ['device_id', 'port_id', 'ifIndex', 'ifName', 'ifAlias']);
     $field = $request->route('field');
     $search = $request->route('search');
 
@@ -2513,30 +2518,23 @@ function list_fdb(Illuminate\Http\Request $request)
 
 function list_fdb_detail(Illuminate\Http\Request $request)
 {
-    $macAddress = Rewrite::macToHex((string) $request->route('mac'));
+    $macAddress = Mac::parse($request->route('mac'));
 
-    $rules = [
-        'macAddress' => 'required|string|regex:/^[0-9a-fA-F]{12}$/',
-    ];
-
-    $validate = Validator::make(['macAddress' => $macAddress], $rules);
-    if ($validate->fails()) {
-        return api_error(422, $validate->messages());
+    if (! $macAddress->isValid()) {
+        return api_error(422, 'Invalid MAC address');
     }
 
-    $extras = ['mac' => Rewrite::readableMac($macAddress),  'mac_oui' => Rewrite::readableOUI($macAddress)];
+    $extras = ['mac' => $macAddress->readable(),  'mac_oui' => $macAddress->vendor()];
 
     $fdb = PortsFdb::hasAccess(Auth::user())
-           ->when(! empty($macAddress), function (Builder $query) use ($macAddress) {
-               return $query->leftJoin('ports', 'ports_fdb.port_id', 'ports.port_id')
-                      ->leftJoin('devices', 'ports_fdb.device_id', 'devices.device_id')
-                      ->where('mac_address', $macAddress)
-                      ->orderBy('ports_fdb.updated_at', 'desc')
-                      ->select('devices.hostname', 'ports.ifName', 'ports_fdb.updated_at');
-           })
-           ->limit(1000)->get();
+        ->leftJoin('ports', 'ports_fdb.port_id', 'ports.port_id')
+        ->leftJoin('devices', 'ports_fdb.device_id', 'devices.device_id')
+        ->where('mac_address', $macAddress->hex())
+        ->orderBy('ports_fdb.updated_at', 'desc')
+        ->select('devices.hostname', 'ports.ifName', 'ports_fdb.updated_at')
+        ->limit(1000)->get();
 
-    if (count($fdb) == 0) {
+    if ($fdb->isEmpty()) {
         return api_error(404, 'Fdb entry does not exist');
     }
 
@@ -2611,7 +2609,7 @@ function list_arp(Illuminate\Http\Request $request)
             return api_error(400, 'Invalid Network Address');
         }
     } elseif (filter_var($query, FILTER_VALIDATE_MAC)) {
-        $mac = \LibreNMS\Util\Rewrite::macToHex($query);
+        $mac = Mac::parse($query)->hex();
         $arp = dbFetchRows('SELECT * FROM `ipv4_mac` WHERE `mac_address`=?', [$mac]);
     } else {
         $arp = dbFetchRows('SELECT * FROM `ipv4_mac` WHERE `ipv4_address`=?', [$query]);
@@ -3020,7 +3018,7 @@ function del_service_from_host(Illuminate\Http\Request $request)
 
 function search_by_mac(Illuminate\Http\Request $request)
 {
-    $macAddress = Rewrite::macToHex((string) $request->route('search'));
+    $macAddress = Mac::parse((string) $request->route('search'))->hex();
 
     $rules = [
         'macAddress' => 'required|string|regex:/^[0-9a-fA-F]{12}$/',
