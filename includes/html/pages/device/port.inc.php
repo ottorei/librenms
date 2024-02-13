@@ -2,6 +2,7 @@
 
 use App\Models\Port;
 use App\Models\PortAdsl;
+use App\Models\PortsNac;
 use App\Models\PortVdsl;
 use App\Plugins\Hooks\PortTabHook;
 use LibreNMS\Util\Rewrite;
@@ -66,10 +67,10 @@ echo "<div style='clear: both;'>";
 print_optionbar_start();
 
 $link_array = [
-    'page'   => 'device',
+    'page' => 'device',
     'device' => $device['device_id'],
-    'tab'    => 'port',
-    'port'   => $port->port_id,
+    'tab' => 'port',
+    'port' => $port->port_id,
 ];
 
 $menu_options['graphs'] = 'Graphs';
@@ -93,6 +94,10 @@ if (PortAdsl::where('port_id', $port->port_id)->exists()) {
     $menu_options['xdsl'] = 'xDSL';
 } elseif (PortVdsl::where('port_id', $port->port_id)->exists()) {
     $menu_options['xdsl'] = 'xDSL';
+}
+
+if (PortsNac::where('port_id', $port->port_id)->exists()) {
+    $menu_options['nac'] = 'NAC';
 }
 
 if (DeviceCache::getPrimary()->ports()->where('pagpGroupIfIndex', $port->ifIndex)->exists()) {
