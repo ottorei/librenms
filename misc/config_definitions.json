@@ -1049,14 +1049,6 @@
                 "{{ $ip }}":  "ip"
             }
         },
-        "device_perf_purge": {
-            "default": 7,
-            "units": "days",
-            "group": "system",
-            "section": "cleanup",
-            "order": 7,
-            "type": "integer"
-        },
         "device_traffic_descr": {
             "default": [
                 "/loopback/",
@@ -1751,10 +1743,6 @@
             "default": false,
             "type": "boolean"
         },
-        "enable_ports_poe": {
-            "default": false,
-            "type": "boolean"
-        },
         "enable_pseudowires": {
             "default": true,
             "type": "boolean"
@@ -1881,6 +1869,26 @@
             "section": "location",
             "order": 2,
             "type": "boolean",
+            "when": {
+                "setting": "geoloc.engine",
+                "operator": "in",
+                "value": [
+                    "google",
+                    "mapquest",
+                    "bing"
+                ]
+            }
+        },
+        "geoloc.layer": {
+            "default": "Streets",
+            "group": "external",
+            "section": "location",
+            "order": 7,
+            "type": "select",
+            "options": {
+                "Streets":  "Streets",
+                "Sattelite": "Sattelite"
+            },
             "when": {
                 "setting": "geoloc.engine",
                 "operator": "in",
