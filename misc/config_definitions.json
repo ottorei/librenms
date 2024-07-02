@@ -1727,10 +1727,6 @@
             "default": false,
             "type": "boolean"
         },
-        "enable_port_relationship": {
-            "default": true,
-            "type": "boolean"
-        },
         "enable_ports_adsl": {
             "default": true,
             "type": "boolean"
@@ -1839,7 +1835,8 @@
                 "value": [
                     "google",
                     "mapquest",
-                    "bing"
+                    "bing",
+                    "esri"
                 ]
             }
         },
@@ -1860,7 +1857,8 @@
                 "google": "Google Maps",
                 "openstreetmap": "OpenStreetMap",
                 "mapquest": "MapQuest",
-                "bing": "Bing Maps"
+                "bing": "Bing Maps",
+                "esri": "ESRI ArcGIS"
             }
         },
         "geoloc.latlng": {
@@ -1887,7 +1885,8 @@
             "type": "select",
             "options": {
                 "Streets":  "Streets",
-                "Sattelite": "Sattelite"
+                "Sattelite": "Sattelite",
+                "Topography":  "Topography"
             },
             "when": {
                 "setting": "geoloc.engine",
@@ -1895,7 +1894,8 @@
                 "value": [
                     "google",
                     "mapquest",
-                    "bing"
+                    "bing",
+                    "esri"
                 ]
             }
         },
@@ -4553,6 +4553,13 @@
                 "115200": "36 hours",
                 "153600": "48 hours"
             },
+            "type": "array"
+        },
+        "nfsen_base": {
+            "default": [],
+            "group": "external",
+            "section": "nfsen",
+            "order": 10,
             "type": "array"
         },
         "nfsen_split_char": {
