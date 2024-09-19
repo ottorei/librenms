@@ -16,40 +16,6 @@ use LibreNMS\Enum\ImageFormat;
 use LibreNMS\Util\Number;
 use LibreNMS\Util\Rewrite;
 
-/**
- * Compare $t with the value of $vars[$v], if that exists
- *
- * @param  string  $v  Name of the var to test
- * @param  string  $t  Value to compare $vars[$v] to
- * @return bool true, if values are the same, false if $vars[$v]
- *              is unset or values differ
- */
-function var_eq($v, $t)
-{
-    global $vars;
-    if (isset($vars[$v]) && $vars[$v] == $t) {
-        return true;
-    }
-
-    return false;
-}
-
-/**
- * Get the value of $vars[$v], if it exists
- *
- * @param  string  $v  Name of the var to get
- * @return string|bool The value of $vars[$v] if it exists, false if it does not exist
- */
-function var_get($v)
-{
-    global $vars;
-    if (isset($vars[$v])) {
-        return $vars[$v];
-    }
-
-    return false;
-}
-
 function toner2colour($descr, $percent)
 {
     $colour = \LibreNMS\Util\Color::percentage(100 - $percent, null);
@@ -258,34 +224,6 @@ function print_percentage_bar($width, $height, $percent, $left_text, $left_colou
         'right_text' => $right_colour,
     ]);
 }
-
-function generate_entity_link($type, $entity, $text = null, $graph_type = null)
-{
-    global $entity_cache;
-
-    if (is_numeric($entity)) {
-        $entity = get_entity_by_id_cache($type, $entity);
-    }
-
-    switch ($type) {
-        case 'port':
-            $link = generate_port_link($entity, $text, $graph_type);
-            break;
-
-        case 'storage':
-            if (empty($text)) {
-                $text = $entity['storage_descr'];
-            }
-
-            $link = generate_link($text, ['page' => 'device', 'device' => $entity['device_id'], 'tab' => 'health', 'metric' => 'storage']);
-            break;
-
-        default:
-            $link = $entity[$type . '_id'];
-    }
-
-    return $link;
-}//end generate_entity_link()
 
 /**
  * Extract type and subtype from a complex graph type, also makes sure variables are file name safe.
@@ -1112,16 +1050,16 @@ function get_sensor_label_color($sensor, $type = 'sensors')
     if (is_null($sensor)) {
         return 'label-unknown';
     }
-    if (! is_null($sensor['sensor_limit_warn']) && $sensor['sensor_current'] > $sensor['sensor_limit_warn']) {
+    if (! is_null($sensor['sensor_limit_warn']) && $sensor['sensor_current'] >= $sensor['sensor_limit_warn']) {
         $label_style = 'label-warning';
     }
-    if (! is_null($sensor['sensor_limit_low_warn']) && $sensor['sensor_current'] < $sensor['sensor_limit_low_warn']) {
+    if (! is_null($sensor['sensor_limit_low_warn']) && $sensor['sensor_current'] <= $sensor['sensor_limit_low_warn']) {
         $label_style = 'label-warning';
     }
-    if (! is_null($sensor['sensor_limit']) && $sensor['sensor_current'] > $sensor['sensor_limit']) {
+    if (! is_null($sensor['sensor_limit']) && $sensor['sensor_current'] >= $sensor['sensor_limit']) {
         $label_style = 'label-danger';
     }
-    if (! is_null($sensor['sensor_limit_low']) && $sensor['sensor_current'] < $sensor['sensor_limit_low']) {
+    if (! is_null($sensor['sensor_limit_low']) && $sensor['sensor_current'] <= $sensor['sensor_limit_low']) {
         $label_style = 'label-danger';
     }
     $unit = __("$type.{$sensor['sensor_class']}.unit");
