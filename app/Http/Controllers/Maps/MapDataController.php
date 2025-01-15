@@ -37,7 +37,6 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use LibreNMS\Config;
-use LibreNMS\Util\Url;
 
 class MapDataController extends Controller
 {
@@ -377,13 +376,13 @@ class MapDataController extends Controller
     {
         $link_pct = round(2 * $link_pct, -1) / 2;
         if ($link_pct > 100) {
-            $link_used = 100;
+            $link_pct = 100;
         }
         if (is_nan($link_pct)) {
-            $link_used = 0;
+            $link_pct = 0;
         }
 
-        return Config::get("network_map_legend.$link_pct");
+        return Config::get("network_map_legend.$link_pct", '#000000');
     }
 
     protected function nodeDisabledStyle(): array
@@ -498,7 +497,7 @@ class MapDataController extends Controller
                 'last_polled' => $device->last_polled,
                 'disabled' => $device->disabled,
                 'no_alerts' => $device->disable_notify,
-                'url' => $request->url_type == 'links' ? Url::deviceLink($device, null, [], 0, 0, 0, 0) : Url::deviceUrl($device->device_id),
+                'url' => $request->url_type == 'links' ? \Blade::render('<x-device-link-map :device="$device" />', ['device' => $device]) : route('device', ['device' => $device->device_id]),
                 'style' => self::deviceStyle($device, $request->highlight_node),
                 'lat' => $device->location ? $device->location->lat : null,
                 'lng' => $device->location ? $device->location->lng : null,
@@ -714,7 +713,7 @@ class MapDataController extends Controller
                         'ldev' => $port->device_id,
                         'rdev' => $remote_port->device_id,
                         'ifnames' => $port->ifName . ' <> ' . $remote_port->ifName,
-                        'url' => Url::portLink($port, null, null, false, true),
+                        'url' => \Blade::render('<x-port-link-map :port="$port" />', ['port' => $port]),
                         'style' => $link_style,
                     ];
                 }
@@ -792,7 +791,7 @@ class MapDataController extends Controller
                 'icon' => $service->device->icon,
                 'icontitle' => $service->device->icon ? str_replace(['.svg', '.png'], '', basename($service->device->icon)) : $service->device->os,
                 'device_name' => $service->device->shortDisplayName(),
-                'url' => Url::deviceUrl($service->device_id),
+                'url' => \Blade::render('<x-device-link-map :device="$device" />', ['device' => $service->device]),
                 'updowntime' => $updowntime,
                 'compact' => Config::get('webui.availability_map_compact'),
                 'box_size' => Config::get('webui.availability_map_box_size'),

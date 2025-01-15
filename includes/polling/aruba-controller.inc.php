@@ -1,6 +1,5 @@
 <?php
 
-use App\Models\AccessPoint;
 use LibreNMS\RRD\RrdDefinition;
 
 if ($device['type'] == 'wireless' && $device['os'] == 'arubaos') {
@@ -53,7 +52,7 @@ if ($device['type'] == 'wireless' && $device['os'] == 'arubaos') {
         ->addDataset('NUMCLIENTS', 'GAUGE', 0, 12500000000);
 
     $fields = [
-        'NUMAPS' => $aruba_stats[0]['wlsxSwitchTotalNumAccessPoints'],
+        'NUMAPS'     => $aruba_stats[0]['wlsxSwitchTotalNumAccessPoints'],
         'NUMCLIENTS' => $aruba_stats[0]['wlsxSwitchTotalNumStationsAssociated'],
     ];
 
@@ -105,13 +104,13 @@ if ($device['type'] == 'wireless' && $device['os'] == 'arubaos') {
                     ->addDataset('interference', 'GAUGE', 0, 2000);
 
                 $fields = [
-                    'channel' => $channel,
-                    'txpow' => $txpow,
-                    'radioutil' => $radioutil,
-                    'nummonclients' => $nummonclients,
-                    'nummonbssid' => $nummonbssid,
-                    'numasoclients' => $numasoclients,
-                    'interference' => $interference,
+                    'channel'         => $channel,
+                    'txpow'           => $txpow,
+                    'radioutil'       => $radioutil,
+                    'nummonclients'   => $nummonclients,
+                    'nummonbssid'     => $nummonbssid,
+                    'numasoclients'   => $numasoclients,
+                    'interference'    => $interference,
                 ];
 
                 $tags = [
@@ -136,7 +135,7 @@ if ($device['type'] == 'wireless' && $device['os'] == 'arubaos') {
             $foundid = 0;
 
             for ($z = 0; $z < sizeof($ap_db); $z++) {
-                if ($ap_db[$z]['mac_addr'] == $mac && $ap_db[$z]['radio_number'] == $radionum) {
+                if ($ap_db[$z]['name'] == $name && $ap_db[$z]['radio_number'] == $radionum) {
                     $foundid = $ap_db[$z]['accesspoint_id'];
                     $ap_db[$z]['seen'] = 1;
                     continue;
@@ -146,39 +145,39 @@ if ($device['type'] == 'wireless' && $device['os'] == 'arubaos') {
             if ($foundid == 0) {
                 $ap_id = dbInsert(
                     [
-                        'channel' => $channel,
-                        'deleted' => 0,
-                        'device_id' => $device['device_id'],
-                        'interference' => $interference,
-                        'mac_addr' => $mac,
-                        'name' => $name,
-                        'numactbssid' => $numactbssid,
+                        'channel'       => $channel,
+                        'deleted'       => 0,
+                        'device_id'     => $device['device_id'],
+                        'interference'  => $interference,
+                        'mac_addr'      => $mac,
+                        'name'          => $name,
+                        'numactbssid'   => $numactbssid,
                         'numasoclients' => $numasoclients,
-                        'nummonbssid' => $nummonbssid,
+                        'nummonbssid'   => $nummonbssid,
                         'nummonclients' => $nummonclients,
-                        'radio_number' => $radionum,
-                        'radioutil' => $radioutil,
-                        'txpow' => $txpow,
-                        'type' => $type,
+                        'radio_number'  => $radionum,
+                        'radioutil'     => $radioutil,
+                        'txpow'         => $txpow,
+                        'type'          => $type,
                     ],
                     'access_points'
                 );
             } else {
                 dbUpdate(
                     [
-                        'channel' => $channel,
-                        'deleted' => 0,
-                        'interference' => $interference,
-                        'mac_addr' => $mac,
-                        'name' => $name,
-                        'numactbssid' => $numactbssid,
+                        'channel'       => $channel,
+                        'deleted'       => 0,
+                        'interference'  => $interference,
+                        'mac_addr'      => $mac,
+                        'name'          => $name,
+                        'numactbssid'   => $numactbssid,
                         'numasoclients' => $numasoclients,
-                        'nummonbssid' => $nummonbssid,
+                        'nummonbssid'   => $nummonbssid,
                         'nummonclients' => $nummonclients,
-                        'radio_number' => $radionum,
-                        'radioutil' => $radioutil,
-                        'txpow' => $txpow,
-                        'type' => $type,
+                        'radio_number'  => $radionum,
+                        'radioutil'     => $radioutil,
+                        'txpow'         => $txpow,
+                        'type'          => $type,
                     ],
                     'access_points',
                     '`accesspoint_id` = ?',
@@ -188,18 +187,10 @@ if ($device['type'] == 'wireless' && $device['os'] == 'arubaos') {
         }//end foreach
     }//end foreach
 
-    $local_ap_macs = [];
-
     // mark APs which are not on this controller anymore as deleted
     for ($z = 0; $z < sizeof($ap_db); $z++) {
-        $local_ap_macs[] = $ap_db[$z]['mac_addr'];
         if (! isset($ap_db[$z]['seen']) && $ap_db[$z]['deleted'] == 0) {
             dbUpdate(['deleted' => 1], 'access_points', '`accesspoint_id` = ?', [$ap_db[$z]['accesspoint_id']]);
         }
     }
-
-    // Cleanup, delete access points which are online on this controller but marked as offline on any other one
-    AccessPoint::where(['mac_addr' => $local_ap_macs, 'deleted' => '1'])
-        ->whereNotIn('device_id', [$device['device_id']])
-        ->delete();
-}
+}//end if

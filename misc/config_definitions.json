@@ -1055,6 +1055,19 @@
                 "value": "map"
             }
         },
+        "custom_map.edge_font_align": {
+            "default": "horizontal",
+            "type": "select",
+            "options": {
+                "horizontal": "Horizontal",
+                "top": "top",
+                "middle": "Middle",
+                "bottom": "Bottom"
+            },
+            "group": "webui",
+            "section": "custom-map",
+            "order": 54
+        },
         "custom_map.edge_font_color": {
             "default": "#343434",
             "type": "color",
@@ -1430,13 +1443,6 @@
             "default": false,
             "type": "boolean"
         },
-        "discovery_modules.transceivers": {
-            "order": 322,
-            "group": "discovery",
-            "section": "discovery_modules",
-            "default": true,
-            "type": "boolean"
-        },
         "discovery_modules.entity-physical": {
             "order": 110,
             "group": "discovery",
@@ -1514,13 +1520,6 @@
             "default": false,
             "type": "boolean"
         },
-        "discovery_modules.cisco-cbqos": {
-            "order": 40,
-            "group": "discovery",
-            "section": "discovery_modules",
-            "default": false,
-            "type": "boolean"
-        },
         "discovery_modules.cisco-otv": {
             "order": 70,
             "group": "discovery",
@@ -1549,11 +1548,25 @@
             "default": true,
             "type": "boolean"
         },
+        "discovery_modules.qos": {
+            "order": 260,
+            "group": "discovery",
+            "section": "discovery_modules",
+            "default": true,
+            "type": "boolean"
+        },
         "discovery_modules.route": {
             "order": 270,
             "group": "discovery",
             "section": "discovery_modules",
             "default": false,
+            "type": "boolean"
+        },
+        "discovery_modules.transceivers": {
+            "order": 322,
+            "group": "discovery",
+            "section": "discovery_modules",
+            "default": true,
             "type": "boolean"
         },
         "discovery_modules.sensors": {
@@ -2797,14 +2810,6 @@
                 "section": "voice",
                 "order": 0,
                 "descr": "Transcoder Utilisation"
-            },
-            "type": "graph"
-        },
-        "graph_types.device.cisco-voice-ip": {
-            "default": {
-                "section": "voice",
-                "order": 0,
-                "descr": "IP Real Time Calls"
             },
             "type": "graph"
         },
@@ -4379,13 +4384,47 @@
             "section": "influxdbv2",
             "order": 8
         },
+        "influxdbv2.log_file": {
+            "type": "text",
+            "group": "poller",
+            "section": "influxdbv2",
+            "order": 9
+        },
         "influxdbv2.groups-exclude": {
             "group": "poller",
             "section": "influxdbv2",
-            "order": 9,
+            "order": 10,
             "type": "array",
             "default": [
             ]
+        },
+        "influxdbv2.timeout": {
+            "default": 1,
+            "type": "integer",
+            "group": "poller",
+            "section": "influxdbv2",
+            "order": 11
+        },
+        "influxdbv2.verify": {
+            "default": false,
+            "type": "boolean",
+            "group": "poller",
+            "section": "influxdbv2",
+            "order": 12
+        },
+        "influxdbv2.batch_size": {
+            "default": 1000,
+            "type": "integer",
+            "group": "poller",
+            "section": "influxdbv2",
+            "order": 13
+        },
+        "influxdbv2.max_retry": {
+            "default": 3,
+            "type": "integer",
+            "group": "poller",
+            "section": "influxdbv2",
+            "order": 14
         },
         "install_dir": {
             "type": "directory"
@@ -4639,6 +4678,10 @@
             "group": "discovery",
             "section": "networks",
             "order": 1
+        },
+        "network_map_dependencymap_vis_options": {
+            "default": null,
+            "type": "text"
         },
         "network_map_items": {
             "default": [
@@ -4917,10 +4960,6 @@
             ],
             "type": "array"
         },
-        "os_def_cache_time": {
-            "default": 86400,
-            "type": "integer"
-        },
         "os_group.unix.over": {
             "default": [
                 {
@@ -5196,6 +5235,13 @@
             "default": true,
             "type": "boolean"
         },
+        "poller_modules.qos": {
+            "order": 350,
+            "group": "poller",
+            "section": "poller_modules",
+            "default": true,
+            "type": "boolean"
+        },
         "poller_modules.sensors": {
             "order": 360,
             "group": "poller",
@@ -5266,13 +5312,6 @@
             "default": false,
             "type": "boolean"
         },
-        "poller_modules.transceivers": {
-            "order": 322,
-            "group": "poller",
-            "section": "poller_modules",
-            "default": true,
-            "type": "boolean"
-        },
         "poller_modules.customoid": {
             "default": true,
             "type": "boolean"
@@ -5307,13 +5346,6 @@
         },
         "poller_modules.vminfo": {
             "order": 410,
-            "group": "poller",
-            "section": "poller_modules",
-            "default": false,
-            "type": "boolean"
-        },
-        "poller_modules.wifi": {
-            "order": 430,
             "group": "poller",
             "section": "poller_modules",
             "default": false,
@@ -5403,20 +5435,6 @@
             "default": false,
             "type": "boolean"
         },
-        "poller_modules.cisco-voice": {
-            "order": 150,
-            "group": "poller",
-            "section": "poller_modules",
-            "default": false,
-            "type": "boolean"
-        },
-        "poller_modules.cisco-cbqos": {
-            "order": 70,
-            "group": "poller",
-            "section": "poller_modules",
-            "default": false,
-            "type": "boolean"
-        },
         "poller_modules.cisco-otv": {
             "order": 110,
             "group": "poller",
@@ -5461,6 +5479,13 @@
         },
         "poller_modules.entity-physical": {
             "order": 170,
+            "group": "poller",
+            "section": "poller_modules",
+            "default": true,
+            "type": "boolean"
+        },
+        "poller_modules.transceivers": {
+            "order": 322,
             "group": "poller",
             "section": "poller_modules",
             "default": true,
@@ -5792,21 +5817,88 @@
             "order": 12,
             "type": "text"
         },
+        "schedule_type.alerting": {
+            "default": "legacy",
+            "type": "select",
+            "group": "system",
+            "section": "scheduledtasks",
+            "order": 1,
+            "options": {
+                "legacy": "legacy",
+                "cron": "cron",
+                "dispatcher": "dispatcher"
+            }
+        },
+        "schedule_type.billing": {
+            "default": "legacy",
+            "group": "system",
+            "section": "scheduledtasks",
+            "order": 2,
+            "type": "select",
+            "options": {
+                "legacy": "legacy",
+                "cron": "cron",
+                "dispatcher": "dispatcher"
+            }
+        },
+        "schedule_type.discovery": {
+            "default": "legacy",
+            "group": "system",
+            "section": "scheduledtasks",
+            "order": 3,
+            "type": "select",
+            "options": {
+                "legacy": "legacy",
+                "cron": "cron",
+                "dispatcher": "dispatcher"
+            }
+        },
+        "schedule_type.ping": {
+            "default": "legacy",
+            "group": "system",
+            "section": "scheduledtasks",
+            "order": 4,
+            "type": "select",
+            "options": {
+                "legacy": "legacy",
+                "disabled": "disabled",
+                "cron": "cron",
+                "dispatcher": "dispatcher"
+            }
+        },
+        "schedule_type.poller": {
+            "default": "legacy",
+            "group": "system",
+            "section": "scheduledtasks",
+            "order": 5,
+            "type": "select",
+            "options": {
+                "legacy": "legacy",
+                "cron": "cron",
+                "dispatcher": "dispatcher",
+                "scheduler": "scheduler"
+            }
+        },
+        "schedule_type.services": {
+            "default": "legacy",
+            "group": "system",
+            "section": "scheduledtasks",
+            "order": 6,
+            "type": "select",
+            "options": {
+                "legacy": "legacy",
+                "cron": "cron",
+                "dispatcher": "dispatcher"
+            }
+        },
         "sensors.guess_limits": {
             "default": true,
-            "type": "boolean"
-        },
-        "service_poller_enabled": {
-            "default": true,
-            "group": "poller",
-            "section": "distributed",
-            "order": 5,
             "type": "boolean"
         },
         "service_poller_workers": {
             "default": 24,
             "group": "poller",
-            "section": "distributed",
+            "section": "dispatcherservice",
             "order": 6,
             "type": "integer",
             "units": "Workers"
@@ -5814,7 +5906,7 @@
         "service_poller_frequency": {
             "default": 300,
             "group": "poller",
-            "section": "distributed",
+            "section": "dispatcherservice",
             "order": 7,
             "type": "integer",
             "units": "Seconds"
@@ -5822,22 +5914,15 @@
         "service_poller_down_retry": {
             "default": 60,
             "group": "poller",
-            "section": "distributed",
+            "section": "dispatcherservice",
             "order": 8,
             "type": "integer",
             "units": "Seconds"
         },
-        "service_discovery_enabled": {
-            "default": true,
-            "group": "poller",
-            "section": "distributed",
-            "order": 9,
-            "type": "boolean"
-        },
         "service_discovery_workers": {
             "default": 16,
             "group": "poller",
-            "section": "distributed",
+            "section": "dispatcherservice",
             "order": 10,
             "type": "integer",
             "units": "Workers"
@@ -5845,22 +5930,15 @@
         "service_discovery_frequency": {
             "default": 21600,
             "group": "poller",
-            "section": "distributed",
+            "section": "dispatcherservice",
             "order": 11,
             "type": "integer",
             "units": "Seconds"
         },
-        "service_services_enabled": {
-            "default": true,
-            "group": "poller",
-            "section": "distributed",
-            "order": 12,
-            "type": "boolean"
-        },
         "service_services_workers": {
             "default": 8,
             "group": "poller",
-            "section": "distributed",
+            "section": "dispatcherservice",
             "order": 13,
             "type": "integer",
             "units": "Workers"
@@ -5868,22 +5946,15 @@
         "service_services_frequency": {
             "default": 300,
             "group": "poller",
-            "section": "distributed",
+            "section": "dispatcherservice",
             "order": 14,
             "type": "integer",
             "units": "Seconds"
         },
-        "service_billing_enabled": {
-            "default": true,
-            "group": "poller",
-            "section": "distributed",
-            "order": 15,
-            "type": "boolean"
-        },
         "service_billing_frequency": {
             "default": 300,
             "group": "poller",
-            "section": "distributed",
+            "section": "dispatcherservice",
             "order": 16,
             "type": "integer",
             "units": "Seconds"
@@ -5891,37 +5962,23 @@
         "service_billing_calculate_frequency": {
             "default": 60,
             "group": "poller",
-            "section": "distributed",
+            "section": "dispatcherservice",
             "order": 17,
             "type": "integer",
             "units": "Seconds"
         },
-        "service_alerting_enabled": {
-            "default": true,
-            "group": "poller",
-            "section": "distributed",
-            "order": 18,
-            "type": "boolean"
-        },
         "service_alerting_frequency": {
             "default": 60,
             "group": "poller",
-            "section": "distributed",
+            "section": "dispatcherservice",
             "order": 19,
             "type": "integer",
             "units": "Seconds"
         },
-        "service_ping_enabled": {
-            "default": false,
-            "group": "poller",
-            "section": "distributed",
-            "order": 20,
-            "type": "boolean"
-        },
         "ping_rrd_step": {
             "default": 60,
             "group": "poller",
-            "section": "distributed",
+            "section": "dispatcherservice",
             "order": 21,
             "type": "integer",
             "units": "Seconds"
@@ -5929,14 +5986,14 @@
         "service_update_enabled": {
             "default": true,
             "group": "poller",
-            "section": "distributed",
+            "section": "dispatcherservice",
             "order": 22,
             "type": "boolean"
         },
         "service_update_frequency": {
             "default": 86400,
             "group": "poller",
-            "section": "distributed",
+            "section": "dispatcherservice",
             "order": 23,
             "type": "integer",
             "units": "Seconds"
@@ -5944,7 +6001,7 @@
         "service_loglevel": {
             "default": "INFO",
             "group": "poller",
-            "section": "distributed",
+            "section": "dispatcherservice",
             "order": 24,
             "type": "select",
             "options": {
@@ -5958,7 +6015,7 @@
         "service_master_timeout": {
             "default": 20,
             "group": "poller",
-            "section": "distributed",
+            "section": "dispatcherservice",
             "order": 25,
             "type": "integer",
             "units": "seconds"
@@ -5966,7 +6023,7 @@
         "service_watchdog_enabled": {
             "default": false,
             "group": "poller",
-            "section": "distributed",
+            "section": "dispatcherservice",
             "order": 26,
             "type": "boolean"
         },
