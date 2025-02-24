@@ -162,9 +162,6 @@
                 "aruba-controller": {
                     "type": "boolean"
                 },
-                "cisco-asa-firewall": {
-                    "type": "boolean"
-                },
                 "mib": {
                     "type": "boolean"
                 },
@@ -457,6 +454,18 @@
             "type": "boolean"
         },
         "ignore_mount_string": {
+            "type": "array",
+            "items": {
+                "type": "string"
+            }
+        },
+        "ignore_mount_regexp": {
+            "type": "array",
+            "items": {
+                "type": "string"
+            }
+        },
+        "ignore_mount_type": {
             "type": "array",
             "items": {
                 "type": "string"

@@ -180,18 +180,6 @@ function get_port_by_id($port_id)
     }
 }
 
-function get_device_id_by_port_id($port_id)
-{
-    if (is_numeric($port_id)) {
-        $device_id = dbFetchCell('SELECT `device_id` FROM `ports` WHERE `port_id` = ?', [$port_id]);
-        if (is_numeric($device_id)) {
-            return $device_id;
-        } else {
-            return false;
-        }
-    }
-}
-
 function ifclass($ifOperStatus, $ifAdminStatus)
 {
     // fake a port model
@@ -215,21 +203,6 @@ function device_by_id_cache($device_id, $refresh = false)
     return $device;
 }
 
-function truncate($substring, $max = 50, $rep = '...')
-{
-    if (strlen($substring) < 1) {
-        $string = $rep;
-    } else {
-        $string = $substring;
-    }
-    $leave = $max - strlen($rep);
-    if (strlen($string) > $max) {
-        return substr_replace($string, $rep, $leave);
-    } else {
-        return $string;
-    }
-}
-
 function gethostbyid($device_id)
 {
     return DeviceCache::get((int) $device_id)->hostname;
@@ -243,11 +216,6 @@ function getifbyid($id)
 function getidbyname($hostname)
 {
     return DeviceCache::getByHostname($hostname)->device_id;
-}
-
-function zeropad($num, $length = 2)
-{
-    return str_pad($num, $length, '0', STR_PAD_LEFT);
 }
 
 function set_dev_attrib($device, $attrib_type, $attrib_value)
@@ -390,22 +358,6 @@ function is_customoid_graph($type, $subtype)
 } // is_customoid_graph
 
 /**
- * Parse location field for coordinates
- *
- * @param string location The location field to look for coords in.
- * @return array|bool Containing the lat and lng coords
- **/
-function parse_location($location)
-{
-    preg_match('/\[(-?[0-9. ]+), *(-?[0-9. ]+)\]/', $location, $tmp_loc);
-    if (is_numeric($tmp_loc[1]) && is_numeric($tmp_loc[2])) {
-        return ['lat' => $tmp_loc[1], 'lng' => $tmp_loc[2]];
-    }
-
-    return false;
-}//end parse_location()
-
-/**
  * Convert a MySQL binary v4 (4-byte) or v6 (16-byte) IP address to a printable string.
  *
  * @param  string  $ip  A binary string containing an IP address, as returned from MySQL's INET6_ATON function
@@ -497,7 +449,9 @@ function get_ports_mapped($device_id, $with_statistics = false)
 function get_port_id($ports_mapped, $port, $port_association_mode)
 {
     // Get port_id according to port_association_mode used for this device
-    $port_id = null;
+    if (! in_array($port_association_mode, ['ifIndex', 'ifName', 'ifDescr', 'ifAlias'])) {
+        return null;
+    }
 
     /*
      * Information an all ports is available through $ports_mapped['ports']
@@ -508,11 +462,15 @@ function get_port_id($ports_mapped, $port, $port_association_mode)
     */
     $maps = $ports_mapped['maps'];
 
-    if (in_array($port_association_mode, ['ifIndex', 'ifName', 'ifDescr', 'ifAlias'])) {
-        $port_id = $maps[$port_association_mode][$port[$port_association_mode]] ?? null;
+    // get the port association key
+    $key = null;
+    if (isset($port[$port_association_mode])) {
+        $key = $port[$port_association_mode];
+    } elseif ($port_association_mode == 'ifName' && isset($port['ifDescr'])) {
+        $key = $port['ifDescr']; // port does not have ifName, try ifDescr otherwise ports will break
     }
 
-    return $port_id;
+    return $maps[$port_association_mode][$key] ?? null;
 }
 
 /**
@@ -527,7 +485,7 @@ function get_port_id($ports_mapped, $port, $port_association_mode)
  */
 function ResolveGlues($tables, $target, $x = 0, $hist = [], $last = [])
 {
-    if (sizeof($tables) == 1 && $x != 0) {
+    if (count($tables) == 1 && $x != 0) {
         if (dbFetchCell('SELECT 1 FROM information_schema.COLUMNS WHERE TABLE_NAME = ? && COLUMN_NAME = ?', [$tables[0], $target]) == 1) {
             return array_merge($last, [$tables[0] . '.' . $target]);
         } else {
@@ -560,7 +518,7 @@ function ResolveGlues($tables, $target, $x = 0, $hist = [], $last = [])
             }
 
             $glues = dbFetchRows('SELECT COLUMN_NAME FROM information_schema.COLUMNS WHERE TABLE_NAME = ? && COLUMN_NAME LIKE "%\_id"', [$table]);
-            if (sizeof($glues) == 1 && $glues[0]['COLUMN_NAME'] != $target) {
+            if (count($glues) == 1 && $glues[0]['COLUMN_NAME'] != $target) {
                 //Search for new candidates to expand
                 $ntables = [];
                 [$tmp] = explode('_', $glues[0]['COLUMN_NAME'], 2);

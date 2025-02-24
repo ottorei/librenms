@@ -54,6 +54,10 @@
             "default": "#f0ad4e",
             "type": "color"
         },
+        "alert_colour.changed": {
+            "default": "#FFD700",
+            "type": "color"
+        },
         "alert.default_copy": {
             "default": true,
             "group": "alerting",
@@ -751,6 +755,12 @@
             "section": "ldap",
             "order": 5,
             "type": "boolean"
+        },
+        "auth_ldap_userlist_filter": {
+            "group": "auth",
+            "section": "ldap",
+            "order": 30,
+            "type": "text"
         },
         "auth_ldap_wildcard_ou": {
             "default": false,
@@ -1994,11 +2004,19 @@
             "default": false,
             "type": "boolean"
         },
+        "enable_proxmox": {
+            "default": false,
+            "type": "boolean"
+        },
         "enable_pseudowires": {
             "default": true,
             "type": "boolean"
         },
         "enable_syslog": {
+            "default": false,
+            "type": "boolean"
+        },
+        "enable_syslog_hooks": {
             "default": false,
             "type": "boolean"
         },
@@ -4132,15 +4150,21 @@
                 "custom8": "Custom 8"
             }
         },
+        "html_dir": {
+            "type": "directory"
+        },
         "http_auth_header": {
             "default": "REMOTE_USER",
             "group": "auth",
-            "section": "general",
-            "order": 4,
+            "section": "http",
+            "order": 0,
             "type": "text"
         },
-        "html_dir": {
-            "type": "directory"
+        "http_auth_guest": {
+            "group": "auth",
+            "section": "http",
+            "order": 1,
+            "type": "text"
         },
         "http_proxy": {
             "group": "system",
@@ -4180,23 +4204,21 @@
                 "/proc",
                 "/dev",
                 "/compat/linux/proc",
-                "/compat/linux/sys"
+                "/compat/linux/sys",
+                "/sys/fs/cgroup"
             ],
             "type": "array"
         },
-        "ignore_mount_network": {
-            "group": "discovery",
-            "section": "storage",
-            "order": 0,
-            "default": true,
-            "type": "boolean"
-        },
-        "ignore_mount_optical": {
+        "ignore_mount_type": {
             "group": "discovery",
             "section": "storage",
             "order": 1,
-            "default": true,
-            "type": "boolean"
+            "default": [
+                "hrStorageRemovableDisk",
+                "hrStorageNetworkDisk",
+                "hrStorageCompactDisc"
+            ],
+            "type": "array"
         },
         "ignore_mount_regexp": {
             "group": "discovery",
@@ -4213,19 +4235,13 @@
                 "/^\\/dev\\/md0/",
                 "/^\\/var\\/dhcpd\\/dev/",
                 "/UMA/",
-                "/^\\/Volumes\\/OS X Base System/"
+                "/^\\/Volumes\\/OS X Base System/",
+                "/^\\/run\\/user\\//"
             ],
             "type": "array",
             "validate": {
                 "value.*": "is_regex"
             }
-        },
-        "ignore_mount_removable": {
-            "group": "discovery",
-            "section": "storage",
-            "order": 2,
-            "default": true,
-            "type": "boolean"
         },
         "ignore_mount_string": {
             "group": "discovery",
@@ -4722,6 +4738,11 @@
                     "border": "#ff5555",
                     "edge": "#ff777788",
                     "node": "#ffdddd"
+                },
+                "wn": {
+                    "border": "#ff6644",
+                    "edge": "#ff7755",
+                    "node": "#ffeecc"
                 },
                 "highlight": {
                     "border": "#ee4000",
@@ -5423,13 +5444,6 @@
         },
         "poller_modules.cisco-ace-serverfarms": {
             "order": 50,
-            "group": "poller",
-            "section": "poller_modules",
-            "default": false,
-            "type": "boolean"
-        },
-        "poller_modules.cisco-asa-firewall": {
-            "order": 60,
             "group": "poller",
             "section": "poller_modules",
             "default": false,
@@ -6365,8 +6379,8 @@
         },
         "uptime_warning": {
             "group": "webui",
-            "section": "dashboard",
-            "order": 2,
+            "section": "device",
+            "order": 7,
             "default": 86400,
             "type": "integer",
             "validate": {

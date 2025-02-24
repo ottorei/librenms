@@ -320,51 +320,6 @@ function discover_link($local_port_id, $protocol, $remote_port_id, $remote_hostn
 
 //end discover_link()
 
-function discover_storage(&$valid, $device, $index, $type, $mib, $descr, $size, $units, $used = null)
-{
-    if (ignore_storage($device['os'], $descr)) {
-        return;
-    }
-    Log::debug("Discover Storage: $index, $type, $mib, $descr, $size, $units, $used\n");
-
-    if ($descr && $size > '0') {
-        $storage = dbFetchRow('SELECT * FROM `storage` WHERE `storage_index` = ? AND `device_id` = ? AND `storage_mib` = ?', [$index, $device['device_id'], $mib]);
-        if (empty($storage)) {
-            if (Config::getOsSetting($device['os'], 'storage_perc_warn')) {
-                $perc_warn = Config::getOsSetting($device['os'], 'storage_perc_warn');
-            } else {
-                $perc_warn = Config::get('storage_perc_warn', 60);
-            }
-
-            dbInsert(
-                [
-                    'device_id' => $device['device_id'],
-                    'storage_descr' => $descr,
-                    'storage_index' => $index,
-                    'storage_mib' => $mib,
-                    'storage_type' => $type,
-                    'storage_units' => $units,
-                    'storage_size' => $size,
-                    'storage_used' => $used,
-                    'storage_perc_warn' => $perc_warn,
-                ],
-                'storage'
-            );
-
-            echo '+';
-        } else {
-            $updated = dbUpdate(['storage_descr' => $descr, 'storage_type' => $type, 'storage_units' => $units, 'storage_size' => $size], 'storage', '`device_id` = ? AND `storage_index` = ? AND `storage_mib` = ?', [$device['device_id'], $index, $mib]);
-            if ($updated) {
-                echo 'U';
-            } else {
-                echo '.';
-            }
-        }//end if
-
-        $valid[$mib][$index] = 1;
-    }//end if
-}
-
 function discover_process_ipv6(&$valid, $ifIndex, $ipv6_address, $ipv6_prefixlen, $ipv6_origin, $context_name = '')
 {
     global $device;
@@ -449,7 +404,7 @@ function discover_process_ipv4(&$valid_v4, $device, int $ifIndex, $ipv4_address,
     $ipv4_network = $ipv4->getNetworkAddress() . '/' . $ipv4->cidr;
 
     if ($ipv4_address != '0.0.0.0' && $ifIndex > 0) {
-        $port_id = get_port_by_index_cache($device['device_id'], $ifIndex)['port_id'];
+        $port_id = \App\Facades\PortCache::getIdFromIfIndex($ifIndex, $device['device_id']);
 
         if (is_numeric($port_id)) {
             $dbIpv4Net = Ipv4Network::updateOrCreate([
@@ -590,42 +545,6 @@ function get_device_divisor($device, $os_version, $sensor_type, $oid)
 }
 
 /**
- * Should we ignore this storage device based on teh description? (usually the mount path or drive)
- *
- * @param  string  $os  The OS of the device
- * @param  string  $descr  The description of the storage
- * @return bool
- */
-function ignore_storage($os, $descr)
-{
-    foreach (Config::getCombined($os, 'ignore_mount') as $im) {
-        if ($im == $descr) {
-            Log::debug("ignored $descr (matched: $im)\n");
-
-            return true;
-        }
-    }
-
-    foreach (Config::getCombined($os, 'ignore_mount_string') as $ims) {
-        if (Str::contains($descr, $ims)) {
-            Log::debug("ignored $descr (matched: $ims)\n");
-
-            return true;
-        }
-    }
-
-    foreach (Config::getCombined($os, 'ignore_mount_regexp') as $imr) {
-        if (preg_match($imr, $descr)) {
-            Log::debug("ignored $descr (matched: $imr)\n");
-
-            return true;
-        }
-    }
-
-    return false;
-}
-
-/**
  * @param  OS  $os
  * @param  $sensor_type
  * @param  $pre_cache
@@ -715,9 +634,35 @@ function discovery_process($os, $sensor_class, $pre_cache)
                     // process the group
                     $group = trim(YamlDiscovery::replaceValues('group', $index, null, $data, $pre_cache)) ?: null;
 
-                    $divisor = (int) (isset($data['divisor']) ? (YamlDiscovery::replaceValues('divisor', $index, $count, $data, $pre_cache) ?: 1) : ($sensor_options['divisor'] ?? 1));
-                    $multiplier = (int) (isset($data['multiplier']) ? (YamlDiscovery::replaceValues('multiplier', $index, $count, $data, $pre_cache) ?: 1) : ($sensor_options['multiplier'] ?? 1));
+                    // process the divisor - cannot be 0
+                    if (isset($data['divisor'])) {
+                        $divisor = (int) YamlDiscovery::replaceValues('divisor', $index, $count, $data, $pre_cache);
+                    } elseif (isset($sensor_options['divisor'])) {
+                        $divisor = (int) $sensor_options['divisor'];
+                    } else {
+                        $divisor = 1;
+                    }
+                    if ($divisor == 0) {
+                        Log::warning('Divisor is not a nonzero number, defaulting to 1');
+                        $divisor = 1;
+                    }
 
+                    // process the multiplier - zero is valid
+                    if (isset($data['multiplier'])) {
+                        $multiplier = YamlDiscovery::replaceValues('multiplier', $index, $count, $data, $pre_cache);
+                    } elseif (isset($sensor_options['multiplier'])) {
+                        $multipler = $sensor_options['multiplier'];
+                    } else {
+                        $multiplier = 1;
+                    }
+                    if (is_numeric($multiplier)) {
+                        $multiplier = (int) $multiplier;
+                    } else {
+                        Log::warning('Multiplier $multiplier is not a valid number, defaulting to 1');
+                        $multiplier = 1;
+                    }
+
+                    // process the limits
                     $limits = ['low_limit', 'low_warn_limit', 'warn_limit', 'high_limit'];
                     foreach ($limits as $limit) {
                         if (isset($data[$limit]) && is_numeric($data[$limit])) {
@@ -769,10 +714,6 @@ function discovery_process($os, $sensor_class, $pre_cache)
                     }
 
                     discover_sensor(null, $sensor_class, $device, $oid, $uindex, $sensor_name, $descr, $divisor, $multiplier, $low_limit, $low_warn_limit, $warn_limit, $high_limit, $value, 'snmp', $entPhysicalIndex, $entPhysicalIndex_measured, $user_function, $group, $data['rrd_type'] ?? 'GAUGE');
-
-                    if ($sensor_class === 'state') {
-                        create_sensor_to_state_index($device, $sensor_name, $uindex);
-                    }
                 }
             }
         }

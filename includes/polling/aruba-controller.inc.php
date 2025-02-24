@@ -61,34 +61,34 @@ if ($device['type'] == 'wireless' && $device['os'] == 'arubaos') {
 
     $ap_db = dbFetchRows('SELECT * FROM `access_points` WHERE `device_id` = ?', [$device['device_id']]);
 
-    foreach ($aruba_apnames as $key1 => $value1) {
-        foreach ($value1 as $key => $value) {
-            $radioid = str_replace('.1.3.6.1.4.1.14823.2.2.1.5.2.1.5.1.16.', '', $key);
-            $name = $value;
-            $type = $aruba_apstats[$key1][".1.3.6.1.4.1.14823.2.2.1.5.2.1.5.1.2.$radioid"];
-            $channel = cast_number($aruba_apstats[$key1][".1.3.6.1.4.1.14823.2.2.1.5.2.1.5.1.3.$radioid"]);
-            $txpow = cast_number($aruba_apstats[$key1][".1.3.6.1.4.1.14823.2.2.1.5.2.1.5.1.4.$radioid"]) / 2;
-            $radioutil = cast_number($aruba_apstats[$key1][".1.3.6.1.4.1.14823.2.2.1.5.2.1.5.1.6.$radioid"]);
-            $numasoclients = cast_number($aruba_apstats[$key1][".1.3.6.1.4.1.14823.2.2.1.5.2.1.5.1.7.$radioid"]);
-            $nummonclients = cast_number($aruba_apstats[$key1][".1.3.6.1.4.1.14823.2.2.1.5.2.1.5.1.8.$radioid"]);
-            $numactbssid = cast_number($aruba_apstats[$key1][".1.3.6.1.4.1.14823.2.2.1.5.2.1.5.1.9.$radioid"]);
-            $nummonbssid = cast_number($aruba_apstats[$key1][".1.3.6.1.4.1.14823.2.2.1.5.2.1.5.1.10.$radioid"]);
-            $interference = cast_number($aruba_apstats[$key1][".1.3.6.1.4.1.14823.2.2.1.5.3.1.6.1.11.$radioid"]);
+    foreach ($aruba_apstats as $mac => $radio) {
+        foreach ($radio as $radionum => $data) {
+            $ap = new AccessPoint([
+                'name' => $data['WLSX-WLAN-MIB::wlanAPRadioAPName'] ?? null,
+                'radio_number' => $radionum,
+                'type' => $data['WLSX-WLAN-MIB::wlanAPRadioType'] ?? null,
+                'mac_addr' => Mac::parse($mac)->readable(),
+                'channel' => $data['WLSX-WLAN-MIB::wlanAPRadioChannel'] ?? null,
+                'txpow' => isset($data['WLSX-WLAN-MIB::wlanAPRadioTransmitPower10x']) ? ($data['WLSX-WLAN-MIB::wlanAPRadioTransmitPower10x'] / 10) : ($data['WLSX-WLAN-MIB::wlanAPRadioTransmitPower'] ?? 0) / 2,
+                'radioutil' => $data['WLSX-WLAN-MIB::wlanAPRadioUtilization'] ?? null,
+                'numasoclients' => $data['WLSX-WLAN-MIB::wlanAPRadioNumAssociatedClients'] ?? null,
+                'nummonclients' => $data['WLSX-WLAN-MIB::wlanAPRadioNumMonitoredClients'] ?? null,
+                'numactbssid' => $data['WLSX-WLAN-MIB::wlanAPRadioNumActiveBSSIDs'] ?? null,
+                'nummonbssid' => $data['WLSX-WLAN-MIB::wlanAPRadioNumMonitoredBSSIDs'] ?? null,
+                'interference' => isset($data['WLSX-WLAN-MIB::wlanAPChInterferenceIndex']) ? ($data['WLSX-WLAN-MIB::wlanAPChInterferenceIndex'] / 600) : null,
+            ]);
 
-            $radionum = substr($radioid, strlen($radioid) - 1, 1);
-
-            d_echo($key . PHP_EOL);
-            d_echo($value . PHP_EOL);
-            d_echo('* radioid:        ' . $radioid . PHP_EOL);
-            d_echo('  radionum:       ' . $radionum . PHP_EOL);
-            d_echo('  name:           ' . $name . PHP_EOL);
-            d_echo('  type:           ' . $type . PHP_EOL);
-            d_echo('  channel:        ' . $channel . PHP_EOL);
-            d_echo('  txpow:          ' . $txpow . PHP_EOL);
-            d_echo('  radioutil:      ' . $radioutil . PHP_EOL);
-            d_echo('  numasoclients:  ' . $numasoclients . PHP_EOL);
-            d_echo('  interference:   ' . $interference . PHP_EOL);
-            d_echo(PHP_EOL);
+            Log::debug(<<<DEBUG
+> mac:            $ap->mac_addr
+  radionum:       $ap->radio_number
+  name:           $ap->name
+  type:           $ap->type
+  channel:        $ap->channel
+  txpow:          $ap->txpow
+  radioutil:      $ap->radioutil
+  numasoclients:  $ap->numasoclients
+  interference:   $ap->interference
+DEBUG);
 
             // if there is a numeric channel, assume the rest of the data is valid, I guess
             if (is_numeric($channel)) {
