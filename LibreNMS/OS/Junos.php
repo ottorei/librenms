@@ -118,10 +118,9 @@ class Junos extends \LibreNMS\OS implements SlaDiscovery, OSPolling, SlaPolling,
         $sensors = [];
         $oids = SnmpQuery::walk('JUNIPER-WIRELESS-WAN-MIB::jnxWirelessWANNetworkInfoSNR')->table(1);
         $oid = '.1.3.6.1.4.1.2636.3.87.1.1.1.1.35'; // jnxWirelessWANNetworkInfoSNR
-        $ifNames = $this->getCacheByIndex('ifName', 'IF-MIB');
 
         foreach ($oids as $index => $entry) {
-            $sensors[] = new WirelessSensor('snr', $this->getDeviceId(), $oid . $index, 'junos', $index, 'SNR: ' . $ifNames[$index], null, 1, 1, 'sum', null, null, 0);
+            $sensors[] = new WirelessSensor('snr', $this->getDeviceId(), $oid . $index, 'junos', $index, 'Modem SNR', null, 1, 1, 'sum', null, null, 0);
         }
 
         return $sensors;
