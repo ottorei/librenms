@@ -57,7 +57,7 @@ if ($device['type'] == 'wireless' && $device['os'] == 'arubaos') {
     ];
 
     $tags = compact('rrd_name', 'rrd_def');
-    data_update($device, 'aruba-controller', $tags, $fields);
+    app('Datastore')->put($device, 'aruba-controller', $tags, $fields);
 
     $ap_db = dbFetchRows('SELECT * FROM `access_points` WHERE `device_id` = ?', [$device['device_id']]);
 
@@ -120,8 +120,7 @@ DEBUG);
                     'rrd_def' => $rrd_def,
                 ];
 
-                data_update($device, 'aruba', $tags, $fields);
-            }
+                app('Datastore')->put($device, 'aruba', $tags, $fields);
 
             // generate the mac address
             $macparts = explode('.', $radioid, -1);

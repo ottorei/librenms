@@ -1,4 +1,5 @@
 <?php
+
 /**
  * UserPreferencesController.php
  *
@@ -58,7 +59,7 @@ class UserPreferencesController extends Controller
 
         $locales = $this->getValidLocales();
         $styles = $this->getValidStyles();
-        $default_locale = \config('app.locale');
+        $default_locale = \config('app.default_locale'); // always the system default
         $default_style = Config::get('site_style');
 
         $data = [

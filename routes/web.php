@@ -198,7 +198,6 @@ Route::middleware(['auth'])->group(function () {
             Route::get('device-field', 'DeviceFieldController')->name('ajax.select.device-field');
             Route::get('device-group', 'DeviceGroupController')->name('ajax.select.device-group');
             Route::get('port-group', 'PortGroupController')->name('ajax.select.port-group');
-            Route::get('role', 'RoleController')->name('ajax.select.role');
             Route::get('eventlog', 'EventlogController')->name('ajax.select.eventlog');
             Route::get('graph', 'GraphController')->name('ajax.select.graph');
             Route::get('graph-aggregate', 'GraphAggregateController')->name('ajax.select.graph-aggregate');
@@ -231,7 +230,9 @@ Route::middleware(['auth'])->group(function () {
             Route::post('port-nac', 'PortNacController')->name('table.port-nac');
             Route::post('port-stp', 'PortStpController');
             Route::post('ports', 'PortsController')->name('table.ports');
+            Route::post('processors', 'ProcessorsController')->name('table.processors');
             Route::post('routes', 'RoutesTablesController');
+            Route::post('storages', 'StoragesController')->name('table.storages');
             Route::post('syslog', 'SyslogController');
             Route::post('tnmsne', 'TnmsneController')->name('table.tnmsne');
             Route::post('vlan-ports', 'VlanPortsController')->name('table.vlan-ports');
