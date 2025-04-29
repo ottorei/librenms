@@ -100,7 +100,8 @@ class Junos extends \LibreNMS\OS implements SlaDiscovery, OSPolling, SlaPolling,
         $oid = '.1.3.6.1.4.1.2636.3.87.1.1.1.1.32'; // jnxWirelessWANNetworkInfoRSRP
 
         foreach ($oids as $index => $entry) {
-            $sensors[] = new WirelessSensor('rsrp', $this->getDeviceId(), $oid . $index, 'junos', $index, 'Modem RSRP', null, 1, 1, 'sum', null, null, -100);
+            $current = $entry['JUNIPER-WIRELESS-WAN-MIB::jnxWirelessWANNetworkInfoRSRP'];
+            $sensors[] = new WirelessSensor('rsrp', $this->getDeviceId(), $oid . $index, 'junos', $index, 'Modem RSRP', current: $current, low_limit: -100);
         }
 
         return $sensors;
@@ -113,7 +114,8 @@ class Junos extends \LibreNMS\OS implements SlaDiscovery, OSPolling, SlaPolling,
         $oid = '.1.3.6.1.4.1.2636.3.87.1.1.1.1.33'; // jnxWirelessWANNetworkInfoRSRQ
 
         foreach ($oids as $index => $entry) {
-            $sensors[] = new WirelessSensor('rsrq', $this->getDeviceId(), $oid . $index, 'junos', $index, 'Modem RSRQ', null, 1, 1, 'sum', null, null, -20);
+            $current = $entry['JUNIPER-WIRELESS-WAN-MIB::jnxWirelessWANNetworkInfoRSRQ'];
+            $sensors[] = new WirelessSensor('rsrq', $this->getDeviceId(), $oid . $index, 'junos', $index, 'Modem RSRQ', current: $current, low_limit: -20);
         }
 
         return $sensors;
@@ -126,7 +128,8 @@ class Junos extends \LibreNMS\OS implements SlaDiscovery, OSPolling, SlaPolling,
         $oid = '.1.3.6.1.4.1.2636.3.87.1.1.1.1.35'; // jnxWirelessWANNetworkInfoSNR
 
         foreach ($oids as $index => $entry) {
-            $sensors[] = new WirelessSensor('snr', $this->getDeviceId(), $oid . $index, 'junos', $index, 'Modem SNR', null, 1, 1, 'sum', null, null, 0);
+            $current = $entry['JUNIPER-WIRELESS-WAN-MIB::jnxWirelessWANNetworkInfoSNR'];
+            $sensors[] = new WirelessSensor('snr', $this->getDeviceId(), $oid . $index, 'junos', $index, 'Modem SNR', current: $current, low_limit: 0);
         }
 
         return $sensors;
@@ -139,7 +142,8 @@ class Junos extends \LibreNMS\OS implements SlaDiscovery, OSPolling, SlaPolling,
         $oid = '.1.3.6.1.4.1.2636.3.87.1.1.1.1.37'; // jnxWirelessWANNetworkInfoRSSI
 
         foreach ($oids as $index => $entry) {
-            $sensors[] = new WirelessSensor('rssi', $this->getDeviceId(), $oid . $index, 'junos', $index, 'Modem RSSI', null, 1, 1, 'sum', null, null, -85);
+            $current = $entry['JUNIPER-WIRELESS-WAN-MIB::jnxWirelessWANNetworkInfoRSSI'];
+            $sensors[] = new WirelessSensor('rssi', $this->getDeviceId(), $oid . $index, 'junos', $index, 'Modem RSSI', current: $current, low_limit: -85);
         }
 
         return $sensors;
