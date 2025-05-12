@@ -20,6 +20,7 @@ from time import sleep
 from socket import gethostname
 from signal import signal, SIGTERM, SIGQUIT, SIGINT, SIGHUP, SIGCHLD
 from uuid import uuid1
+from os import utime
 
 try:
     from systemd.daemon import notify
@@ -105,6 +106,7 @@ class ServiceConfig(DBConfig):
 
     watchdog_enabled = False
     watchdog_logfile = "logs/librenms.log"
+    health_file = ""  # disabled by default
 
     def populate(self, min_log_level):
         config = LibreNMS.get_config_data(self.BASE_DIR)
@@ -280,6 +282,7 @@ class ServiceConfig(DBConfig):
         )
         self.logdir = config.get("log_dir", ServiceConfig.BASE_DIR + "/logs")
         self.watchdog_logfile = config.get("log_file", self.logdir + "/librenms.log")
+        self.health_file = config.get("service_health_file", ServiceConfig.health_file)
 
     def set_log_level(self):
         if self.poller_log_level:
@@ -431,6 +434,11 @@ class Service:
             )
         else:
             logger.info("Watchdog is disabled.")
+        if self.config.health_file:
+            with open(self.config.health_file, "a") as f:
+                utime(self.config.health_file)
+        else:
+            logger.info("Service health file disabled.")
         self.systemd_watchdog_timer = LibreNMS.RecurringTimer(
             10, self.systemd_watchdog, "systemd-watchdog"
         )
@@ -934,6 +942,8 @@ class Service:
             )
 
     def systemd_watchdog(self):
+        if self.config.health_file:
+            utime(self.config.health_file)
         if "systemd.daemon" in sys.modules:
             notify("WATCHDOG=1")
 

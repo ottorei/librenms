@@ -9,7 +9,6 @@ use Illuminate\Support\Facades\Blade;
 use Illuminate\Validation\Rule;
 use LibreNMS\Enum\Severity;
 use LibreNMS\Util\Html;
-use LibreNMS\Util\Number;
 use LibreNMS\Util\Url;
 
 class SensorsController extends TableController
@@ -38,17 +37,16 @@ class SensorsController extends TableController
     protected function searchFields(Request $request): array
     {
         return [
-            'device_hostname',
+            'hostname',
             'sensor_descr',
             'sensor_current',
-            'sensor_group',
         ];
     }
 
     protected function baseQuery(Request $request): Builder
     {
         $class = $request->input('class');
-        $relations = ['device', 'device.location'];
+        $relations = [];
         if ($class == 'state') {
             $relations[] = 'translations';
         }
@@ -56,6 +54,7 @@ class SensorsController extends TableController
         return Sensor::query()
             ->hasAccess($request->user())
             ->where('sensor_class', $class)
+            ->when($request->get('searchPhrase'), fn ($q) => $q->leftJoin('devices', 'devices.device_id', '=', 'sensors.device_id'))
             ->with($relations)
             ->withAggregate('device', 'hostname');
     }
@@ -79,8 +78,8 @@ class SensorsController extends TableController
         $hostname = Blade::render('<x-device-link :device="$device" />', ['device' => $sensor->device]);
         $link = Url::generate(['page' => 'device', 'device' => $sensor['device_id'], 'tab' => 'health', 'metric' => $sensor->sensor_class]);
         $descr = Url::graphPopup($graph_array, $sensor->sensor_descr, $link);
-        $mini_graph = Url::graphPopup($graph_array);
-        $sensor_current = $sensor->sensor_current === null ? 'NaN' : Html::severityToLabel($sensor->currentStatus(), $sensor->formatValue());
+        $mini_graph = Url::graphPopup($graph_array, null, $link);
+        $sensor_current = Html::severityToLabel($sensor->currentStatus(), $sensor->formatValue());
         $alert = $sensor->currentStatus() == Severity::Error ? '<i class="fa fa-flag fa-lg" style="color:red" aria-hidden="true"></i>' : '';
 
         // show graph row inline
@@ -98,11 +97,8 @@ class SensorsController extends TableController
             'graph' => $mini_graph,
             'alert' => $alert,
             'sensor_current' => $sensor_current,
-            'sensor_limit_low' => is_null($sensor->sensor_limit_low) ? '-' :
-                '<span class=\'label label-default\'>' . trim(Number::formatSi($sensor->sensor_limit_low, 2, 0, '') . $sensor->unit()) . '</span>',
-            'sensor_limit' => is_null($sensor->sensor_limit) ? '-' :
-                '<span class=\'label label-default\'>' . trim(Number::formatSi($sensor->sensor_limit, 2, 0, '') . $sensor->unit()) . '</span>',
-
+            'sensor_limit_low' => Html::severityToLabel(Severity::Unknown, $sensor->formatValue('sensor_limit_low')),
+            'sensor_limit' => Html::severityToLabel(Severity::Unknown, $sensor->formatValue('sensor_limit')),
         ];
     }
 }

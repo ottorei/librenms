@@ -34,7 +34,6 @@ use LibreNMS\Data\Source\Fping;
 use LibreNMS\Data\Source\FpingResponse;
 use LibreNMS\Exceptions\FileNotFoundException;
 use LibreNMS\Exceptions\InvalidModuleException;
-use LibreNMS\Util\Debug;
 use LibreNMS\Util\ModuleTestHelper;
 use LibreNMS\Util\Number;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -99,7 +98,6 @@ class OSModulesTest extends DBTestCase
         $this->stubClasses();
 
         try {
-            Debug::set(false); // avoid all undefined index errors in the legacy code
             $helper = new ModuleTestHelper($modules, $os, $variant);
             $helper->setQuiet();
 
@@ -140,6 +138,7 @@ class OSModulesTest extends DBTestCase
             $this->checkTestData($expected, $actual, 'Polled', $os, $module, $filename, $helper, $phpunit_debug);
         }
 
+        /** @phpstan-ignore method.alreadyNarrowedType */
         $this->assertTrue(true, "Tested $os successfully"); // avoid no asserts error
 
         DeviceCache::flush(); // clear cached devices
@@ -172,7 +171,7 @@ class OSModulesTest extends DBTestCase
         });
 
         $this->app->bind(Fping::class, function ($app) {
-            $mock = \Mockery::mock(\LibreNMS\Data\Source\Fping::class);
+            $mock = \Mockery::mock(Fping::class);
             $mock->shouldReceive('ping')->andReturn(FpingResponse::artificialUp());
 
             return $mock;

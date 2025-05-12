@@ -25,7 +25,7 @@ class ProcessorsController extends TableController
     protected function searchFields(Request $request): array
     {
         return [
-            'device_hostname',
+            'hostname',
             'processor_descr',
         ];
     }
@@ -34,7 +34,7 @@ class ProcessorsController extends TableController
     {
         return Processor::query()
             ->hasAccess($request->user())
-            ->with(['device', 'device.location'])
+            ->when($request->get('searchPhrase'), fn ($q) => $q->leftJoin('devices', 'devices.device_id', '=', 'processors.device_id'))
             ->withAggregate('device', 'hostname');
     }
 
@@ -55,9 +55,9 @@ class ProcessorsController extends TableController
 
         $hostname = Blade::render('<x-device-link :device="$device" />', ['device' => $processor->device]);
         $descr = $processor->processor_descr;
-        $mini_graph = URL::graphPopup($graph_array);
+        $mini_graph = Url::graphPopup($graph_array);
         $bar = Html::percentageBar(400, 20, $perc, $perc . '%', (100 - $perc) . '%', $processor->processor_perc_warn);
-        $usage = URL::graphPopup($graph_array, $bar);
+        $usage = Url::graphPopup($graph_array, $bar);
 
         if (\Request::input('view') == 'graphs') {
             $row = Html::graphRow(array_replace($graph_array, ['height' => 100, 'width' => 216]));
