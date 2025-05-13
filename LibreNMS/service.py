@@ -20,7 +20,6 @@ from time import sleep
 from socket import gethostname
 from signal import signal, SIGTERM, SIGQUIT, SIGINT, SIGHUP, SIGCHLD
 from uuid import uuid1
-from os import utime
 
 try:
     from systemd.daemon import notify
@@ -72,8 +71,7 @@ class ServiceConfig(DBConfig):
     group = 0
 
     debug = False
-    log_level = logging.INFO
-    poller_log_level = logging.INFO
+    log_level = 20
     max_db_failures = 5
 
     alerting = PollerConfig(1, 60)
@@ -106,13 +104,11 @@ class ServiceConfig(DBConfig):
 
     watchdog_enabled = False
     watchdog_logfile = "logs/librenms.log"
-    health_file = ""  # disabled by default
 
-    def populate(self, min_log_level):
+    def populate(self):
         config = LibreNMS.get_config_data(self.BASE_DIR)
 
         # populate config variables
-        self.min_log_level = min_log_level
         self.node_id = os.getenv("NODE_ID")
         self.set_name(config.get("distributed_poller_name", None))
         self.distributed = config.get("distributed_poller", ServiceConfig.distributed)
@@ -136,9 +132,7 @@ class ServiceConfig(DBConfig):
         self.down_retry = config.get(
             "poller_service_down_retry", ServiceConfig.down_retry
         )
-        self.legacy_log_level = config.get(
-            "poller_service_loglevel", ServiceConfig.log_level
-        )
+        self.log_level = config.get("poller_service_loglevel", ServiceConfig.log_level)
 
         # new options
         self.poller.enabled = (
@@ -202,7 +196,7 @@ class ServiceConfig(DBConfig):
         self.down_retry = config.get(
             "service_poller_down_retry", ServiceConfig.down_retry
         )
-        self.service_log_level = config.get("service_loglevel", ServiceConfig.log_level)
+        self.log_level = config.get("service_loglevel", ServiceConfig.log_level)
         self.update_enabled = config.get(
             "service_update_enabled", ServiceConfig.update_enabled
         )
@@ -282,34 +276,20 @@ class ServiceConfig(DBConfig):
         )
         self.logdir = config.get("log_dir", ServiceConfig.BASE_DIR + "/logs")
         self.watchdog_logfile = config.get("log_file", self.logdir + "/librenms.log")
-        self.health_file = config.get("service_health_file", ServiceConfig.health_file)
 
-    def set_log_level(self):
-        if self.poller_log_level:
-            # User has set an explicit log level at the poller level
-            log_level = self.poller_log_level
-        elif self.service_log_level:
-            # User has set an explicit log level at the global level
-            log_level = self.service_log_level
-        elif self.legacy_log_level:
-            # User has set an explicit log level using old variables
-            log_level = self.legacy_log_level
+        # set convenient debug variable
+        self.debug = logging.getLogger().isEnabledFor(logging.DEBUG)
 
-        if not isinstance(log_level, int):
-            log_level = getattr(logging, log_level)
-
-        self.log_level = min([log_level, self.min_log_level])
-
-        try:
-            logging.getLogger().setLevel(self.log_level)
-            self.debug = logging.getLogger().isEnabledFor(logging.DEBUG)
-        except ValueError:
-            logger.error(
-                "Unknown log level {}, must be one of 'DEBUG', 'INFO', 'WARNING', 'ERROR', 'CRITICAL'".format(
-                    self.log_level
+        if not self.debug and self.log_level:
+            try:
+                logging.getLogger().setLevel(self.log_level)
+            except ValueError:
+                logger.error(
+                    "Unknown log level {}, must be one of 'DEBUG', 'INFO', 'WARNING', 'ERROR', 'CRITICAL'".format(
+                        self.log_level
+                    )
                 )
-            )
-            logging.getLogger().setLevel(logging.INFO)
+                logging.getLogger().setLevel(logging.INFO)
 
     def load_poller_config(self, db):
         try:
@@ -367,7 +347,7 @@ class ServiceConfig(DBConfig):
             if settings["update_frequency"] is not None:
                 self.update_frequency = settings["update_frequency"]
             if settings["loglevel"] is not None:
-                self.poller_log_level = settings["loglevel"]
+                self.log_level = settings["loglevel"]
             if settings["watchdog_enabled"] is not None:
                 self.watchdog_enabled = settings["watchdog_enabled"]
             if settings["watchdog_log"] is not None:
@@ -404,14 +384,12 @@ class Service:
     terminate_flag = False
     reload_flag = False
     db_failures = 0
-    min_log_level = None
 
-    def __init__(self, min_log_level=None):
+    def __init__(self):
         self.start_time = time.time()
-        self.config.populate(min_log_level)
+        self.config.populate()
         self._db = LibreNMS.DB(self.config)
         self.config.load_poller_config(self._db)
-        self.config.set_log_level()
 
         threading.current_thread().name = self.config.name  # rename main thread
         self.attach_signals()
@@ -434,11 +412,6 @@ class Service:
             )
         else:
             logger.info("Watchdog is disabled.")
-        if self.config.health_file:
-            with open(self.config.health_file, "a") as f:
-                utime(self.config.health_file)
-        else:
-            logger.info("Service health file disabled.")
         self.systemd_watchdog_timer = LibreNMS.RecurringTimer(
             10, self.systemd_watchdog, "systemd-watchdog"
         )
@@ -642,14 +615,14 @@ class Service:
             result = self._db.query(
                 """SELECT `device_id`,
                   `poller_group`,
-                  IF(last_discovered IS NULL AND last_polled IS NULL, 0, COALESCE(`last_polled` <= DATE_ADD(DATE_ADD(NOW(), INTERVAL -%s SECOND), INTERVAL COALESCE(`last_polled_timetaken`, 0) SECOND), 1)) AS `poll`,
-                  IF(status=0, IF(last_discovered IS NULL, 1, 0), IF (%s < `last_discovered_timetaken` * 1.25, 0, COALESCE(`last_discovered` <= DATE_ADD(DATE_ADD(NOW(), INTERVAL -%s SECOND), INTERVAL COALESCE(`last_discovered_timetaken`, 0) SECOND), 1))) AS `discover`
+                  COALESCE(`last_polled` <= DATE_ADD(DATE_ADD(NOW(), INTERVAL -%s SECOND), INTERVAL COALESCE(`last_polled_timetaken`, 0) SECOND), 1) AS `poll`,
+                  IF(status=0, 0, IF (%s < `last_discovered_timetaken` * 1.25, 0, COALESCE(`last_discovered` <= DATE_ADD(DATE_ADD(NOW(), INTERVAL -%s SECOND), INTERVAL COALESCE(`last_discovered_timetaken`, 0) SECOND), 1))) AS `discover`
                 FROM `devices`
                 WHERE `disabled` = 0 AND (
                     `last_polled` IS NULL OR
                     `last_discovered` IS NULL OR
-                    `last_polled` < DATE_ADD(DATE_ADD(NOW(), INTERVAL -%s SECOND), INTERVAL COALESCE(`last_polled_timetaken`, 0) SECOND) OR
-                    `last_discovered` < DATE_ADD(DATE_ADD(NOW(), INTERVAL -%s SECOND), INTERVAL COALESCE(`last_discovered_timetaken`, 0) SECOND)
+                    `last_polled` <= DATE_ADD(DATE_ADD(NOW(), INTERVAL -%s SECOND), INTERVAL COALESCE(`last_polled_timetaken`, 0) SECOND) OR
+                    `last_discovered` <= DATE_ADD(DATE_ADD(NOW(), INTERVAL -%s SECOND), INTERVAL COALESCE(`last_discovered_timetaken`, 0) SECOND)
                 )
                 ORDER BY `last_polled_timetaken` DESC""",
                 (
@@ -942,8 +915,6 @@ class Service:
             )
 
     def systemd_watchdog(self):
-        if self.config.health_file:
-            utime(self.config.health_file)
         if "systemd.daemon" in sys.modules:
             notify("WATCHDOG=1")
 
