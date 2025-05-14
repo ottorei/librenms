@@ -1672,6 +1672,7 @@ function list_oxidized_groups(Illuminate\Http\Request $request)
     }
 
     $device_groups = DeviceGroup::whereIn('name', Config::get('oxidized.enabled_groups', []))->get();
+    $processed_devices = new Collection;
 
     foreach($device_groups as $dev_grp) {
         foreach ($dev_grp->devices as $device) {
@@ -1681,8 +1682,9 @@ function list_oxidized_groups(Illuminate\Http\Request $request)
                 'ip' => $device->ip,
                 'os' => $os_maps[$device->os] ?? $device->os,
             ];
-            $return[] = $output;
-            //return response()->json($return, 200, [], JSON_PRETTY_PRINT);
+            if(! $processed_devices->contains($device)) {
+                $return[] = $output;
+            }
         }
     }
 
