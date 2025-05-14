@@ -41,6 +41,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Router;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use LibreNMS\Alerting\QueryBuilderParser;
@@ -1682,9 +1683,10 @@ function list_oxidized_groups(Illuminate\Http\Request $request)
                 'ip' => $device->ip,
                 'os' => $os_maps[$device->os] ?? $device->os,
             ];
-            if(! $processed_devices->contains($device)) {
+            if(! $processed_devices->contains($device->hostname)) {
                 $return[] = $output;
             }
+            $processed_devices->push($device->hostname);
         }
     }
 
