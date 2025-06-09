@@ -324,7 +324,7 @@ function list_devices(Illuminate\Http\Request $request)
     $query = $request->get('query');
     $param = [];
 
-    if (preg_match('/^([a-z_]+)(?: (desc|asc))?$/i', $order, $matches)) {
+    if (is_string($order) && preg_match('/^([a-z_]+)(?: (desc|asc))?$/i', $order, $matches)) {
         $order = "d.`$matches[1]` " . ($matches[2] ?? 'ASC');
     } else {
         $order = 'd.`hostname` ASC';
@@ -2910,7 +2910,7 @@ function list_fdb_detail(Illuminate\Http\Request $request)
         ->leftJoin('devices', 'ports_fdb.device_id', 'devices.device_id')
         ->where('mac_address', $macAddress->hex())
         ->orderBy('ports_fdb.updated_at', 'desc')
-        ->select('devices.hostname', 'ports.ifName', 'ports_fdb.updated_at')
+        ->select('devices.hostname', 'devices.sysName', 'ports.ifName', 'ports.ifAlias', 'ports.ifDescr', 'ports_fdb.updated_at')
         ->limit(1000)->get();
 
     if ($fdb->isEmpty()) {
