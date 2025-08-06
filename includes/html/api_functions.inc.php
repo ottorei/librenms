@@ -1675,11 +1675,11 @@ function list_oxidized_groups(Illuminate\Http\Request $request)
 
     # OS-mappings for Oxidized
     $os_maps = [];
-    foreach (Config::get('oxidized.maps.os.os', []) as $os) {
+    foreach (LibrenmsConfig::get('oxidized.maps.os.os', []) as $os) {
         $os_maps[$os["match"]] = $os["value"];
     }
 
-    $device_groups = DeviceGroup::whereIn('name', Config::get('oxidized.enabled_groups', []))->get();
+    $device_groups = DeviceGroup::whereIn('name', LibrenmsConfig::get('oxidized.enabled_groups', []))->get();
     $processed_devices = new Collection;
 
     foreach($device_groups as $dev_grp) {
@@ -1703,31 +1703,6 @@ function list_oxidized_groups(Illuminate\Http\Request $request)
 function list_oxidized(Illuminate\Http\Request $request)
 {
     $return = [];
-    $device_groups = DeviceGroup::whereIn('name', Config::get('oxidized.enabled_groups', []))->get();
-
-    if ($device_groups->isNotEmpty()) {
-        $os_maps = [];
-        foreach (Config::get('oxidized.maps.os.os', []) as $os) {
-            $os_maps[$os["match"]] = $os["value"];
-        }
-        $processed_devices = new Collection;
-        foreach ($device_groups as $dev_grp) {
-            foreach ($dev_grp->devices as $device) { 
-                $output = [
-                    'group' => $dev_grp->name,
-                    'hostname' => $device->hostname,
-                    'ip' => $device->ip,
-                    'os' => $os_maps[$device->os] ?? $device->os,
-                ];
-                if(! $processed_devices->contains($device)) {
-                    $return[] = $output;
-                }
-                $processed_devices->push($device);
-            }
-        }
-        return response()->json($return, 200, [], JSON_PRETTY_PRINT);
-    }
-
     $devices = Device::query()
             ->with('attribs')
              ->where('disabled', 0)
