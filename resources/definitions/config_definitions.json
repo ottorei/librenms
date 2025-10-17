@@ -1507,6 +1507,11 @@
                     "type": "loadbalancer"
                 },
                 {
+                    "icon": "door-open",
+                    "text": "Management",
+                    "type": "management"
+                },
+                {
                     "icon": "network-wired",
                     "text": "Network",
                     "type": "network"
@@ -6166,6 +6171,13 @@
             "group": "poller",
             "section": "poller_modules",
             "default": true,
+            "type": "boolean"
+        },
+        "poller_modules.port-security": {
+            "order": 460,
+            "group": "poller",
+            "section": "poller_modules",
+            "default": false,
             "type": "boolean"
         },
         "polling.selected_ports": {
