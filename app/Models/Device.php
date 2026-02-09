@@ -99,6 +99,7 @@ class Device extends BaseModel
             'last_polled' => 'datetime',
             'last_ping' => 'datetime',
             'status' => 'boolean',
+            'mtu_status' => 'boolean',
             'ignore' => 'boolean',
             'ignore_status' => 'boolean',
             'disabled' => 'boolean',
@@ -1178,6 +1179,14 @@ class Device extends BaseModel
     public function services(): HasMany
     {
         return $this->hasMany(Service::class, 'device_id');
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne<\App\Models\DeviceStats, $this>
+     */
+    public function stats(): HasOne
+    {
+        return $this->hasOne(DeviceStats::class, 'device_id');
     }
 
     /**

@@ -214,6 +214,6 @@ class Arubaos extends OS implements
      */
     public function pollWirelessFrequency(array $sensors)
     {
-        return $this->pollWirelessChannelAsFrequency($sensors, [$this, 'decodeChannel']);
+        return $this->pollWirelessChannelAsFrequency($sensors, $this->decodeChannel(...));
     }
 }

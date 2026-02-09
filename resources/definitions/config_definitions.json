@@ -394,47 +394,80 @@
             "type": "array"
         },
         "apps.powerdns-recursor.api-key": {
-            "type": "text"
+            "type": "text",
+            "group": "apps",
+            "section": "powerdns-recursor",
+            "order": 0
         },
         "apps.powerdns-recursor.https": {
             "default": false,
-            "type": "boolean"
+            "type": "boolean",
+            "group": "apps",
+            "section": "powerdns-recursor",
+            "order": 1
         },
         "apps.powerdns-recursor.port": {
             "default": 8082,
-            "type": "integer"
+            "type": "integer",
+            "group": "apps",
+            "section": "powerdns-recursor",
+            "order": 2
         },
         "apps.oslv_monitor.seen_age": {
             "default": 604800,
-            "type": "integer"
+            "type": "integer",
+            "group": "apps",
+            "section": "oslv_monitor",
+            "order": 0
         },
         "apps.oslv_monitor.linux_pg_memory_stats": {
             "default": true,
-            "type": "boolean"
+            "type": "boolean",
+            "group": "apps",
+            "section": "oslv_monitor",
+            "order": 1
         },
         "apps.oslv_monitor.misc_linux_memory_stats": {
             "default": true,
-            "type": "boolean"
+            "type": "boolean",
+            "group": "apps",
+            "section": "oslv_monitor",
+            "order": 2
         },
         "apps.oslv_monitor.zswap_size": {
             "default": true,
-            "type": "boolean"
+            "type": "boolean",
+            "group": "apps",
+            "section": "oslv_monitor",
+            "order": 3
         },
         "apps.oslv_monitor.zswap_activity": {
             "default": true,
-            "type": "boolean"
+            "type": "boolean",
+            "group": "apps",
+            "section": "oslv_monitor",
+            "order": 4
         },
         "apps.oslv_monitor.workingset_stats": {
             "default": true,
-            "type": "boolean"
+            "type": "boolean",
+            "group": "apps",
+            "section": "oslv_monitor",
+            "order": 5
         },
         "apps.oslv_monitor.thp_activity": {
             "default": true,
-            "type": "boolean"
+            "type": "boolean",
+            "group": "apps",
+            "section": "oslv_monitor",
+            "order": 6
         },
         "apps.sneck.polling_time_diff": {
             "default": false,
-            "type": "boolean"
+            "type": "boolean",
+            "group": "apps",
+            "section": "sneck",
+            "order": 0
         },
         "astext": {
             "default": {
@@ -1453,6 +1486,16 @@
                 "{{ $ip }}":  "ip"
             }
         },
+        "device_stats_avg_factor": {
+            "default": 0.05,
+            "group": "poller",
+            "section": "ping",
+            "order": 4,
+            "type": "float",
+            "validate": {
+                "value": "numeric|between:0.000001,0.9"
+            }
+        },
         "device_traffic_descr": {
             "default": [
                 "/loopback/",
@@ -1970,10 +2013,6 @@
             "order": 2,
             "default": false,
             "type": "boolean"
-        },
-        "dot": {
-            "default": "/usr/bin/dot",
-            "type": "executable"
         },
         "email_auto_tls": {
             "default": true,
@@ -3772,7 +3811,7 @@
             },
             "type": "graph"
         },
-	"graph_types.device.purestorage_bandwidth": {
+        "graph_types.device.purestorage_bandwidth": {
             "default": {
                 "section": "storage",
                 "order": 0,
@@ -4253,70 +4292,70 @@
             "type": "graph"
         },
         "graph_types.device.purestorage_total_capacity": {
-	    "default": {
-	        "section": "storage",
-  	        "order": 0,
- 	        "descr": "Total Capacity"
-	    },
-	  "type": "graph"
-	},
-	"graph_types.device.purestorage_used_capacity": {
-  	    "default": {
-    		"section": "storage",
-    		"order": 1,
-    		"descr": "Used Capacity"
-  	    },
-  	  "type": "graph"
-	},
+            "default": {
+                "section": "storage",
+                "order": 0,
+                "descr": "Total Capacity"
+            },
+          "type": "graph"
+        },
+        "graph_types.device.purestorage_used_capacity": {
+            "default": {
+                "section": "storage",
+                "order": 1,
+                "descr": "Used Capacity"
+            },
+          "type": "graph"
+        },
         "graph_types.device.purestorage_read_iops": {
-    	    "default": {
-      		"section": "storage",
-      		"order": 2,
-      		"descr": "Read IOPS"
-    	},
-    	  "type": "graph"
-  	},
-  	"graph_types.device.purestorage_write_iops": {
-    	    "default": {
-      		"section": "storage",
-      		"order": 3,
-      		"descr": "Write IOPS"
-    	},
-    	  "type": "graph"
-  	},
-  	"graph_types.device.purestorage_read_bandwidth": {
-    	    "default": {
-      		"section": "storage",
-      		"order": 4,
-      		"descr": "Read Bandwidth"
-    	},
-    	  "type": "graph"
-  	},
-  	"graph_types.device.purestorage_write_bandwidth": {
-    	    "default": {
-      		"section": "storage",
-      		"order": 5,
-      		"descr": "Write Bandwidth"
-    	},
-    	  "type": "graph"
-  	},
-  	"graph_types.device.purestorage_read_latency": {
-    	    "default": {
-      		"section": "storage",
-      		"order": 6,
-      		"descr": "Read Latency"
-    	},
-    	  "type": "graph"
-  	},
-  	"graph_types.device.purestorage_write_latency": {
-    	    "default": {
-      	   "section": "storage",
+            "default": {
+                "section": "storage",
+                "order": 2,
+                "descr": "Read IOPS"
+        },
+          "type": "graph"
+        },
+        "graph_types.device.purestorage_write_iops": {
+            "default": {
+                "section": "storage",
+                "order": 3,
+                "descr": "Write IOPS"
+        },
+          "type": "graph"
+        },
+        "graph_types.device.purestorage_read_bandwidth": {
+            "default": {
+                "section": "storage",
+                "order": 4,
+                "descr": "Read Bandwidth"
+        },
+          "type": "graph"
+        },
+        "graph_types.device.purestorage_write_bandwidth": {
+            "default": {
+                "section": "storage",
+                "order": 5,
+                "descr": "Write Bandwidth"
+        },
+          "type": "graph"
+        },
+        "graph_types.device.purestorage_read_latency": {
+            "default": {
+                "section": "storage",
+                "order": 6,
+                "descr": "Read Latency"
+        },
+          "type": "graph"
+        },
+        "graph_types.device.purestorage_write_latency": {
+            "default": {
+           "section": "storage",
            "order": 7,
-      	   "descr": "Write Latency"
-    	},
-    	   "type": "graph"
-  	},
-	"graphite.enable": {
+           "descr": "Write Latency"
+        },
+           "type": "graph"
+        },
+        "graphite.enable": {
             "default": false,
             "type": "boolean",
             "group": "poller",
@@ -4575,7 +4614,7 @@
             "default": true,
             "group": "poller",
             "section": "ping",
-            "order": 4,
+            "order": 5,
             "type": "boolean"
         },
         "ignore_bsd_os_drives": {
@@ -5294,6 +5333,16 @@
             "section": "binaries",
             "order": 4,
             "type": "executable"
+        },
+        "mtu_options.bytes": {
+            "default": null,
+            "group": "poller",
+            "section": "mtu",
+            "order": 1,
+            "type": "integer",
+            "validate": {
+                "value": "int|nullable|between:9,65535"
+            }
         },
         "mydomain": {
             "type": "text",
@@ -6444,11 +6493,19 @@
             "type": "select",
             "options": {
                 "svn": "SVN",
-                "git": "Git"
+                "git": "Git",
+                "git-bare": "Git bare"
             },
             "group": "external",
             "section": "rancid",
             "order": 2
+        },
+        "rancid_repo_url": {
+            "default": null,
+            "type": "text",
+            "group": "external",
+            "section": "rancid",
+            "order": 3
         },
         "reporting.error": {
             "group": "system",
@@ -6808,13 +6865,6 @@
             "order": 26,
             "type": "boolean"
         },
-        "sfdp": {
-            "default": "/usr/bin/sfdp",
-            "group": "external",
-            "section": "binaries",
-            "order": 7,
-            "type": "executable"
-        },
         "shorthost_target_length": {
             "group": "webui",
             "section": "graph",
@@ -7020,15 +7070,130 @@
         },
         "sso.create_users": {
             "default": true,
-            "type": "boolean"
+            "type": "boolean",
+            "group": "auth",
+            "section": "sso",
+            "order": 0
+        },
+        "sso.descr_attr":{
+            "default": null,
+            "type": "text",
+            "group": "auth",
+            "section": "sso",
+            "order": 1
+        },
+        "sso.email_attr":{
+            "default": null,
+            "type": "text",
+            "group": "auth",
+            "section": "sso",
+            "order": 2
+        },
+        "sso.group_attr":{
+            "default": null,
+            "type": "text",
+            "group": "auth",
+            "section": "sso",
+            "order": 3
+        },
+        "sso.group_delimiter":{
+            "default": null,
+            "type": "text",
+            "group": "auth",
+            "section": "sso",
+            "order": 4
+        },
+        "sso.group_filter":{
+            "default": null,
+            "type": "text",
+            "group": "auth",
+            "section": "sso",
+            "order": 5
+        },
+        "sso.group_level_map":{
+            "default": {},
+            "type": "group-role-map",
+            "group": "auth",
+            "section": "sso",
+            "options": {
+                "groupPlaceholder": "Group Name"
+            },
+            "validate": {
+                "value": "array",
+                "value.*": "array",
+                "value.*.roles": "array|required",
+                "value.*.roles.*": "string"
+            },
+            "order": 6
+        },
+        "sso.group_strategy": {
+            "default": null,
+            "type": "select",
+            "options": {
+                "attribute": "attribute",
+                "map": "map",
+                "static": "static"
+            },
+            "group": "auth",
+            "section": "sso",
+            "order": 7
+        },
+        "sso.level_attr":{
+            "default": null,
+            "type": "text",
+            "group": "auth",
+            "section": "sso",
+            "order": 8
+        },
+        "sso.mode":{
+            "default": "env",
+            "type": "select",
+            "options": {
+                "env": "env",
+                "header": "header"
+            },
+            "group": "auth",
+            "section": "sso",
+            "order": 9
+        },
+        "sso.realname_attr":{
+            "default": null,
+            "type": "text",
+            "group": "auth",
+            "section": "sso",
+            "order": 10
+        },
+        "sso.static_level":{
+            "default": null,
+            "type": "integer",
+            "group": "auth",
+            "section": "sso",
+            "order": 11
+        },
+        "sso.trusted_proxies":{
+            "default": [],
+            "type": "array",
+            "group": "auth",
+            "section": "sso",
+            "validate": {
+                 "value": "array",
+                 "value.*": "string"
+             },
+            "order": 12
         },
         "sso.update_users": {
             "default": true,
-            "type": "boolean"
+            "type": "boolean",
+            "group": "auth",
+            "section": "sso",
+            "order": 13
         },
         "sso.user_attr": {
             "default": "REMOTE_USER",
-            "type": "text"
+            "type": "text",
+            "group": "auth",
+            "section": "sso",
+            "order": 14
         },
         "storage_perc_warn": {
             "default": 60,
