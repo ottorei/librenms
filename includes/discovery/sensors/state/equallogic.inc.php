@@ -52,7 +52,7 @@ if (! empty($oids)) {
     ];
     create_state_index($state_name, $states);
 
-    foreach (explode("\n", $oids) as $data) {
+    foreach (explode("\n", (string) $oids) as $data) {
         $data = trim($data);
         if (! empty($data)) {
             [$oid,$current] = explode(' = ', $data, 2);
@@ -95,7 +95,7 @@ if (! empty($oids1)) {
     ];
     create_state_index($state_name, $states);
 
-    foreach (explode("\n", $oids1) as $data) {
+    foreach (explode("\n", (string) $oids1) as $data) {
         $data = trim($data);
         if (! empty($data)) {
             [$oid,$descr] = explode(' = ', $data, 2);
@@ -105,7 +105,7 @@ if (! empty($oids1)) {
             $member_id = $split_oid[count($split_oid) - 2];
             $num_index = $member_id . '.' . $num_index;
             $oid = $base_oid . $num_index;
-            $extra = snmp_get_multi($device, $oid, '-OQne', 'EQLMEMBER-MIB', 'equallogic');
+            $extra = snmp_get($device, $oid, '-OQne', 'EQLMEMBER-MIB', 'equallogic');
 
             Log::debug($extra);
 
@@ -141,7 +141,7 @@ if (! empty($oids_disks)) {
     ];
     create_state_index($state_name, $states);
 
-    foreach (explode("\n", $oids_disks) as $data) {
+    foreach (explode("\n", (string) $oids_disks) as $data) {
         $data = trim($data);
         if (! empty($data)) {
             [$oid,$descr] = explode(' = ', $data, 2);

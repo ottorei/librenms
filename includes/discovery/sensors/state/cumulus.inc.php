@@ -25,20 +25,24 @@ if (is_array($temp)) {
 
     // Iterate over each entry from SNMP walk
     foreach ($temp as $index => $entry) {
+        if (! isset($entry['ENTITY-SENSOR-MIB::entPhySensorOperStatus'])) {
+            continue;
+        }
+
         $sensor_value = $entry['ENTITY-SENSOR-MIB::entPhySensorOperStatus'];
 
         // Determine resource type based on OID index
-        if (preg_match('/^1100000\d{2}$/', $index)) {
+        if (preg_match('/^1100000\d{2}$/', (string) $index)) {
             $resource_type = 'power_supply';
-        } elseif (preg_match('/^1000110\d{2}$/', $index)) {
+        } elseif (preg_match('/^1000110\d{2}$/', (string) $index)) {
             $resource_type = 'fan';
-        } elseif (preg_match('/^1000000\d{2}$/', $index)) {
+        } elseif (preg_match('/^1000000\d{2}$/', (string) $index)) {
             $resource_type = 'temperature_sensor';
         } else {
             continue; // Skip indices not matching specified patterns
         }
 
-        $descr = "{$resource_descr_prefixes[$resource_type]} " . substr($index, -1) . ' State';
+        $descr = "{$resource_descr_prefixes[$resource_type]} " . substr((string) $index, -1) . ' State';
         $oid = $base_oid . $index;
 
         // Discover Sensors

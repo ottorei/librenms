@@ -27,6 +27,7 @@
 namespace LibreNMS\OS;
 
 use LibreNMS\Device\WirelessSensor;
+use LibreNMS\Enum\WirelessSensorType;
 use LibreNMS\Interfaces\Discovery\Sensors\WirelessCapacityDiscovery;
 use LibreNMS\Interfaces\Discovery\Sensors\WirelessCcqDiscovery;
 use LibreNMS\Interfaces\Discovery\Sensors\WirelessFrequencyDiscovery;
@@ -76,7 +77,7 @@ class Lcoslx extends OS implements
         $sensors = [];
         foreach ($data as $index => $entry) {
             $sensors[$index] = new WirelessSensor(
-                'frequency',
+                WirelessSensorType::Frequency,
                 $this->getDeviceId(),
                 '.1.3.6.1.4.1.2356.13.1.3.57.1.3.' . '6.' . $this->strToDecOid($index),
                 'lcoslx',
@@ -113,7 +114,7 @@ class Lcoslx extends OS implements
         $sensors = [];
         foreach ($data as $index => $entry) {
             $sensors[$index] = new WirelessSensor(
-                'capacity',
+                WirelessSensorType::Capacity,
                 $this->getDeviceId(),
                 '.1.3.6.1.4.1.2356.13.1.3.57.1.6.' . '6.' . $this->strToDecOid($index),
                 'lcoslx',
@@ -139,7 +140,7 @@ class Lcoslx extends OS implements
         $sensors = [];
         foreach ($data as $index => $entry) {
             $sensors[$index] = new WirelessSensor(
-                'noise-floor',
+                WirelessSensorType::NoiseFloor,
                 $this->getDeviceId(),
                 '.1.3.6.1.4.1.2356.13.1.3.57.1.5.' . '6.' . $this->strToDecOid($index),
                 'lcoslx',
@@ -165,7 +166,7 @@ class Lcoslx extends OS implements
 
         foreach ($data as $index => $entry) {
             $sensors[$index] = new WirelessSensor(
-                'power',
+                WirelessSensorType::Power,
                 $this->getDeviceId(),
                 '.1.3.6.1.4.1.2356.13.1.3.57.1.7.' . '6.' . $this->strToDecOid($index),
                 'lcos-tx',
@@ -197,8 +198,12 @@ class Lcoslx extends OS implements
                 continue;
             }
 
+            if (! isset($entry['lcosLXStatusWLANStationEntryPhySignal'])) {
+                continue;
+            }
+
             $sensors[$bssid] = new WirelessSensor(
-                'ccq',
+                WirelessSensorType::Ccq,
                 $this->getDeviceId(),
                 '.1.3.6.1.4.1.2356.13.1.3.44.1.10.' . Mac::parse($bssid)->oid() . '.0',
                 'lcoslx',
@@ -233,7 +238,7 @@ class Lcoslx extends OS implements
 
             if (isset($entry['lcosLXStatusWLANStationEntryEffTxRate'])) {
                 $sensors['tx-' . $bssid] = new WirelessSensor(
-                    'rate',
+                    WirelessSensorType::Rate,
                     $this->getDeviceId(),
                     '.1.3.6.1.4.1.2356.13.1.3.32.1.50.' . Mac::parse($bssid)->oid() . '.0',
                     'lcos-tx',
@@ -245,13 +250,13 @@ class Lcoslx extends OS implements
             }
             if (isset($entry['lcosLXStatusWLANStationEntryEffRxRate'])) {
                 $sensors['rx-' . $bssid] = new WirelessSensor(
-                    'rate',
+                    WirelessSensorType::Rate,
                     $this->getDeviceId(),
                     '.1.3.6.1.4.1.2356.13.1.3.32.1.51.' . Mac::parse($bssid)->oid() . '.0',
                     'lcos-rx',
                     $bssid,
                     'RX Rate ' . $entry['lcosLXStatusWLANStationEntryNetworkName'] . " $bssid",
-                    $entry['lcosLXStatusWLANStationEntryEffTxRate'],
+                    $entry['lcosLXStatusWLANStationEntryEffRxRate'],
                     1000000
                 );
             }
@@ -281,7 +286,7 @@ class Lcoslx extends OS implements
             }
 
             $sensors[$bssid] = new WirelessSensor(
-                'rssi',
+                WirelessSensorType::Rssi,
                 $this->getDeviceId(),
                 '.1.3.6.1.4.1.2356.13.1.3.44.1.26.' . Mac::parse($bssid)->oid() . '.0',
                 'lcoslx',

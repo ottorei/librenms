@@ -156,7 +156,6 @@ return [
     'alpha_space' => 'O campo :attribute pode conter apenas letras, números, sublinhados e espaços.',
     'ip_or_hostname' => 'O campo :attribute deve ser um endereço IP/rede ou nome de host válido.',
     'is_regex' => 'O campo :attribute não é uma expressão regular válida',
-    'keys_in' => 'O campo :attribute contém chaves inválidas: :extra. Chaves válidas: :values',
 
     /*
     |--------------------------------------------------------------------------
@@ -209,7 +208,7 @@ return [
             ],
             'CheckRrdcachedConnectivity' => [
                 'fail_socket' => ':socket não parece existir, teste de conectividade do rrdcached falhou',
-                'fail_port' => 'Não é possível conectar ao servidor rrdcached na porta :port',
+                'fail_port' => 'Não é possível conectar ao servidor rrdcached :server na porta :port',
                 'ok' => 'Conectado ao rrdcached',
             ],
             'CheckRrdDirPermissions' => [
