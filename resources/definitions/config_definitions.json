@@ -1694,11 +1694,11 @@
             "default": true,
             "type": "boolean"
         },
-        "discovery_modules.cisco-mac-accounting": {
+        "discovery_modules.mac-accounting": {
             "order": 60,
             "group": "discovery",
             "section": "discovery_modules",
-            "default": false,
+            "default": true,
             "type": "boolean"
         },
         "discovery_modules.cisco-pw": {
@@ -2278,7 +2278,7 @@
         "enable_ports_etherlike": {
             "group": "webui",
             "section": "device",
-            "order": 22,
+            "order": 23,
             "default": false,
             "type": "boolean"
         },
@@ -5308,13 +5308,6 @@
             "default": "DejaVuSansMono",
             "type": "text"
         },
-        "mtr": {
-            "default": "/usr/bin/mtr",
-            "group": "external",
-            "section": "binaries",
-            "order": 4,
-            "type": "executable"
-        },
         "mtu_options.bytes": {
             "group": "poller",
             "section": "mtu",
@@ -5577,13 +5570,6 @@
             "section": "nfsen",
             "order": 13,
             "type": "text"
-        },
-        "nmap": {
-            "default": "/usr/bin/nmap",
-            "group": "external",
-            "section": "binaries",
-            "order": 5,
-            "type": "executable"
         },
         "no_proxy": {
             "group": "system",
@@ -5919,13 +5905,6 @@
         "php_memory_limit": {
             "type": "integer"
         },
-        "ping": {
-            "default": "/bin/ping",
-            "group": "external",
-            "section": "binaries",
-            "order": 6,
-            "type": "executable"
-        },
         "plugin_dir": {
             "type": "directory"
         },
@@ -6024,7 +6003,7 @@
             "default": true,
             "type": "boolean"
         },
-        "poller_modules.ipSystemStats": {
+        "poller_modules.ip-system-stats": {
             "order": 214,
             "group": "poller",
             "section": "poller_modules",
@@ -6161,11 +6140,11 @@
             "default": false,
             "type": "boolean"
         },
-        "poller_modules.cisco-mac-accounting": {
+        "poller_modules.mac-accounting": {
             "order": 100,
             "group": "poller",
             "section": "poller_modules",
-            "default": false,
+            "default": true,
             "type": "boolean"
         },
         "poller_modules.cipsec-tunnels": {
@@ -6341,6 +6320,17 @@
                 "fdb": "FDB"
             }
         },
+        "ports_ipv4_neighbours": {
+            "default": "subnet",
+            "type": "select",
+            "group": "webui",
+            "section": "device",
+            "order": 22,
+            "options":{
+                "subnet": "Subnet",
+                "arp": "ARP"
+            }
+        },
         "ports_purge": {
             "group": "system",
             "section": "cleanup",
@@ -6477,6 +6467,9 @@
             "type": "text",
             "group": "external",
             "section": "rancid",
+            "validate": {
+                "value": "url"
+            },
             "order": 3
         },
         "reporting.error": {
@@ -6581,7 +6574,7 @@
             "type": "text"
         },
         "rrdgraph_def_text_dark": {
-            "default": "-c BACK#EEEEEE00 -c SHADEA#EEEEEE00 -c SHADEB#EEEEEE00 -c CANVAS#FFFFFF00 -c GRID#292929 -c MGRID#2f343e -c FRAME#5e5e5e -c ARROW#5e5e5e",
+            "default": "-c BACK#2e3338 -c SHADEA#EEEEEE00 -c SHADEB#EEEEEE00 -c CANVAS#FFFFFF00 -c GRID#292929 -c MGRID#2f343e -c FRAME#5e5e5e -c ARROW#5e5e5e",
             "type": "text"
         },
         "rrdgraph_def_text_color": {
@@ -7447,13 +7440,6 @@
             "section": "graph",
             "order": 0,
             "type": "integer"
-        },
-        "whois": {
-            "default": "/usr/bin/whois",
-            "group": "external",
-            "section": "binaries",
-            "order": 16,
-            "type": "executable"
         },
         "xirrus_disable_stations": {
             "default": false,
