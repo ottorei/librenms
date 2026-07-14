@@ -30,15 +30,14 @@ use App\Facades\LibrenmsConfig;
 use App\Models\Device;
 use App\Models\Eventlog;
 use App\Polling\Measure\Measurement;
-use Exception;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use LibreNMS\Enum\Severity;
-use LibreNMS\Exceptions\FileExistsException;
 use LibreNMS\Exceptions\RrdException;
+use LibreNMS\Exceptions\RrdFileExistsException;
 use LibreNMS\Exceptions\RrdGraphException;
 use LibreNMS\Exceptions\RrdNotFoundException;
-use LibreNMS\Exceptions\RrdUpdateTooFrequentException;
+use LibreNMS\Exceptions\RrdStoreException;
 use LibreNMS\RRD\RrdProcess;
 use LibreNMS\Util\Debug;
 use LibreNMS\Util\Rewrite;
@@ -46,6 +45,7 @@ use LibreNMS\Util\Rewrite;
 class Rrd extends BaseDatastore
 {
     private $disabled = false;
+    private int $updateErrorCount = 0;
 
     private ?RrdProcess $rrd = null;
     /** @var string */
@@ -139,17 +139,29 @@ class Rrd extends BaseDatastore
         }
 
         try {
-            $this->update($rrd, $fields);
-        } catch (RrdUpdateTooFrequentException) {
-            Log::debug("RRD warning: update too soon for $rrd");
-        } catch (RrdNotFoundException) {
-            if (isset($rrd_def)) {
-                $this->command('create', $rrd, ['--step', $step, ...$rrd_def->getArguments(), ...$this->rra]);
+            try {
                 $this->update($rrd, $fields);
+            } catch (RrdNotFoundException) {
+                if (isset($rrd_def)) {
+                    $this->command('create', $rrd, ['--step', $step, ...$rrd_def->getArguments(), ...$this->rra]);
+                    $this->update($rrd, $fields);
+                }
             }
+        } catch (RrdStoreException $e) {
+            Log::error('RRD Error %r' . $e->getMessage() . '%n', ['color' => true]);
+
+            if (++$this->updateErrorCount >= 3) {
+                $this->disabled = true;
+                Eventlog::log('RRD updates disabled, too many errors. Final error: ' . $e->getMessage(), $device_model, 'rrd', Severity::Error);
+            }
+        } catch (RrdException $e) {
+            Log::error('RRD Error %r' . $e->getMessage() . '%n', ['color' => true]);
         }
     }
 
+    /**
+     * @throws RrdException
+     */
     public function lastUpdate(string $filename): ?TimeSeriesPoint
     {
         $output = $this->command('lastupdate', $filename);
@@ -174,7 +186,6 @@ class Rrd extends BaseDatastore
      * @param  array  $data
      *
      * @throws RrdException
-     * @throws Exception
      *
      * @internal
      */
@@ -304,14 +315,13 @@ class Rrd extends BaseDatastore
      *
      * @param  string  $host  Host name
      * @param  array|string  $extra  Components of RRD filename - will be separated with "-", or a pre-formed rrdname
-     * @param  string  $extension  File extension (default is .rrd)
      * @return string the name of the rrd file for $host's $extra component
      */
-    public function name($host, $extra, $extension = '.rrd'): string
+    public function name($host, $extra): string
     {
         $filename = self::safeName(is_array($extra) ? implode('-', $extra) : $extra);
 
-        return implode('/', [$this->dirFromHost($host), $filename . $extension]);
+        return implode('/', [$this->dirFromHost($host), $filename . '.rrd']);
     }
 
     /**
@@ -337,7 +347,7 @@ class Rrd extends BaseDatastore
      * @param  array  $options  rrdtool command options
      * @return string the output of the command
      *
-     * @throws Exception thrown when the rrdtool process(s) cannot be started
+     * @throws RrdException thrown when the rrdtool process(s) cannot be started
      */
     private function command(string $command, string $filename, array $options = []): string
     {
@@ -346,7 +356,7 @@ class Rrd extends BaseDatastore
 
         try {
             $cmd = self::buildCommand($command, $filename, $options);
-        } catch (FileExistsException) {
+        } catch (RrdFileExistsException) {
             Log::debug("RRD[%g$filename already exists%n]", ['color' => true]);
 
             return $output;
@@ -386,7 +396,7 @@ class Rrd extends BaseDatastore
      * @param  array  $options  Options for the command possibly including the rrd definition
      * @return array returns a full command array ready to be used by rrdtool
      *
-     * @throws FileExistsException if rrdtool <1.4.3 and the rrd file exists locally
+     * @throws RrdFileExistsException if rrdtool <1.4.3 and the rrd file exists locally
      */
     public function buildCommand(string $command, string $filename, array $options = []): array
     {
@@ -394,7 +404,7 @@ class Rrd extends BaseDatastore
             // <1.4.3 doesn't support -O, so make sure the file doesn't exist
             if (version_compare($this->version, '1.4.3', '<')) {
                 if (is_file($filename)) {
-                    throw new FileExistsException();
+                    throw new RrdFileExistsException();
                 }
             } else {
                 $options[] = '-O';
@@ -411,13 +421,15 @@ class Rrd extends BaseDatastore
      * @param  string  $hostname  hostname of the device
      * @return string[] array of rrd files for this host
      */
-    public function getRrdFiles(string $hostname): array
+    public function getRrdFiles(string $hostname, string|array $prefix = ''): array
     {
+        $prefix = self::safeName(is_array($prefix) ? implode('-', $prefix) : $prefix);
+
         if ($this->rrdcached) {
             $output = $this->command('list', '/' . self::safeName($hostname));
-            $files = explode("\n", trim($output));
+            $files = array_filter(explode("\n", trim($output)), fn ($file) => str_starts_with((string) $file, $prefix));
         } else {
-            $files = glob($this->dirFromHost($hostname) . '/*.rrd') ?: [];
+            $files = glob($this->dirFromHost($hostname) . '/' . $prefix . '*.rrd') ?: [];
         }
 
         sort($files);
@@ -499,7 +511,7 @@ class Rrd extends BaseDatastore
             return;
         }
 
-        foreach (glob($this->name($hostname, $prefix, '*.rrd')) as $rrd) {
+        foreach (glob($this->name($hostname, $prefix)) as $rrd) {
             unlink($rrd);
         }
     }

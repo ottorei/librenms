@@ -6,11 +6,14 @@ use App\Http\Controllers\AlertController;
 use App\Http\Controllers\AlertOperationController;
 use App\Http\Controllers\AlertRuleController;
 use App\Http\Controllers\AlertRuleTemplateController;
+use App\Http\Controllers\AlertTemplateController;
 use App\Http\Controllers\AlertTransportController;
+use App\Http\Controllers\AlertTransportGroupController;
 use App\Http\Controllers\ApiAccessController;
 use App\Http\Controllers\Auth;
 use App\Http\Controllers\Auth\SocialiteController;
 use App\Http\Controllers\AuthLogController;
+use App\Http\Controllers\CustomoidController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DashboardWidgetController;
 use App\Http\Controllers\Device;
@@ -18,6 +21,7 @@ use App\Http\Controllers\DeviceController;
 use App\Http\Controllers\DeviceGroupController;
 use App\Http\Controllers\DevicesController;
 use App\Http\Controllers\GraphController;
+use App\Http\Controllers\GraphsPageController;
 use App\Http\Controllers\Install;
 use App\Http\Controllers\LegacyController;
 use App\Http\Controllers\LocationController;
@@ -48,6 +52,7 @@ use App\Http\Controllers\RealtimeGraphController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\Select;
 use App\Http\Controllers\SensorController;
+use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\ServiceTemplateController;
 use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\SslCertificateController;
@@ -94,6 +99,7 @@ Route::middleware(['auth'])->group(function (): void {
     Route::post('alert/{alert}/ack', [AlertController::class, 'ack'])->name('alert.ack');
     Route::get('devices/{view?}/{graph?}/{vars?}', [DevicesController::class, 'index'])->where('vars', '.*')->name('devices');
     Route::resource('device-groups', DeviceGroupController::class);
+    Route::get('graphs/{path?}', GraphsPageController::class)->where('path', '.*')->name('graphs');
     Route::any('inventory', App\Http\Controllers\InventoryController::class)->name('inventory');
     Route::get('inventory/purge', [App\Http\Controllers\InventoryController::class, 'purge'])->name('inventory.purge');
     Route::get('outages', [OutagesController::class, 'index'])->name('outages');
@@ -110,6 +116,8 @@ Route::middleware(['auth'])->group(function (): void {
         Route::get('settings', [PollerController::class, 'settingsTab'])->name('poller.settings');
         Route::get('performance', [PollerController::class, 'performanceTab'])->name('poller.performance');
         Route::resource('{id}/settings', PollerSettingsController::class, ['as' => 'poller'])->only(['update', 'destroy']);
+        Route::delete('{poller}', [PollerController::class, 'destroy'])->name('poller.destroy');
+        Route::delete('cluster/{poller_cluster}', [PollerController::class, 'destroyCluster'])->name('poller-cluster.destroy');
     });
     Route::delete('ports/purge', [\App\Http\Controllers\PortsController::class, 'purge'])->name('ports.purge');
     Route::get('ports/{view?}/{graph?}', [\App\Http\Controllers\PortsController::class, 'index'])
@@ -120,6 +128,9 @@ Route::middleware(['auth'])->group(function (): void {
         Route::post('templates/apply/{template}', [ServiceTemplateController::class, 'apply'])->name('templates.apply');
         Route::post('templates/remove/{template}', [ServiceTemplateController::class, 'remove'])->name('templates.remove');
     });
+    Route::resource('service', ServiceController::class)->only(['show', 'destroy']);
+    Route::post('customoid/test/{customoid?}', [CustomoidController::class, 'test'])->name('customoid.test');
+    Route::resource('customoid', CustomoidController::class)->only(['show', 'store', 'update', 'destroy']);
     Route::get('locations', [LocationController::class, 'index']);
     Route::resource('ssl-certificates', SslCertificateController::class)->except(['edit']);
     Route::resource('preferences', UserPreferencesController::class)->only('index', 'store', 'update');
@@ -174,6 +185,9 @@ Route::middleware(['auth'])->group(function (): void {
         Route::get('logs/syslog', Device\Tabs\SyslogController::class)->name('syslog');
         Route::get('popup', App\Http\Controllers\DevicePopupController::class)->name('popup');
         Route::put('notes', [Device\Tabs\NotesController::class, 'update'])->name('notes.update');
+        Route::get('config/backups', [Device\Tabs\ConfigController::class, 'backups'])->name('config.backups');
+        Route::get('config/backups/{backup}', [Device\Tabs\ConfigController::class, 'backup'])->where('backup', '[A-Za-z0-9._|-]+')->name('config.backup');
+        Route::get('config/diff', [Device\Tabs\ConfigController::class, 'diff'])->name('config.diff');
         Route::put('module/{module}', [Device\Tabs\ModuleController::class, 'update'])->name('module.update');
         Route::delete('module/{module}', [Device\Tabs\ModuleController::class, 'delete'])->name('module.delete');
     });
@@ -241,6 +255,9 @@ Route::middleware(['auth'])->group(function (): void {
     Route::resource('roles', RoleController::class);
 
     Route::post('alert/transports/{transport}/test', [AlertTransportController::class, 'test'])->name('alert.transports.test');
+    Route::delete('alert/transports/{transport}', [AlertTransportController::class, 'destroy'])->name('alert.transports.destroy');
+    Route::delete('alert/transport-groups/{alert_transport_group}', [AlertTransportGroupController::class, 'destroy'])->name('alert.transport-groups.destroy');
+    Route::delete('alert-templates/{alert_template}', [AlertTemplateController::class, 'destroy'])->name('alert-templates.destroy');
     Route::resource('alert-rule', AlertRuleController::class)->only(['show', 'store', 'update', 'destroy']);
     Route::resource('alert-operation', AlertOperationController::class)->only(['show', 'store', 'update', 'destroy']);
     Route::put('alert-rule/{alert_rule}/toggle', [AlertRuleController::class, 'toggle'])->name('alert-rule.toggle');
@@ -288,11 +305,13 @@ Route::middleware(['auth'])->group(function (): void {
     Route::prefix('ajax')->group(function (): void {
         // page ajax controllers
         Route::resource('location', LocationController::class)->only('update', 'destroy');
-        Route::resource('pollergroup', PollerGroupController::class)->only('destroy');
+        Route::resource('pollergroup', PollerGroupController::class)->only('destroy', 'show', 'store', 'update');
         // misc ajax controllers
-        Route::get('search/bgp', Ajax\BgpSearchController::class);
-        Route::get('search/device', Ajax\DeviceSearchController::class);
-        Route::get('search/port', Ajax\PortSearchController::class);
+        Route::get('search/devices', Ajax\Search\DevicesSearchController::class)->name('ajax.search.devices');
+        Route::get('search/ports', Ajax\Search\PortsSearchController::class)->name('ajax.search.ports');
+        Route::get('search/health', Ajax\Search\HealthSearchController::class)->name('ajax.search.health');
+        Route::get('search/routing', Ajax\Search\RoutingSearchController::class)->name('ajax.search.routing');
+        Route::get('search/logs', Ajax\Search\LogsSearchController::class)->name('ajax.search.logs');
         Route::post('set_resolution', [Ajax\SessionController::class, 'resolution']);
         Route::post('set_style', [Ajax\SessionController::class, 'style']);
         Route::post('ripe/raw', [Ajax\RipeNccApiController::class, 'raw']);
