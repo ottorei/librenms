@@ -45,9 +45,9 @@ readonly class CheckDeviceAvailability
 
             $device->save();
 
-            if ($changed) {
+            //if ($changed) {
                 $this->updateDeviceOutage->execute($device);
-            }
+            //}
         }
 
         return $device->status;
