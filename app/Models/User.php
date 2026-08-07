@@ -3,6 +3,8 @@
 namespace App\Models;
 
 use App\Events\UserCreated;
+use App\Observers\UserObserver;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -20,6 +22,7 @@ use Spatie\Permission\Traits\HasRoles;
 /**
  * @method static \Database\Factories\UserFactory factory(...$parameters)
  */
+#[ObservedBy([UserObserver::class])]
 class User extends Authenticatable
 {
     use HasFactory;
@@ -69,6 +72,9 @@ class User extends Authenticatable
         $this->attributes['password'] = $password ? Hash::make($password) : null;
     }
 
+    /**
+     * @return int|Collection<int, \App\Models\Notification>
+     */
     public function getNotifications(?string $type = null): int|Collection
     {
         return match ($type) {

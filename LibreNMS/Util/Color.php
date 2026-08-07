@@ -29,6 +29,7 @@ namespace LibreNMS\Util;
 use App\Models\BgpPeer;
 use App\Models\Device;
 use App\Models\Port;
+use LibreNMS\Enum\IfOperStatus;
 
 class Color
 {
@@ -89,7 +90,7 @@ class Color
     public static function percent(int|float|null $numerator = null, int|float|null $denominator = null, int|float|null $percent = null): string
     {
         $percent = $percent ? round($percent) : Number::calculatePercent($numerator, $denominator, 0);
-        $r = min(255, 5 * ($percent - 25));
+        $r = max(0, min(255, 5 * ($percent - 25)));
         $b = max(0, 255 - (5 * ($percent + 25)));
 
         return sprintf('#%02x%02x%02x', $r, $b, $b);
@@ -122,12 +123,12 @@ class Color
         }
 
         // Shutdown ports
-        if ($port->ifAdminStatus === 'down') {
+        if ($port->ifAdminStatus == IfOperStatus::Down) {
             return '#808080';
         }
 
         // Down Ports
-        if ($port->ifOperStatus !== 'up') {
+        if ($port->ifOperStatus != IfOperStatus::Up) {
             return '#ff0000';
         }
 

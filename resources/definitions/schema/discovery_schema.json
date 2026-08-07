@@ -250,9 +250,6 @@
                                                         "descr": {
                                                             "type": "string"
                                                         },
-                                                        "graph": {
-                                                            "type": "integer"
-                                                        },
                                                         "generic": {
                                                             "type": "integer"
                                                         }
@@ -261,7 +258,6 @@
                                                     "required": [
                                                         "descr",
                                                         "generic",
-                                                        "graph",
                                                         "value"
                                                     ]
                                                 }
@@ -544,6 +540,9 @@
                             },
                             "snmp_no_Ih_flag": {
                                 "type": "string"
+                            },
+                            "skip_limits_calc": {
+                                "type": "boolean"
                             }
                         },
                         "additionalProperties": false,

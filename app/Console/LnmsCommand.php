@@ -34,7 +34,7 @@ use Validator;
 
 abstract class LnmsCommand extends Command
 {
-    protected $developer = false;
+    protected bool $developer = false;
 
     /** @var string[][]|callable[]|null */
     protected $optionValues;
@@ -56,7 +56,7 @@ abstract class LnmsCommand extends Command
     {
         $env = $this->getLaravel() ? $this->getLaravel()->environment() : getenv('APP_ENV');
 
-        return $this->hidden || ($this->developer && $env !== 'production');
+        return $this->hidden || ($this->developer && $env === 'production');
     }
 
     /**

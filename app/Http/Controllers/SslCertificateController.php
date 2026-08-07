@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Facades\LibrenmsConfig;
 use App\Models\Device;
 use App\Models\SslCertificate;
 use Illuminate\Http\Request;
@@ -9,11 +10,6 @@ use Illuminate\Support\Facades\Auth;
 
 class SslCertificateController extends Controller
 {
-    public function __construct()
-    {
-        $this->authorizeResource(SslCertificate::class);
-    }
-
     /**
      * Display a listing of SSL certificates.
      */
@@ -56,28 +52,25 @@ class SslCertificateController extends Controller
                 ->withErrors(['device_id' => __('You may only assign certificates to devices you can access.')]);
         }
 
-        $host = $validated['host'];
-        $port = (int) ($validated['port'] ?? 443);
-        $deviceId = (int) $validated['device_id'];
+        $cert = new SslCertificate([
+            'device_id' => $request->integer('device_id'),
+            'host' => $request->string('host'),
+            'port' => $request->integer('port', 443),
+            'disabled' => false,
+        ]);
 
         try {
-            $cert = SslCertificate::fetchAndParse($host, $port);
+            $cert->updateFromHost();
         } catch (\Throwable $e) {
             return redirect()->route('ssl-certificates.create')
                 ->withInput()
                 ->withErrors(['host' => __('Failed to fetch certificate: :error', ['error' => $e->getMessage()])]);
         }
 
-        $cert['device_id'] = $deviceId;
-        $cert['host'] = $host;
-        $cert['port'] = $port;
-        $cert['last_checked_at'] = now();
-        $cert['disabled'] = false;
-
-        SslCertificate::create($cert);
+        $cert->save();
 
         return redirect()->route('ssl-certificates.index')
-            ->with('success', __('SSL certificate added for :host.', ['host' => $host . ':' . $port]));
+            ->with('success', __('SSL certificate added for :host.', ['host' => $validated['host'] . ':' . ((int) ($validated['port'] ?? 443))]));
     }
 
     /**
@@ -85,10 +78,15 @@ class SslCertificateController extends Controller
      */
     public function show(SslCertificate $ssl_certificate)
     {
-        $this->authorize('viewAny', SslCertificate::class);
-        $ssl_certificate->load('device');
+        $this->authorize('view', $ssl_certificate);
 
-        return view('ssl-certificates.show', ['certificate' => $ssl_certificate]);
+        $ssl_certificate->load('device');
+        $options = [
+            'days_until_expiry_warning' => (int) LibrenmsConfig::get('ssl_certificates.days_until_expiry_warning', 30),
+            'days_until_expiry_danger' => (int) LibrenmsConfig::get('ssl_certificates.days_until_expiry_danger', 0),
+        ];
+
+        return view('ssl-certificates.show', ['certificate' => $ssl_certificate, 'options' => $options]);
     }
 
     /**
@@ -97,12 +95,13 @@ class SslCertificateController extends Controller
     public function update(Request $request, SslCertificate $ssl_certificate)
     {
         $this->authorize('update', $ssl_certificate);
+
         $request->validate([
             'disabled' => 'sometimes|boolean',
         ]);
 
         if ($request->has('disabled')) {
-            $ssl_certificate->disabled = (bool) $request->input('disabled');
+            $ssl_certificate->disabled = $request->boolean('disabled');
             $ssl_certificate->save();
         }
 
@@ -120,6 +119,7 @@ class SslCertificateController extends Controller
     public function destroy(Request $request, SslCertificate $ssl_certificate)
     {
         $this->authorize('delete', $ssl_certificate);
+
         $ssl_certificate->delete();
 
         if ($request->wantsJson()) {

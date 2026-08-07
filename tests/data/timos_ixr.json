@@ -9069,7 +9069,8 @@
                     "ifStackStatus": "active"
                 }
             ]
-        }
+        },
+        "poller": "matches discovery"
     },
     "entity-physical": {
         "discovery": {
@@ -11418,294 +11419,252 @@
                 {
                     "state_name": "tmnxChassisCriticalLEDState",
                     "state_descr": "NotApplicable",
-                    "state_draw_graph": 0,
                     "state_value": 0,
                     "state_generic_value": 3
                 },
                 {
                     "state_name": "tmnxChassisCriticalLEDState",
                     "state_descr": "Off",
-                    "state_draw_graph": 0,
                     "state_value": 1,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "tmnxChassisCriticalLEDState",
                     "state_descr": "Red",
-                    "state_draw_graph": 0,
                     "state_value": 2,
                     "state_generic_value": 2
                 },
                 {
                     "state_name": "tmnxChassisCriticalLEDState",
                     "state_descr": "Amber",
-                    "state_draw_graph": 0,
                     "state_value": 3,
                     "state_generic_value": 1
                 },
                 {
                     "state_name": "tmnxChassisCriticalLEDState",
                     "state_descr": "Yellow",
-                    "state_draw_graph": 0,
                     "state_value": 4,
                     "state_generic_value": 1
                 },
                 {
                     "state_name": "tmnxChassisCriticalLEDState",
                     "state_descr": "Green",
-                    "state_draw_graph": 0,
                     "state_value": 5,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "tmnxChassisCriticalLEDState",
                     "state_descr": "AmberBlink",
-                    "state_draw_graph": 0,
                     "state_value": 6,
                     "state_generic_value": 1
                 },
                 {
                     "state_name": "tmnxChassisCriticalLEDState",
                     "state_descr": "YellowBlink",
-                    "state_draw_graph": 0,
                     "state_value": 7,
                     "state_generic_value": 1
                 },
                 {
                     "state_name": "tmnxChassisCriticalLEDState",
                     "state_descr": "GreenBlink",
-                    "state_draw_graph": 0,
                     "state_value": 8,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "tmnxChassisCriticalLEDState",
                     "state_descr": "RedBlink",
-                    "state_draw_graph": 0,
                     "state_value": 9,
                     "state_generic_value": 2
                 },
                 {
                     "state_name": "tmnxChassisMajorLEDState",
                     "state_descr": "NotApplicable",
-                    "state_draw_graph": 0,
                     "state_value": 0,
                     "state_generic_value": 3
                 },
                 {
                     "state_name": "tmnxChassisMajorLEDState",
                     "state_descr": "Off",
-                    "state_draw_graph": 0,
                     "state_value": 1,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "tmnxChassisMajorLEDState",
                     "state_descr": "Red",
-                    "state_draw_graph": 0,
                     "state_value": 2,
                     "state_generic_value": 2
                 },
                 {
                     "state_name": "tmnxChassisMajorLEDState",
                     "state_descr": "Amber",
-                    "state_draw_graph": 0,
                     "state_value": 3,
                     "state_generic_value": 1
                 },
                 {
                     "state_name": "tmnxChassisMajorLEDState",
                     "state_descr": "Yellow",
-                    "state_draw_graph": 0,
                     "state_value": 4,
                     "state_generic_value": 1
                 },
                 {
                     "state_name": "tmnxChassisMajorLEDState",
                     "state_descr": "Green",
-                    "state_draw_graph": 0,
                     "state_value": 5,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "tmnxChassisMajorLEDState",
                     "state_descr": "AmberBlink",
-                    "state_draw_graph": 0,
                     "state_value": 6,
                     "state_generic_value": 1
                 },
                 {
                     "state_name": "tmnxChassisMajorLEDState",
                     "state_descr": "YellowBlink",
-                    "state_draw_graph": 0,
                     "state_value": 7,
                     "state_generic_value": 1
                 },
                 {
                     "state_name": "tmnxChassisMajorLEDState",
                     "state_descr": "GreenBlink",
-                    "state_draw_graph": 0,
                     "state_value": 8,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "tmnxChassisMajorLEDState",
                     "state_descr": "RedBlink",
-                    "state_draw_graph": 0,
                     "state_value": 9,
                     "state_generic_value": 2
                 },
                 {
                     "state_name": "tmnxChassisMinorLEDState",
                     "state_descr": "NotApplicable",
-                    "state_draw_graph": 0,
                     "state_value": 0,
                     "state_generic_value": 3
                 },
                 {
                     "state_name": "tmnxChassisMinorLEDState",
                     "state_descr": "Off",
-                    "state_draw_graph": 0,
                     "state_value": 1,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "tmnxChassisMinorLEDState",
                     "state_descr": "Red",
-                    "state_draw_graph": 0,
                     "state_value": 2,
                     "state_generic_value": 2
                 },
                 {
                     "state_name": "tmnxChassisMinorLEDState",
                     "state_descr": "Amber",
-                    "state_draw_graph": 0,
                     "state_value": 3,
                     "state_generic_value": 1
                 },
                 {
                     "state_name": "tmnxChassisMinorLEDState",
                     "state_descr": "Yellow",
-                    "state_draw_graph": 0,
                     "state_value": 4,
                     "state_generic_value": 1
                 },
                 {
                     "state_name": "tmnxChassisMinorLEDState",
                     "state_descr": "Green",
-                    "state_draw_graph": 0,
                     "state_value": 5,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "tmnxChassisMinorLEDState",
                     "state_descr": "AmberBlink",
-                    "state_draw_graph": 0,
                     "state_value": 6,
                     "state_generic_value": 1
                 },
                 {
                     "state_name": "tmnxChassisMinorLEDState",
                     "state_descr": "YellowBlink",
-                    "state_draw_graph": 0,
                     "state_value": 7,
                     "state_generic_value": 1
                 },
                 {
                     "state_name": "tmnxChassisMinorLEDState",
                     "state_descr": "GreenBlink",
-                    "state_draw_graph": 0,
                     "state_value": 8,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "tmnxChassisMinorLEDState",
                     "state_descr": "RedBlink",
-                    "state_draw_graph": 0,
                     "state_value": 9,
                     "state_generic_value": 2
                 },
                 {
                     "state_name": "tmnxChassisOverTempState",
                     "state_descr": "Ok",
-                    "state_draw_graph": 0,
                     "state_value": 1,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "tmnxChassisOverTempState",
                     "state_descr": "OverTemp",
-                    "state_draw_graph": 0,
                     "state_value": 2,
                     "state_generic_value": 2
                 },
                 {
                     "state_name": "tmnxHwAlarmState",
                     "state_descr": "unknown",
-                    "state_draw_graph": 0,
                     "state_value": 0,
                     "state_generic_value": 3
                 },
                 {
                     "state_name": "tmnxHwAlarmState",
                     "state_descr": "alarmActive",
-                    "state_draw_graph": 0,
                     "state_value": 1,
                     "state_generic_value": 2
                 },
                 {
                     "state_name": "tmnxHwAlarmState",
                     "state_descr": "alarmCleared",
-                    "state_draw_graph": 0,
                     "state_value": 2,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "tmnxPhysChassisFanOperStatus",
                     "state_descr": "Unknown",
-                    "state_draw_graph": 0,
                     "state_value": 1,
                     "state_generic_value": 3
                 },
                 {
                     "state_name": "tmnxPhysChassisFanOperStatus",
                     "state_descr": "NotEquipped",
-                    "state_draw_graph": 0,
                     "state_value": 2,
                     "state_generic_value": 3
                 },
                 {
                     "state_name": "tmnxPhysChassisFanOperStatus",
                     "state_descr": "OK",
-                    "state_draw_graph": 0,
                     "state_value": 3,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "tmnxPhysChassisFanOperStatus",
                     "state_descr": "Failed",
-                    "state_draw_graph": 0,
                     "state_value": 4,
                     "state_generic_value": 2
                 },
                 {
                     "state_name": "tmnxPhysChassisFanOperStatus",
                     "state_descr": "OOS",
-                    "state_draw_graph": 0,
                     "state_value": 5,
                     "state_generic_value": 1
                 },
                 {
                     "state_name": "tmnxPhysChassisFanOperStatus",
                     "state_descr": "NotProvisioned",
-                    "state_draw_graph": 0,
                     "state_value": 6,
                     "state_generic_value": 1
                 },
                 {
                     "state_name": "tmnxPhysChassisFanOperStatus",
                     "state_descr": "NotApplicable",
-                    "state_draw_graph": 0,
                     "state_value": 7,
                     "state_generic_value": 3
                 }
@@ -13743,294 +13702,252 @@
                 {
                     "state_name": "tmnxChassisCriticalLEDState",
                     "state_descr": "NotApplicable",
-                    "state_draw_graph": 0,
                     "state_value": 0,
                     "state_generic_value": 3
                 },
                 {
                     "state_name": "tmnxChassisCriticalLEDState",
                     "state_descr": "Off",
-                    "state_draw_graph": 0,
                     "state_value": 1,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "tmnxChassisCriticalLEDState",
                     "state_descr": "Red",
-                    "state_draw_graph": 0,
                     "state_value": 2,
                     "state_generic_value": 2
                 },
                 {
                     "state_name": "tmnxChassisCriticalLEDState",
                     "state_descr": "Amber",
-                    "state_draw_graph": 0,
                     "state_value": 3,
                     "state_generic_value": 1
                 },
                 {
                     "state_name": "tmnxChassisCriticalLEDState",
                     "state_descr": "Yellow",
-                    "state_draw_graph": 0,
                     "state_value": 4,
                     "state_generic_value": 1
                 },
                 {
                     "state_name": "tmnxChassisCriticalLEDState",
                     "state_descr": "Green",
-                    "state_draw_graph": 0,
                     "state_value": 5,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "tmnxChassisCriticalLEDState",
                     "state_descr": "AmberBlink",
-                    "state_draw_graph": 0,
                     "state_value": 6,
                     "state_generic_value": 1
                 },
                 {
                     "state_name": "tmnxChassisCriticalLEDState",
                     "state_descr": "YellowBlink",
-                    "state_draw_graph": 0,
                     "state_value": 7,
                     "state_generic_value": 1
                 },
                 {
                     "state_name": "tmnxChassisCriticalLEDState",
                     "state_descr": "GreenBlink",
-                    "state_draw_graph": 0,
                     "state_value": 8,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "tmnxChassisCriticalLEDState",
                     "state_descr": "RedBlink",
-                    "state_draw_graph": 0,
                     "state_value": 9,
                     "state_generic_value": 2
                 },
                 {
                     "state_name": "tmnxChassisMajorLEDState",
                     "state_descr": "NotApplicable",
-                    "state_draw_graph": 0,
                     "state_value": 0,
                     "state_generic_value": 3
                 },
                 {
                     "state_name": "tmnxChassisMajorLEDState",
                     "state_descr": "Off",
-                    "state_draw_graph": 0,
                     "state_value": 1,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "tmnxChassisMajorLEDState",
                     "state_descr": "Red",
-                    "state_draw_graph": 0,
                     "state_value": 2,
                     "state_generic_value": 2
                 },
                 {
                     "state_name": "tmnxChassisMajorLEDState",
                     "state_descr": "Amber",
-                    "state_draw_graph": 0,
                     "state_value": 3,
                     "state_generic_value": 1
                 },
                 {
                     "state_name": "tmnxChassisMajorLEDState",
                     "state_descr": "Yellow",
-                    "state_draw_graph": 0,
                     "state_value": 4,
                     "state_generic_value": 1
                 },
                 {
                     "state_name": "tmnxChassisMajorLEDState",
                     "state_descr": "Green",
-                    "state_draw_graph": 0,
                     "state_value": 5,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "tmnxChassisMajorLEDState",
                     "state_descr": "AmberBlink",
-                    "state_draw_graph": 0,
                     "state_value": 6,
                     "state_generic_value": 1
                 },
                 {
                     "state_name": "tmnxChassisMajorLEDState",
                     "state_descr": "YellowBlink",
-                    "state_draw_graph": 0,
                     "state_value": 7,
                     "state_generic_value": 1
                 },
                 {
                     "state_name": "tmnxChassisMajorLEDState",
                     "state_descr": "GreenBlink",
-                    "state_draw_graph": 0,
                     "state_value": 8,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "tmnxChassisMajorLEDState",
                     "state_descr": "RedBlink",
-                    "state_draw_graph": 0,
                     "state_value": 9,
                     "state_generic_value": 2
                 },
                 {
                     "state_name": "tmnxChassisMinorLEDState",
                     "state_descr": "NotApplicable",
-                    "state_draw_graph": 0,
                     "state_value": 0,
                     "state_generic_value": 3
                 },
                 {
                     "state_name": "tmnxChassisMinorLEDState",
                     "state_descr": "Off",
-                    "state_draw_graph": 0,
                     "state_value": 1,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "tmnxChassisMinorLEDState",
                     "state_descr": "Red",
-                    "state_draw_graph": 0,
                     "state_value": 2,
                     "state_generic_value": 2
                 },
                 {
                     "state_name": "tmnxChassisMinorLEDState",
                     "state_descr": "Amber",
-                    "state_draw_graph": 0,
                     "state_value": 3,
                     "state_generic_value": 1
                 },
                 {
                     "state_name": "tmnxChassisMinorLEDState",
                     "state_descr": "Yellow",
-                    "state_draw_graph": 0,
                     "state_value": 4,
                     "state_generic_value": 1
                 },
                 {
                     "state_name": "tmnxChassisMinorLEDState",
                     "state_descr": "Green",
-                    "state_draw_graph": 0,
                     "state_value": 5,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "tmnxChassisMinorLEDState",
                     "state_descr": "AmberBlink",
-                    "state_draw_graph": 0,
                     "state_value": 6,
                     "state_generic_value": 1
                 },
                 {
                     "state_name": "tmnxChassisMinorLEDState",
                     "state_descr": "YellowBlink",
-                    "state_draw_graph": 0,
                     "state_value": 7,
                     "state_generic_value": 1
                 },
                 {
                     "state_name": "tmnxChassisMinorLEDState",
                     "state_descr": "GreenBlink",
-                    "state_draw_graph": 0,
                     "state_value": 8,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "tmnxChassisMinorLEDState",
                     "state_descr": "RedBlink",
-                    "state_draw_graph": 0,
                     "state_value": 9,
                     "state_generic_value": 2
                 },
                 {
                     "state_name": "tmnxChassisOverTempState",
                     "state_descr": "Ok",
-                    "state_draw_graph": 0,
                     "state_value": 1,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "tmnxChassisOverTempState",
                     "state_descr": "OverTemp",
-                    "state_draw_graph": 0,
                     "state_value": 2,
                     "state_generic_value": 2
                 },
                 {
                     "state_name": "tmnxHwAlarmState",
                     "state_descr": "unknown",
-                    "state_draw_graph": 0,
                     "state_value": 0,
                     "state_generic_value": 3
                 },
                 {
                     "state_name": "tmnxHwAlarmState",
                     "state_descr": "alarmActive",
-                    "state_draw_graph": 0,
                     "state_value": 1,
                     "state_generic_value": 2
                 },
                 {
                     "state_name": "tmnxHwAlarmState",
                     "state_descr": "alarmCleared",
-                    "state_draw_graph": 0,
                     "state_value": 2,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "tmnxPhysChassisFanOperStatus",
                     "state_descr": "Unknown",
-                    "state_draw_graph": 0,
                     "state_value": 1,
                     "state_generic_value": 3
                 },
                 {
                     "state_name": "tmnxPhysChassisFanOperStatus",
                     "state_descr": "NotEquipped",
-                    "state_draw_graph": 0,
                     "state_value": 2,
                     "state_generic_value": 3
                 },
                 {
                     "state_name": "tmnxPhysChassisFanOperStatus",
                     "state_descr": "OK",
-                    "state_draw_graph": 0,
                     "state_value": 3,
                     "state_generic_value": 0
                 },
                 {
                     "state_name": "tmnxPhysChassisFanOperStatus",
                     "state_descr": "Failed",
-                    "state_draw_graph": 0,
                     "state_value": 4,
                     "state_generic_value": 2
                 },
                 {
                     "state_name": "tmnxPhysChassisFanOperStatus",
                     "state_descr": "OOS",
-                    "state_draw_graph": 0,
                     "state_value": 5,
                     "state_generic_value": 1
                 },
                 {
                     "state_name": "tmnxPhysChassisFanOperStatus",
                     "state_descr": "NotProvisioned",
-                    "state_draw_graph": 0,
                     "state_value": 6,
                     "state_generic_value": 1
                 },
                 {
                     "state_name": "tmnxPhysChassisFanOperStatus",
                     "state_descr": "NotApplicable",
-                    "state_draw_graph": 0,
                     "state_value": 7,
                     "state_generic_value": 3
                 }
@@ -14091,7 +14008,7 @@
                     "bgpPeerIface": null,
                     "bgpLocalAddr": "0.0.0.0",
                     "bgpPeerRemoteAddr": "0.0.0.0",
-                    "bgpPeerDescr": "",
+                    "bgpPeerDescr": "BTR_SR_01",
                     "bgpPeerInUpdates": 0,
                     "bgpPeerOutUpdates": 0,
                     "bgpPeerInTotalMessages": 0,
@@ -14114,7 +14031,7 @@
                     "bgpPeerIface": null,
                     "bgpLocalAddr": "0.0.0.0",
                     "bgpPeerRemoteAddr": "0.0.0.0",
-                    "bgpPeerDescr": "",
+                    "bgpPeerDescr": "HOUW_SR_01",
                     "bgpPeerInUpdates": 0,
                     "bgpPeerOutUpdates": 0,
                     "bgpPeerInTotalMessages": 0,
@@ -14137,7 +14054,7 @@
                     "bgpPeerIface": null,
                     "bgpLocalAddr": "0.0.0.0",
                     "bgpPeerRemoteAddr": "0.0.0.0",
-                    "bgpPeerDescr": "",
+                    "bgpPeerDescr": "TODFW2",
                     "bgpPeerInUpdates": 0,
                     "bgpPeerOutUpdates": 0,
                     "bgpPeerInTotalMessages": 0,
@@ -14160,7 +14077,7 @@
                     "bgpPeerIface": null,
                     "bgpLocalAddr": "0.0.0.0",
                     "bgpPeerRemoteAddr": "0.0.0.0",
-                    "bgpPeerDescr": "",
+                    "bgpPeerDescr": "HOUF_VOS_02",
                     "bgpPeerInUpdates": 0,
                     "bgpPeerOutUpdates": 0,
                     "bgpPeerInTotalMessages": 0,
@@ -14183,7 +14100,7 @@
                     "bgpPeerIface": null,
                     "bgpLocalAddr": "0.0.0.0",
                     "bgpPeerRemoteAddr": "0.0.0.0",
-                    "bgpPeerDescr": "",
+                    "bgpPeerDescr": "HOUF_VOS_02",
                     "bgpPeerInUpdates": 0,
                     "bgpPeerOutUpdates": 0,
                     "bgpPeerInTotalMessages": 0,
@@ -14193,6 +14110,52 @@
                     "context_name": null,
                     "bgpLocalAs": 14224,
                     "vrfLocalAs": 14224
+                },
+                {
+                    "astext": "AS14224-MOCK-TEXT",
+                    "bgpPeerIdentifier": "10.4.1.30",
+                    "bgpPeerRemoteAs": 14224,
+                    "bgpPeerState": "idle",
+                    "bgpPeerAdminStatus": "stop",
+                    "bgpPeerLastErrorCode": null,
+                    "bgpPeerLastErrorSubCode": null,
+                    "bgpPeerLastErrorText": null,
+                    "bgpPeerIface": null,
+                    "bgpLocalAddr": "0.0.0.0",
+                    "bgpPeerRemoteAddr": "0.0.0.0",
+                    "bgpPeerDescr": "",
+                    "bgpPeerInUpdates": 0,
+                    "bgpPeerOutUpdates": 0,
+                    "bgpPeerInTotalMessages": 0,
+                    "bgpPeerOutTotalMessages": 0,
+                    "bgpPeerFsmEstablishedTime": 0,
+                    "bgpPeerInUpdateElapsedTime": 0,
+                    "context_name": "",
+                    "bgpLocalAs": 14224,
+                    "vrfLocalAs": null
+                },
+                {
+                    "astext": "AS14224-MOCK-TEXT",
+                    "bgpPeerIdentifier": "10.4.2.30",
+                    "bgpPeerRemoteAs": 14224,
+                    "bgpPeerState": "idle",
+                    "bgpPeerAdminStatus": "stop",
+                    "bgpPeerLastErrorCode": null,
+                    "bgpPeerLastErrorSubCode": null,
+                    "bgpPeerLastErrorText": null,
+                    "bgpPeerIface": null,
+                    "bgpLocalAddr": "0.0.0.0",
+                    "bgpPeerRemoteAddr": "0.0.0.0",
+                    "bgpPeerDescr": "",
+                    "bgpPeerInUpdates": 0,
+                    "bgpPeerOutUpdates": 0,
+                    "bgpPeerInTotalMessages": 0,
+                    "bgpPeerOutTotalMessages": 0,
+                    "bgpPeerFsmEstablishedTime": 0,
+                    "bgpPeerInUpdateElapsedTime": 0,
+                    "context_name": "",
+                    "bgpLocalAs": 14224,
+                    "vrfLocalAs": null
                 }
             ]
         },
@@ -14210,7 +14173,7 @@
                     "bgpPeerIface": null,
                     "bgpLocalAddr": "0.0.0.0",
                     "bgpPeerRemoteAddr": "0.0.0.0",
-                    "bgpPeerDescr": "",
+                    "bgpPeerDescr": "BTR_SR_01",
                     "bgpPeerInUpdates": 0,
                     "bgpPeerOutUpdates": 0,
                     "bgpPeerInTotalMessages": 93961346,
@@ -14233,7 +14196,7 @@
                     "bgpPeerIface": null,
                     "bgpLocalAddr": "0.0.0.0",
                     "bgpPeerRemoteAddr": "0.0.0.0",
-                    "bgpPeerDescr": "",
+                    "bgpPeerDescr": "HOUW_SR_01",
                     "bgpPeerInUpdates": 0,
                     "bgpPeerOutUpdates": 0,
                     "bgpPeerInTotalMessages": 87120605,
@@ -14256,7 +14219,7 @@
                     "bgpPeerIface": null,
                     "bgpLocalAddr": "0.0.0.0",
                     "bgpPeerRemoteAddr": "0.0.0.0",
-                    "bgpPeerDescr": "",
+                    "bgpPeerDescr": "TODFW2",
                     "bgpPeerInUpdates": 0,
                     "bgpPeerOutUpdates": 0,
                     "bgpPeerInTotalMessages": 1068805,
@@ -14279,7 +14242,7 @@
                     "bgpPeerIface": null,
                     "bgpLocalAddr": "0.0.0.0",
                     "bgpPeerRemoteAddr": "0.0.0.0",
-                    "bgpPeerDescr": "",
+                    "bgpPeerDescr": "HOUF_VOS_02",
                     "bgpPeerInUpdates": 0,
                     "bgpPeerOutUpdates": 0,
                     "bgpPeerInTotalMessages": 722002,
@@ -14302,7 +14265,7 @@
                     "bgpPeerIface": null,
                     "bgpLocalAddr": "0.0.0.0",
                     "bgpPeerRemoteAddr": "0.0.0.0",
-                    "bgpPeerDescr": "",
+                    "bgpPeerDescr": "HOUF_VOS_02",
                     "bgpPeerInUpdates": 0,
                     "bgpPeerOutUpdates": 0,
                     "bgpPeerInTotalMessages": 897462,
@@ -14312,6 +14275,52 @@
                     "context_name": null,
                     "bgpLocalAs": 14224,
                     "vrfLocalAs": 14224
+                },
+                {
+                    "astext": "AS14224-MOCK-TEXT",
+                    "bgpPeerIdentifier": "10.4.1.30",
+                    "bgpPeerRemoteAs": 14224,
+                    "bgpPeerState": "established",
+                    "bgpPeerAdminStatus": "receiveOpen",
+                    "bgpPeerLastErrorCode": null,
+                    "bgpPeerLastErrorSubCode": null,
+                    "bgpPeerLastErrorText": null,
+                    "bgpPeerIface": null,
+                    "bgpLocalAddr": "0.0.0.0",
+                    "bgpPeerRemoteAddr": "0.0.0.0",
+                    "bgpPeerDescr": "BTR_SR_01",
+                    "bgpPeerInUpdates": 0,
+                    "bgpPeerOutUpdates": 0,
+                    "bgpPeerInTotalMessages": 93961346,
+                    "bgpPeerOutTotalMessages": 2564107,
+                    "bgpPeerFsmEstablishedTime": 3882948,
+                    "bgpPeerInUpdateElapsedTime": 0,
+                    "context_name": "",
+                    "bgpLocalAs": 14224,
+                    "vrfLocalAs": null
+                },
+                {
+                    "astext": "AS14224-MOCK-TEXT",
+                    "bgpPeerIdentifier": "10.4.2.30",
+                    "bgpPeerRemoteAs": 14224,
+                    "bgpPeerState": "established",
+                    "bgpPeerAdminStatus": "receiveOpen",
+                    "bgpPeerLastErrorCode": null,
+                    "bgpPeerLastErrorSubCode": null,
+                    "bgpPeerLastErrorText": null,
+                    "bgpPeerIface": null,
+                    "bgpLocalAddr": "0.0.0.0",
+                    "bgpPeerRemoteAddr": "0.0.0.0",
+                    "bgpPeerDescr": "HOUW_SR_01",
+                    "bgpPeerInUpdates": 0,
+                    "bgpPeerOutUpdates": 0,
+                    "bgpPeerInTotalMessages": 87120605,
+                    "bgpPeerOutTotalMessages": 2565722,
+                    "bgpPeerFsmEstablishedTime": 3882914,
+                    "bgpPeerInUpdateElapsedTime": 0,
+                    "context_name": "",
+                    "bgpLocalAs": 14224,
+                    "vrfLocalAs": null
                 }
             ]
         }

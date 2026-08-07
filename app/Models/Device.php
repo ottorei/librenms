@@ -2,9 +2,13 @@
 
 namespace App\Models;
 
+use App\Facades\LibrenmsConfig;
+use App\Models\Traits\Filterable;
+use App\Observers\DeviceObserver;
 use App\View\SimpleTemplate;
 use Carbon\Carbon;
 use Fico7489\Laravel\Pivot\Traits\PivotEventTrait;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -17,6 +21,7 @@ use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Database\Query\JoinClause;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
+use LibreNMS\Cache\DeviceMaintenanceCache;
 use LibreNMS\Enum\AddressFamily;
 use LibreNMS\Enum\DeviceStatus;
 use LibreNMS\Enum\MaintenanceStatus;
@@ -35,11 +40,10 @@ use LibreNMS\Util\Url;
  *
  * @method static \Database\Factories\DeviceFactory factory(...$parameters)
  */
+#[ObservedBy([DeviceObserver::class])]
 class Device extends BaseModel
 {
-    use PivotEventTrait, HasFactory;
-
-    private ?MaintenanceStatus $maintenanceStatus = null;
+    use PivotEventTrait, HasFactory, Filterable;
 
     public $timestamps = false;
     protected $primaryKey = 'device_id';
@@ -56,7 +60,7 @@ class Device extends BaseModel
         'features',
         'hardware',
         'hostname',
-        'display',
+        'display_template',
         'icon',
         'ignore',
         'ignore_status',
@@ -80,11 +84,34 @@ class Device extends BaseModel
         'sysDescr',
         'sysName',
         'sysObjectID',
+        'snmpEngineID',
         'timeout',
         'transport',
         'type',
         'version',
         'uptime',
+    ];
+
+    protected array $filterable = [
+        'device_id',
+        'hostname',
+        'sysName',
+        'display',
+        'hardware',
+        'os',
+        'location_id',
+        'version',
+        'features',
+        'type',
+        'status',
+        'disabled',
+        'ignore',
+        'disable_notify',
+        'poller_group',
+        'groups.id',
+        'serviceTemplates.id',
+        'search',
+        'state',
     ];
 
     /**
@@ -200,19 +227,11 @@ class Device extends BaseModel
     }
 
     /**
-     * Get the display name of this device based on the display format string
-     * The default is {{ $hostname }} controlled by the device_display_default setting
+     * @deprecated use display field directly
      */
     public function displayName(): string
     {
-        $hostname_is_ip = IP::isValid($this->hostname);
-
-        return SimpleTemplate::parse($this->display ?: \App\Facades\LibrenmsConfig::get('device_display_default', '{{ $hostname }}'), [
-            'hostname' => $this->hostname,
-            'sysName' => $this->sysName ?: $this->hostname,
-            'sysName_fallback' => $hostname_is_ip ? $this->sysName : $this->hostname,
-            'ip' => $this->overwrite_ip ?: ($hostname_is_ip ? $this->hostname : $this->ip),
-        ]);
+        return $this->display ?: $this->hostname ?: '';
     }
 
     /**
@@ -227,6 +246,21 @@ class Device extends BaseModel
         return '';
     }
 
+    public function regenerateDisplayName(): void
+    {
+        $hostname_is_ip = IP::isValid($this->hostname);
+
+        $display = SimpleTemplate::parse($this->display_template ?: LibrenmsConfig::get('device_display_default',
+            '{{ $hostname }}'), [
+                'hostname' => $this->hostname,
+                'sysName' => $this->sysName ?: $this->hostname,
+                'sysName_fallback' => $hostname_is_ip ? $this->sysName : $this->hostname,
+                'ip' => $this->overwrite_ip ?: ($hostname_is_ip ? $this->hostname : $this->ip),
+            ]);
+
+        $this->display = substr($display, 0, 128);
+    }
+
     public function isUnderMaintenance(): bool
     {
         return $this->getMaintenanceStatus() !== MaintenanceStatus::None;
@@ -238,34 +272,7 @@ class Device extends BaseModel
             return MaintenanceStatus::None;
         }
 
-        // use cached status
-        if ($this->maintenanceStatus !== null) {
-            return $this->maintenanceStatus;
-        }
-
-        $behavior = AlertSchedule::isActive()
-            ->where(function (Builder $query): void {
-                $query->whereHas('devices', function (Builder $query): void {
-                    $query->where('alert_schedulables.alert_schedulable_id', $this->device_id);
-                });
-
-                if ($this->groups->isNotEmpty()) {
-                    $query->orWhereHas('deviceGroups', function (Builder $query): void {
-                        $query->whereIntegerInRaw('alert_schedulables.alert_schedulable_id', $this->groups->pluck('id'));
-                    });
-                }
-
-                if ($this->location) {
-                    $query->orWhereHas('locations', function (Builder $query): void {
-                        $query->where('alert_schedulables.alert_schedulable_id', $this->location->id);
-                    });
-                }
-            })
-            ->value('behavior');
-
-        $this->maintenanceStatus = MaintenanceStatus::fromBehavior($behavior);
-
-        return $this->maintenanceStatus;
+        return app(DeviceMaintenanceCache::class)->statusFor($this->device_id);
     }
 
     public function getDeviceStatus(): DeviceStatus
@@ -527,6 +534,25 @@ class Device extends BaseModel
     }
 
     // ---- Query scopes ----
+
+    public function filterState(Builder $query, mixed $value, array $config): void
+    {
+        $this->applyMappedFilter($query, $value, $config, fn (Builder $q, $state) => match ($state) {
+            'up' => $q->where('status', 1)->where('disabled', 0)->where('disable_notify', 0),
+            'down' => $q->where('status', 0)->where('disabled', 0)->where('disable_notify', 0),
+            default => $q,
+        });
+    }
+
+    public function filterSearch(Builder $query, mixed $value, array $config): void
+    {
+        $this->applyFilterSearch(
+            ['sysName', 'hostname', 'display', 'hardware', 'os', 'location.location'],
+            $query,
+            $value,
+            $config,
+        );
+    }
 
     public function scopeIsUp($query)
     {
@@ -887,6 +913,9 @@ class Device extends BaseModel
         return $this->hasMany(Link::class, 'remote_device_id');
     }
 
+    /**
+     * @return \Illuminate\Support\Collection<int, \App\Models\Link>
+     */
     public function allLinks(): \Illuminate\Support\Collection
     {
         return $this->links->merge($this->remoteLinks);

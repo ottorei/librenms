@@ -250,6 +250,11 @@ Route: `/api/v0/devices/:hostname/health(/:type)(/:sensor_id)`
 - type (optional) is health type / sensor class
 - sensor_id (optional) is the sensor id to retrieve specific information.
 
+`type` may be a sensor class (e.g. `device_voltage`) or one of the special
+classes `device_processor`, `device_storage` and `device_mempool`, which are
+stored in their own tables rather than the `sensors` table. The `device_`
+prefix is optional, so `processor` and `device_processor` are equivalent.
+
 Input:
 
   -
@@ -262,7 +267,7 @@ curl -H 'X-Auth-Token: YOURAPITOKENHERE' https://foo.example/api/v0/devices/loca
 
 Output:
 
-```
+```json
 {
     "status": "ok",
     "message": "",
@@ -288,7 +293,7 @@ curl -H 'X-Auth-Token: YOURAPITOKENHERE' https://foo.example/api/v0/devices/loca
 
 Output:
 
-```
+```json
 {
     "status": "ok",
     "message": "",
@@ -314,7 +319,7 @@ curl -H 'X-Auth-Token: YOURAPITOKENHERE' https://foo.example/api/v0/devices/loca
 
 Output:
 
-```
+```json
 {
     "status": "ok",
     "message": "",
@@ -348,6 +353,28 @@ Output:
 }
 ```
 
+Example (processor list):
+
+```curl
+curl -H 'X-Auth-Token: YOURAPITOKENHERE' https://foo.example/api/v0/devices/localhost/health/processor
+```
+
+Output:
+
+```json
+{
+    "status": "ok",
+    "message": "",
+    "count": 1,
+    "graphs": [
+        {
+            "sensor_id": "1",
+            "desc": "Processor"
+        }
+    ]
+}
+```
+
 ### `list_available_wireless_graphs`
 
 This function allows to do three things:
@@ -374,7 +401,7 @@ curl -H 'X-Auth-Token: YOURAPITOKENHERE' https://foo.example/api/v0/devices/loca
 
 Output:
 
-```
+```json
 {
     "status": "ok",
     "graphs": [
@@ -399,7 +426,7 @@ curl -H 'X-Auth-Token: YOURAPITOKENHERE' https://foo.example/api/v0/devices/loca
 
 Output:
 
-```
+```json
 {
     "status": "ok",
     "graphs": [
@@ -424,7 +451,7 @@ curl -H 'X-Auth-Token: YOURAPITOKENHERE' https://foo.example/api/v0/devices/loca
 
 Output:
 
-```
+```json
 {
     "status": "ok",
     "graphs": [
@@ -452,6 +479,84 @@ Output:
             "lastupdate": "2017-12-06 21:26:29",
             "sensor_oids": "[\".1.3.6.1.4.1.41112.1.6.1.2.1.3.0\"]",
             "access_point_id": null
+        }
+    ],
+    "count": 1
+}
+```
+
+### `get_device_wireless_sensors`
+
+Get the wireless sensors recorded for a device. Returns rows from the
+`wireless_sensors` table, optionally filtered by sensor class and projected
+to a chosen subset of columns.
+
+Route: `/api/v0/devices/:hostname/wireless-sensors`
+
+- hostname can be either the device hostname or id
+
+Input:
+
+- class (optional): filter rows by `sensor_class`. Must be one of the
+  wireless sensor types (`clients`, `rssi`, `snr`, `mcs`, `frequency`,
+  `capacity`, `distance`, `quality`, etc.).
+- columns (optional): comma-separated list of `wireless_sensors` columns to
+  return. Defaults to all columns.
+
+Example:
+
+```curl
+curl -H 'X-Auth-Token: YOURAPITOKENHERE' https://foo.example/api/v0/devices/localhost/wireless-sensors
+```
+
+Output:
+
+```json
+{
+    "status": "ok",
+    "wireless_sensors": [
+        {
+            "sensor_id": 5132,
+            "sensor_deleted": 0,
+            "sensor_class": "rssi",
+            "device_id": 42,
+            "sensor_index": "1",
+            "sensor_type": "epmp-ap-ul",
+            "sensor_descr": "Subscriber-1 (10.0.0.11) [aa:bb:cc:dd:ee:f1] UL RSSI",
+            "sensor_divisor": 1,
+            "sensor_multiplier": 1,
+            "sensor_current": -54,
+            "sensor_prev": -54,
+            "sensor_limit": null,
+            "sensor_limit_warn": null,
+            "sensor_limit_low": null,
+            "sensor_limit_low_warn": null,
+            "sensor_alert": 1,
+            "sensor_custom": "No",
+            "sensor_oids": "[\".1.3.6.1.4.1.17713.21.1.2.30.1.4.1\"]"
+        }
+    ],
+    "count": 1
+}
+```
+
+Example filtered by class and selecting a subset of columns:
+
+```curl
+curl -H 'X-Auth-Token: YOURAPITOKENHERE' https://foo.example/api/v0/devices/localhost/wireless-sensors?class=rssi&columns=sensor_id,sensor_index,sensor_descr,sensor_current
+```
+
+Output:
+
+```json
+{
+    "status": "ok",
+    "wireless_sensors": [
+        {
+            "sensor_id": 5132,
+            "sensor_index": "1",
+            "sensor_descr": "Subscriber-1 (10.0.0.11) [aa:bb:cc:dd:ee:f1] UL RSSI",
+            "sensor_current": -54
         }
     ],
     "count": 1
@@ -818,23 +923,23 @@ Output:
 
 ```json
 {
-  "status": "ok",
-  "message": "",
-  "count": 2,
-  "mappings": [
-    {
-      "device_id": "3742",
-      "port_id_high": "1001000",
-      "port_id_low": "51001",
-      "ifStackStatus": "active"
-    },
-    {
-      "device_id": "3742",
-      "port_id_high": "1001000",
-      "port_id_low": "52001",
-      "ifStackStatus": "active"
-    }
-  ]
+    "status": "ok",
+    "message": "",
+    "count": 2,
+    "mappings": [
+        {
+            "device_id": "3742",
+            "port_id_high": "1001000",
+            "port_id_low": "51001",
+            "ifStackStatus": "active"
+        },
+        {
+            "device_id": "3742",
+            "port_id_high": "1001000",
+            "port_id_low": "52001",
+            "ifStackStatus": "active"
+        }
+    ]
 }
 ```
 
@@ -1084,14 +1189,14 @@ Output:
 
 ```json
 {
- "status": "ok",
- "port": {
-  "port_id": "2",
-  "device_id": "1",
-  ...
-  "poll_prev": "1418412902",
-  "poll_period": "300"
- }
+    "status": "ok",
+    "port": {
+        "port_id": "2",
+        "device_id": "1",
+        ...
+        "poll_prev": "1418412902",
+        "poll_period": "300"
+    }
 }
 ```
 
@@ -1233,17 +1338,17 @@ Output:
 
 ```json
 {
- "status": "ok",
- "count": 1,
- "devices": [
-  {
-   "device_id": "1",
-   "hostname": "localhost",
-   ...
-   "serial": null,
-   "icon": null
-  }
- ]
+    "status": "ok",
+    "count": 1,
+    "devices": [
+        {
+            "device_id": "1",
+            "hostname": "localhost",
+            ...
+            "serial": null,
+            "icon": null
+        }
+    ]
 }
 ```
 
@@ -1257,17 +1362,17 @@ Output:
 
 ```json
 {
- "status": "ok",
- "count": 1,
- "devices": [
-  {
-   "device_id": "1",
-   "hostname": "localhost",
-   ...
-   "serial": null,
-   "icon": null
-  }
- ]
+    "status": "ok",
+    "count": 1,
+    "devices": [
+        {
+            "device_id": "1",
+            "hostname": "localhost",
+            ...
+            "serial": null,
+            "icon": null
+        }
+    ]
 }
 ```
 
@@ -1323,10 +1428,10 @@ curl -H 'X-Auth-Token: YOURAPITOKENHERE' \
   -X POST https://foo.example/api/v0/devices/localhost/maintenance/ \
   --data-raw '
 {
- "title":"Device Maintenance",
-  "notes":"A 2 hour Maintenance triggered via API with start time",
-  "start":"2022-08-01 08:00:00",
-  "duration":"2:00"
+    "title":"Device Maintenance",
+    "notes":"A 2 hour Maintenance triggered via API with start time",
+    "start":"2022-08-01 08:00:00",
+    "duration":"2:00"
 }
 '
 ```
@@ -1346,9 +1451,10 @@ Example with no start time:
 curl -H 'X-Auth-Token: YOURAPITOKENHERE' \
   -X POST https://foo.example/api/v0/devices/localhost/maintenance/ \
   --data-raw '
- "title":"Device Maintenance",
-  "notes":"A 2 hour Maintenance triggered via API with no start time",
-  "duration":"2:00"
+{
+    "title":"Device Maintenance",
+    "notes":"A 2 hour Maintenance triggered via API with no start time",
+    "duration":"2:00"
 }
 '
 ```
@@ -1378,10 +1484,10 @@ Input (JSON):
 Fields:
 
 - hostname (required): device hostname or IP
-- display: A string to display as the name of this device, defaults to 
+- display_template: A string to display as the name of this device, defaults to 
   hostname (or device_display_default setting). May be a simple
   template using replacements: {{ $hostname }}, {{ $sysName }},
-  {{ $sysName_fallback }}, {{ $ip }}
+  {{ $sysName_fallback }}, {{ $ip }}. This will then generate the display field.
 - snmpver: SNMP version to use, v1, v2c or v3. During checks detection order is v2c,v3,v1
 - port: SNMP port (defaults to port defined in config).
 - transport: SNMP protocol (udp,tcp,udp6,tcp6) Defaults to transport defined in config.

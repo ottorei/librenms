@@ -13,6 +13,11 @@ modules:
                         - Sentry4-MIB::st4PhaseLabel
                         - Sentry4-MIB::st4OcpLabel
                         - Sentry4-MIB::st4BranchLabel
+                        - Sentry4-MIB::st4HumidSensorEventConfigTable
+                        - Sentry4-MIB::st4HumidSensorConfigTable
+                        - Sentry4-MIB::st4TempSensorEventConfigTable
+                        - Sentry4-MIB::st4TempSensorConfigTable
+                        - Sentry4-MIB::st4TempSensorScale
         current:
             data:
                 -
@@ -73,28 +78,28 @@ modules:
                     index: 'st4UnitStatus.{{ $index }}'
                     state_name: st4UnitStatus
                     states:
-                        - { descr: normal, graph: 1, value: 0, generic: 0 }
-                        - { descr: disabled, graph: 1, value: 1, generic: 3 }
-                        - { descr: purged, graph: 1, value: 2, generic: 2 }
-                        - { descr: reading, graph: 1, value: 5, generic: 2 }
-                        - { descr: settle, graph: 1, value: 6, generic: 1 }
-                        - { descr: notFound, graph: 1, value: 7, generic: 3 }
-                        - { descr: lost, graph: 1, value: 8, generic: 1 }
-                        - { descr: readError, graph: 1, value: 9, generic: 1 }
-                        - { descr: noComm, graph: 1, value: 10, generic: 1 }
-                        - { descr: pwrError, graph: 1, value: 11, generic: 2 }
-                        - { descr: breakerTripped, graph: 1, value: 12, generic: 2 }
-                        - { descr: fuseBlown, graph: 1, value: 13, generic: 2 }
-                        - { descr: lowAlarm, graph: 1, value: 14, generic: 2 }
-                        - { descr: lowWarning, graph: 1, value: 15, generic: 1 }
-                        - { descr: highWarning, graph: 1, value: 16, generic: 1 }
-                        - { descr: highAlarm, graph: 1, value: 17, generic: 2 }
-                        - { descr: alarm, graph: 1, value: 18, generic: 2 }
-                        - { descr: underLimit, graph: 1, value: 19, generic: 1 }
-                        - { descr: overLimit, graph: 1, value: 20, generic: 1 }
-                        - { descr: nvmFail, graph: 1, value: 21, generic: 2 }
-                        - { descr: profileError, graph: 1, value: 22, generic: 2 }
-                        - { descr: conflict, graph: 1, value: 23, generic: 2 }
+                        - { descr: normal, value: 0, generic: 0 }
+                        - { descr: disabled, value: 1, generic: 3 }
+                        - { descr: purged, value: 2, generic: 2 }
+                        - { descr: reading, value: 5, generic: 2 }
+                        - { descr: settle, value: 6, generic: 1 }
+                        - { descr: notFound, value: 7, generic: 3 }
+                        - { descr: lost, value: 8, generic: 1 }
+                        - { descr: readError, value: 9, generic: 1 }
+                        - { descr: noComm, value: 10, generic: 1 }
+                        - { descr: pwrError, value: 11, generic: 2 }
+                        - { descr: breakerTripped, value: 12, generic: 2 }
+                        - { descr: fuseBlown, value: 13, generic: 2 }
+                        - { descr: lowAlarm, value: 14, generic: 2 }
+                        - { descr: lowWarning, value: 15, generic: 1 }
+                        - { descr: highWarning, value: 16, generic: 1 }
+                        - { descr: highAlarm, value: 17, generic: 2 }
+                        - { descr: alarm, value: 18, generic: 2 }
+                        - { descr: underLimit, value: 19, generic: 1 }
+                        - { descr: overLimit, value: 20, generic: 1 }
+                        - { descr: nvmFail, value: 21, generic: 2 }
+                        - { descr: profileError, value: 22, generic: 2 }
+                        - { descr: conflict, value: 23, generic: 2 }
                 -
                     oid: Sentry4-MIB::st4InputCordState
                     value: Sentry4-MIB::st4InputCordState
@@ -103,9 +108,9 @@ modules:
                     index: 'st4InputCordState.{{ $index }}'
                     state_name: st4InputCordState
                     states:
-                        - { descr: unknown, graph: 0, value: 0, generic: 3 }
-                        - { descr: on, graph: 0, value: 1, generic: 0 }
-                        - { descr: off, graph: 0, value: 2, generic: 3 }
+                        - { descr: unknown, value: 0, generic: 3 }
+                        - { descr: on, value: 1, generic: 0 }
+                        - { descr: off, value: 2, generic: 3 }
                 -
                     oid: Sentry4-MIB::st4InputCordStatus
                     value: Sentry4-MIB::st4InputCordStatus
@@ -114,28 +119,28 @@ modules:
                     index: 'st4InputCordStatus.{{ $index }}'
                     state_name: st4InputCordStatus
                     states:
-                        - { descr: normal, graph: 1, value: 0, generic: 0 }
-                        - { descr: disabled, graph: 1, value: 1, generic: 3 }
-                        - { descr: purged, graph: 1, value: 2, generic: 2 }
-                        - { descr: reading, graph: 1, value: 5, generic: 2 }
-                        - { descr: settle, graph: 1, value: 6, generic: 1 }
-                        - { descr: notFound, graph: 1, value: 7, generic: 3 }
-                        - { descr: lost, graph: 1, value: 8, generic: 1 }
-                        - { descr: readError, graph: 1, value: 9, generic: 1 }
-                        - { descr: noComm, graph: 1, value: 10, generic: 1 }
-                        - { descr: pwrError, graph: 1, value: 11, generic: 2 }
-                        - { descr: breakerTripped, graph: 1, value: 12, generic: 2 }
-                        - { descr: fuseBlown, graph: 1, value: 13, generic: 2 }
-                        - { descr: lowAlarm, graph: 1, value: 14, generic: 2 }
-                        - { descr: lowWarning, graph: 1, value: 15, generic: 1 }
-                        - { descr: highWarning, graph: 1, value: 16, generic: 1 }
-                        - { descr: highAlarm, graph: 1, value: 17, generic: 2 }
-                        - { descr: alarm, graph: 1, value: 18, generic: 2 }
-                        - { descr: underLimit, graph: 1, value: 19, generic: 1 }
-                        - { descr: overLimit, graph: 1, value: 20, generic: 1 }
-                        - { descr: nvmFail, graph: 1, value: 21, generic: 2 }
-                        - { descr: profileError, graph: 1, value: 22, generic: 2 }
-                        - { descr: conflict, graph: 1, value: 23, generic: 2 }
+                        - { descr: normal, value: 0, generic: 0 }
+                        - { descr: disabled, value: 1, generic: 3 }
+                        - { descr: purged, value: 2, generic: 2 }
+                        - { descr: reading, value: 5, generic: 2 }
+                        - { descr: settle, value: 6, generic: 1 }
+                        - { descr: notFound, value: 7, generic: 3 }
+                        - { descr: lost, value: 8, generic: 1 }
+                        - { descr: readError, value: 9, generic: 1 }
+                        - { descr: noComm, value: 10, generic: 1 }
+                        - { descr: pwrError, value: 11, generic: 2 }
+                        - { descr: breakerTripped, value: 12, generic: 2 }
+                        - { descr: fuseBlown, value: 13, generic: 2 }
+                        - { descr: lowAlarm, value: 14, generic: 2 }
+                        - { descr: lowWarning, value: 15, generic: 1 }
+                        - { descr: highWarning, value: 16, generic: 1 }
+                        - { descr: highAlarm, value: 17, generic: 2 }
+                        - { descr: alarm, value: 18, generic: 2 }
+                        - { descr: underLimit, value: 19, generic: 1 }
+                        - { descr: overLimit, value: 20, generic: 1 }
+                        - { descr: nvmFail, value: 21, generic: 2 }
+                        - { descr: profileError, value: 22, generic: 2 }
+                        - { descr: conflict, value: 23, generic: 2 }
                 -
                     oid: Sentry4-MIB::st4InputCordActivePowerStatus
                     value: Sentry4-MIB::st4InputCordActivePowerStatus
@@ -144,28 +149,28 @@ modules:
                     index: 'st4InputCordActivePowerStatus.{{ $index }}'
                     state_name: st4InputCordActivePowerStatus
                     states:
-                        - { descr: normal, graph: 1, value: 0, generic: 0 }
-                        - { descr: disabled, graph: 1, value: 1, generic: 3 }
-                        - { descr: purged, graph: 1, value: 2, generic: 2 }
-                        - { descr: reading, graph: 1, value: 5, generic: 2 }
-                        - { descr: settle, graph: 1, value: 6, generic: 1 }
-                        - { descr: notFound, graph: 1, value: 7, generic: 3 }
-                        - { descr: lost, graph: 1, value: 8, generic: 1 }
-                        - { descr: readError, graph: 1, value: 9, generic: 1 }
-                        - { descr: noComm, graph: 1, value: 10, generic: 1 }
-                        - { descr: pwrError, graph: 1, value: 11, generic: 2 }
-                        - { descr: breakerTripped, graph: 1, value: 12, generic: 2 }
-                        - { descr: fuseBlown, graph: 1, value: 13, generic: 2 }
-                        - { descr: lowAlarm, graph: 1, value: 14, generic: 2 }
-                        - { descr: lowWarning, graph: 1, value: 15, generic: 1 }
-                        - { descr: highWarning, graph: 1, value: 16, generic: 1 }
-                        - { descr: highAlarm, graph: 1, value: 17, generic: 2 }
-                        - { descr: alarm, graph: 1, value: 18, generic: 2 }
-                        - { descr: underLimit, graph: 1, value: 19, generic: 1 }
-                        - { descr: overLimit, graph: 1, value: 20, generic: 1 }
-                        - { descr: nvmFail, graph: 1, value: 21, generic: 2 }
-                        - { descr: profileError, graph: 1, value: 22, generic: 2 }
-                        - { descr: conflict, graph: 1, value: 23, generic: 2 }
+                        - { descr: normal, value: 0, generic: 0 }
+                        - { descr: disabled, value: 1, generic: 3 }
+                        - { descr: purged, value: 2, generic: 2 }
+                        - { descr: reading, value: 5, generic: 2 }
+                        - { descr: settle, value: 6, generic: 1 }
+                        - { descr: notFound, value: 7, generic: 3 }
+                        - { descr: lost, value: 8, generic: 1 }
+                        - { descr: readError, value: 9, generic: 1 }
+                        - { descr: noComm, value: 10, generic: 1 }
+                        - { descr: pwrError, value: 11, generic: 2 }
+                        - { descr: breakerTripped, value: 12, generic: 2 }
+                        - { descr: fuseBlown, value: 13, generic: 2 }
+                        - { descr: lowAlarm, value: 14, generic: 2 }
+                        - { descr: lowWarning, value: 15, generic: 1 }
+                        - { descr: highWarning, value: 16, generic: 1 }
+                        - { descr: highAlarm, value: 17, generic: 2 }
+                        - { descr: alarm, value: 18, generic: 2 }
+                        - { descr: underLimit, value: 19, generic: 1 }
+                        - { descr: overLimit, value: 20, generic: 1 }
+                        - { descr: nvmFail, value: 21, generic: 2 }
+                        - { descr: profileError, value: 22, generic: 2 }
+                        - { descr: conflict, value: 23, generic: 2 }
                 -
                     oid: Sentry4-MIB::st4InputCordApparentPowerStatus
                     value: Sentry4-MIB::st4InputCordApparentPowerStatus
@@ -174,28 +179,28 @@ modules:
                     index: 'st4InputCordApparentPowerStatus.{{ $index }}'
                     state_name: st4InputCordApparentPowerStatus
                     states:
-                        - { descr: normal, graph: 1, value: 0, generic: 0 }
-                        - { descr: disabled, graph: 1, value: 1, generic: 3 }
-                        - { descr: purged, graph: 1, value: 2, generic: 2 }
-                        - { descr: reading, graph: 1, value: 5, generic: 2 }
-                        - { descr: settle, graph: 1, value: 6, generic: 1 }
-                        - { descr: notFound, graph: 1, value: 7, generic: 3 }
-                        - { descr: lost, graph: 1, value: 8, generic: 1 }
-                        - { descr: readError, graph: 1, value: 9, generic: 1 }
-                        - { descr: noComm, graph: 1, value: 10, generic: 1 }
-                        - { descr: pwrError, graph: 1, value: 11, generic: 2 }
-                        - { descr: breakerTripped, graph: 1, value: 12, generic: 2 }
-                        - { descr: fuseBlown, graph: 1, value: 13, generic: 2 }
-                        - { descr: lowAlarm, graph: 1, value: 14, generic: 2 }
-                        - { descr: lowWarning, graph: 1, value: 15, generic: 1 }
-                        - { descr: highWarning, graph: 1, value: 16, generic: 1 }
-                        - { descr: highAlarm, graph: 1, value: 17, generic: 2 }
-                        - { descr: alarm, graph: 1, value: 18, generic: 2 }
-                        - { descr: underLimit, graph: 1, value: 19, generic: 1 }
-                        - { descr: overLimit, graph: 1, value: 20, generic: 1 }
-                        - { descr: nvmFail, graph: 1, value: 21, generic: 2 }
-                        - { descr: profileError, graph: 1, value: 22, generic: 2 }
-                        - { descr: conflict, graph: 1, value: 23, generic: 2 }
+                        - { descr: normal, value: 0, generic: 0 }
+                        - { descr: disabled, value: 1, generic: 3 }
+                        - { descr: purged, value: 2, generic: 2 }
+                        - { descr: reading, value: 5, generic: 2 }
+                        - { descr: settle, value: 6, generic: 1 }
+                        - { descr: notFound, value: 7, generic: 3 }
+                        - { descr: lost, value: 8, generic: 1 }
+                        - { descr: readError, value: 9, generic: 1 }
+                        - { descr: noComm, value: 10, generic: 1 }
+                        - { descr: pwrError, value: 11, generic: 2 }
+                        - { descr: breakerTripped, value: 12, generic: 2 }
+                        - { descr: fuseBlown, value: 13, generic: 2 }
+                        - { descr: lowAlarm, value: 14, generic: 2 }
+                        - { descr: lowWarning, value: 15, generic: 1 }
+                        - { descr: highWarning, value: 16, generic: 1 }
+                        - { descr: highAlarm, value: 17, generic: 2 }
+                        - { descr: alarm, value: 18, generic: 2 }
+                        - { descr: underLimit, value: 19, generic: 1 }
+                        - { descr: overLimit, value: 20, generic: 1 }
+                        - { descr: nvmFail, value: 21, generic: 2 }
+                        - { descr: profileError, value: 22, generic: 2 }
+                        - { descr: conflict, value: 23, generic: 2 }
                 -
                     oid: Sentry4-MIB::st4InputCordPowerFactorStatus
                     value: Sentry4-MIB::st4InputCordPowerFactorStatus
@@ -204,28 +209,28 @@ modules:
                     index: 'st4InputCordPowerFactorStatus.{{ $index }}'
                     state_name: st4InputCordPowerFactorStatus
                     states:
-                        - { descr: normal, graph: 1, value: 0, generic: 0 }
-                        - { descr: disabled, graph: 1, value: 1, generic: 3 }
-                        - { descr: purged, graph: 1, value: 2, generic: 2 }
-                        - { descr: reading, graph: 1, value: 5, generic: 2 }
-                        - { descr: settle, graph: 1, value: 6, generic: 1 }
-                        - { descr: notFound, graph: 1, value: 7, generic: 3 }
-                        - { descr: lost, graph: 1, value: 8, generic: 1 }
-                        - { descr: readError, graph: 1, value: 9, generic: 1 }
-                        - { descr: noComm, graph: 1, value: 10, generic: 1 }
-                        - { descr: pwrError, graph: 1, value: 11, generic: 2 }
-                        - { descr: breakerTripped, graph: 1, value: 12, generic: 2 }
-                        - { descr: fuseBlown, graph: 1, value: 13, generic: 2 }
-                        - { descr: lowAlarm, graph: 1, value: 14, generic: 2 }
-                        - { descr: lowWarning, graph: 1, value: 15, generic: 1 }
-                        - { descr: highWarning, graph: 1, value: 16, generic: 1 }
-                        - { descr: highAlarm, graph: 1, value: 17, generic: 2 }
-                        - { descr: alarm, graph: 1, value: 18, generic: 2 }
-                        - { descr: underLimit, graph: 1, value: 19, generic: 1 }
-                        - { descr: overLimit, graph: 1, value: 20, generic: 1 }
-                        - { descr: nvmFail, graph: 1, value: 21, generic: 2 }
-                        - { descr: profileError, graph: 1, value: 22, generic: 2 }
-                        - { descr: conflict, graph: 1, value: 23, generic: 2 }
+                        - { descr: normal, value: 0, generic: 0 }
+                        - { descr: disabled, value: 1, generic: 3 }
+                        - { descr: purged, value: 2, generic: 2 }
+                        - { descr: reading, value: 5, generic: 2 }
+                        - { descr: settle, value: 6, generic: 1 }
+                        - { descr: notFound, value: 7, generic: 3 }
+                        - { descr: lost, value: 8, generic: 1 }
+                        - { descr: readError, value: 9, generic: 1 }
+                        - { descr: noComm, value: 10, generic: 1 }
+                        - { descr: pwrError, value: 11, generic: 2 }
+                        - { descr: breakerTripped, value: 12, generic: 2 }
+                        - { descr: fuseBlown, value: 13, generic: 2 }
+                        - { descr: lowAlarm, value: 14, generic: 2 }
+                        - { descr: lowWarning, value: 15, generic: 1 }
+                        - { descr: highWarning, value: 16, generic: 1 }
+                        - { descr: highAlarm, value: 17, generic: 2 }
+                        - { descr: alarm, value: 18, generic: 2 }
+                        - { descr: underLimit, value: 19, generic: 1 }
+                        - { descr: overLimit, value: 20, generic: 1 }
+                        - { descr: nvmFail, value: 21, generic: 2 }
+                        - { descr: profileError, value: 22, generic: 2 }
+                        - { descr: conflict, value: 23, generic: 2 }
                 -
                     oid: Sentry4-MIB::st4InputCordOutOfBalanceStatus
                     value: Sentry4-MIB::st4InputCordOutOfBalanceStatus
@@ -234,28 +239,28 @@ modules:
                     index: 'st4InputCordOutOfBalanceStatus.{{ $index }}'
                     state_name: st4InputCordOutOfBalanceStatus
                     states:
-                        - { descr: normal, graph: 1, value: 0, generic: 0 }
-                        - { descr: disabled, graph: 1, value: 1, generic: 3 }
-                        - { descr: purged, graph: 1, value: 2, generic: 2 }
-                        - { descr: reading, graph: 1, value: 5, generic: 2 }
-                        - { descr: settle, graph: 1, value: 6, generic: 1 }
-                        - { descr: notFound, graph: 1, value: 7, generic: 3 }
-                        - { descr: lost, graph: 1, value: 8, generic: 1 }
-                        - { descr: readError, graph: 1, value: 9, generic: 1 }
-                        - { descr: noComm, graph: 1, value: 10, generic: 1 }
-                        - { descr: pwrError, graph: 1, value: 11, generic: 2 }
-                        - { descr: breakerTripped, graph: 1, value: 12, generic: 2 }
-                        - { descr: fuseBlown, graph: 1, value: 13, generic: 2 }
-                        - { descr: lowAlarm, graph: 1, value: 14, generic: 2 }
-                        - { descr: lowWarning, graph: 1, value: 15, generic: 1 }
-                        - { descr: highWarning, graph: 1, value: 16, generic: 1 }
-                        - { descr: highAlarm, graph: 1, value: 17, generic: 2 }
-                        - { descr: alarm, graph: 1, value: 18, generic: 2 }
-                        - { descr: underLimit, graph: 1, value: 19, generic: 1 }
-                        - { descr: overLimit, graph: 1, value: 20, generic: 1 }
-                        - { descr: nvmFail, graph: 1, value: 21, generic: 2 }
-                        - { descr: profileError, graph: 1, value: 22, generic: 2 }
-                        - { descr: conflict, graph: 1, value: 23, generic: 2 }
+                        - { descr: normal, value: 0, generic: 0 }
+                        - { descr: disabled, value: 1, generic: 3 }
+                        - { descr: purged, value: 2, generic: 2 }
+                        - { descr: reading, value: 5, generic: 2 }
+                        - { descr: settle, value: 6, generic: 1 }
+                        - { descr: notFound, value: 7, generic: 3 }
+                        - { descr: lost, value: 8, generic: 1 }
+                        - { descr: readError, value: 9, generic: 1 }
+                        - { descr: noComm, value: 10, generic: 1 }
+                        - { descr: pwrError, value: 11, generic: 2 }
+                        - { descr: breakerTripped, value: 12, generic: 2 }
+                        - { descr: fuseBlown, value: 13, generic: 2 }
+                        - { descr: lowAlarm, value: 14, generic: 2 }
+                        - { descr: lowWarning, value: 15, generic: 1 }
+                        - { descr: highWarning, value: 16, generic: 1 }
+                        - { descr: highAlarm, value: 17, generic: 2 }
+                        - { descr: alarm, value: 18, generic: 2 }
+                        - { descr: underLimit, value: 19, generic: 1 }
+                        - { descr: overLimit, value: 20, generic: 1 }
+                        - { descr: nvmFail, value: 21, generic: 2 }
+                        - { descr: profileError, value: 22, generic: 2 }
+                        - { descr: conflict, value: 23, generic: 2 }
                 -
                     oid: Sentry4-MIB::st4LineState
                     value: Sentry4-MIB::st4LineState
@@ -264,9 +269,9 @@ modules:
                     index: 'st4LineState.{{ $index }}'
                     state_name: st4LineState
                     states:
-                        - { descr: unknown, graph: 0, value: 0, generic: 3 }
-                        - { descr: on, graph: 0, value: 1, generic: 0 }
-                        - { descr: off, graph: 0, value: 2, generic: 3 }
+                        - { descr: unknown, value: 0, generic: 3 }
+                        - { descr: on, value: 1, generic: 0 }
+                        - { descr: off, value: 2, generic: 3 }
                 -
                     oid: Sentry4-MIB::st4LineStatus
                     value: Sentry4-MIB::st4LineStatus
@@ -275,28 +280,28 @@ modules:
                     index: 'st4LineStatus.{{ $index }}'
                     state_name: st4LineStatus
                     states:
-                        - { descr: normal, graph: 1, value: 0, generic: 0 }
-                        - { descr: disabled, graph: 1, value: 1, generic: 3 }
-                        - { descr: purged, graph: 1, value: 2, generic: 2 }
-                        - { descr: reading, graph: 1, value: 5, generic: 2 }
-                        - { descr: settle, graph: 1, value: 6, generic: 1 }
-                        - { descr: notFound, graph: 1, value: 7, generic: 3 }
-                        - { descr: lost, graph: 1, value: 8, generic: 1 }
-                        - { descr: readError, graph: 1, value: 9, generic: 1 }
-                        - { descr: noComm, graph: 1, value: 10, generic: 1 }
-                        - { descr: pwrError, graph: 1, value: 11, generic: 2 }
-                        - { descr: breakerTripped, graph: 1, value: 12, generic: 2 }
-                        - { descr: fuseBlown, graph: 1, value: 13, generic: 2 }
-                        - { descr: lowAlarm, graph: 1, value: 14, generic: 2 }
-                        - { descr: lowWarning, graph: 1, value: 15, generic: 1 }
-                        - { descr: highWarning, graph: 1, value: 16, generic: 1 }
-                        - { descr: highAlarm, graph: 1, value: 17, generic: 2 }
-                        - { descr: alarm, graph: 1, value: 18, generic: 2 }
-                        - { descr: underLimit, graph: 1, value: 19, generic: 1 }
-                        - { descr: overLimit, graph: 1, value: 20, generic: 1 }
-                        - { descr: nvmFail, graph: 1, value: 21, generic: 2 }
-                        - { descr: profileError, graph: 1, value: 22, generic: 2 }
-                        - { descr: conflict, graph: 1, value: 23, generic: 2 }
+                        - { descr: normal, value: 0, generic: 0 }
+                        - { descr: disabled, value: 1, generic: 3 }
+                        - { descr: purged, value: 2, generic: 2 }
+                        - { descr: reading, value: 5, generic: 2 }
+                        - { descr: settle, value: 6, generic: 1 }
+                        - { descr: notFound, value: 7, generic: 3 }
+                        - { descr: lost, value: 8, generic: 1 }
+                        - { descr: readError, value: 9, generic: 1 }
+                        - { descr: noComm, value: 10, generic: 1 }
+                        - { descr: pwrError, value: 11, generic: 2 }
+                        - { descr: breakerTripped, value: 12, generic: 2 }
+                        - { descr: fuseBlown, value: 13, generic: 2 }
+                        - { descr: lowAlarm, value: 14, generic: 2 }
+                        - { descr: lowWarning, value: 15, generic: 1 }
+                        - { descr: highWarning, value: 16, generic: 1 }
+                        - { descr: highAlarm, value: 17, generic: 2 }
+                        - { descr: alarm, value: 18, generic: 2 }
+                        - { descr: underLimit, value: 19, generic: 1 }
+                        - { descr: overLimit, value: 20, generic: 1 }
+                        - { descr: nvmFail, value: 21, generic: 2 }
+                        - { descr: profileError, value: 22, generic: 2 }
+                        - { descr: conflict, value: 23, generic: 2 }
                 -
                     oid: Sentry4-MIB::st4PhaseState
                     value: Sentry4-MIB::st4PhaseState
@@ -305,9 +310,9 @@ modules:
                     index: 'st4PhaseState.{{ $index }}'
                     state_name: st4PhaseState
                     states:
-                        - { descr: unknown, graph: 0, value: 0, generic: 3 }
-                        - { descr: on, graph: 0, value: 1, generic: 0 }
-                        - { descr: off, graph: 0, value: 2, generic: 3 }
+                        - { descr: unknown, value: 0, generic: 3 }
+                        - { descr: on, value: 1, generic: 0 }
+                        - { descr: off, value: 2, generic: 3 }
                 -
                     oid: Sentry4-MIB::st4PhaseStatus
                     value: Sentry4-MIB::st4PhaseStatus
@@ -316,28 +321,28 @@ modules:
                     index: 'st4PhaseStatus.{{ $index }}'
                     state_name: st4PhaseStatus
                     states:
-                        - { descr: normal, graph: 1, value: 0, generic: 0 }
-                        - { descr: disabled, graph: 1, value: 1, generic: 3 }
-                        - { descr: purged, graph: 1, value: 2, generic: 2 }
-                        - { descr: reading, graph: 1, value: 5, generic: 2 }
-                        - { descr: settle, graph: 1, value: 6, generic: 1 }
-                        - { descr: notFound, graph: 1, value: 7, generic: 3 }
-                        - { descr: lost, graph: 1, value: 8, generic: 1 }
-                        - { descr: readError, graph: 1, value: 9, generic: 1 }
-                        - { descr: noComm, graph: 1, value: 10, generic: 1 }
-                        - { descr: pwrError, graph: 1, value: 11, generic: 2 }
-                        - { descr: breakerTripped, graph: 1, value: 12, generic: 2 }
-                        - { descr: fuseBlown, graph: 1, value: 13, generic: 2 }
-                        - { descr: lowAlarm, graph: 1, value: 14, generic: 2 }
-                        - { descr: lowWarning, graph: 1, value: 15, generic: 1 }
-                        - { descr: highWarning, graph: 1, value: 16, generic: 1 }
-                        - { descr: highAlarm, graph: 1, value: 17, generic: 2 }
-                        - { descr: alarm, graph: 1, value: 18, generic: 2 }
-                        - { descr: underLimit, graph: 1, value: 19, generic: 1 }
-                        - { descr: overLimit, graph: 1, value: 20, generic: 1 }
-                        - { descr: nvmFail, graph: 1, value: 21, generic: 2 }
-                        - { descr: profileError, graph: 1, value: 22, generic: 2 }
-                        - { descr: conflict, graph: 1, value: 23, generic: 2 }
+                        - { descr: normal, value: 0, generic: 0 }
+                        - { descr: disabled, value: 1, generic: 3 }
+                        - { descr: purged, value: 2, generic: 2 }
+                        - { descr: reading, value: 5, generic: 2 }
+                        - { descr: settle, value: 6, generic: 1 }
+                        - { descr: notFound, value: 7, generic: 3 }
+                        - { descr: lost, value: 8, generic: 1 }
+                        - { descr: readError, value: 9, generic: 1 }
+                        - { descr: noComm, value: 10, generic: 1 }
+                        - { descr: pwrError, value: 11, generic: 2 }
+                        - { descr: breakerTripped, value: 12, generic: 2 }
+                        - { descr: fuseBlown, value: 13, generic: 2 }
+                        - { descr: lowAlarm, value: 14, generic: 2 }
+                        - { descr: lowWarning, value: 15, generic: 1 }
+                        - { descr: highWarning, value: 16, generic: 1 }
+                        - { descr: highAlarm, value: 17, generic: 2 }
+                        - { descr: alarm, value: 18, generic: 2 }
+                        - { descr: underLimit, value: 19, generic: 1 }
+                        - { descr: overLimit, value: 20, generic: 1 }
+                        - { descr: nvmFail, value: 21, generic: 2 }
+                        - { descr: profileError, value: 22, generic: 2 }
+                        - { descr: conflict, value: 23, generic: 2 }
                 -
                     oid: Sentry4-MIB::st4PhaseVoltageStatus
                     value: Sentry4-MIB::st4PhaseVoltageStatus
@@ -346,28 +351,28 @@ modules:
                     index: 'st4PhaseVoltageStatus.{{ $index }}'
                     state_name: st4PhaseVoltageStatus
                     states:
-                        - { descr: normal, graph: 1, value: 0, generic: 0 }
-                        - { descr: disabled, graph: 1, value: 1, generic: 3 }
-                        - { descr: purged, graph: 1, value: 2, generic: 2 }
-                        - { descr: reading, graph: 1, value: 5, generic: 2 }
-                        - { descr: settle, graph: 1, value: 6, generic: 1 }
-                        - { descr: notFound, graph: 1, value: 7, generic: 3 }
-                        - { descr: lost, graph: 1, value: 8, generic: 1 }
-                        - { descr: readError, graph: 1, value: 9, generic: 1 }
-                        - { descr: noComm, graph: 1, value: 10, generic: 1 }
-                        - { descr: pwrError, graph: 1, value: 11, generic: 2 }
-                        - { descr: breakerTripped, graph: 1, value: 12, generic: 2 }
-                        - { descr: fuseBlown, graph: 1, value: 13, generic: 2 }
-                        - { descr: lowAlarm, graph: 1, value: 14, generic: 2 }
-                        - { descr: lowWarning, graph: 1, value: 15, generic: 1 }
-                        - { descr: highWarning, graph: 1, value: 16, generic: 1 }
-                        - { descr: highAlarm, graph: 1, value: 17, generic: 2 }
-                        - { descr: alarm, graph: 1, value: 18, generic: 2 }
-                        - { descr: underLimit, graph: 1, value: 19, generic: 1 }
-                        - { descr: overLimit, graph: 1, value: 20, generic: 1 }
-                        - { descr: nvmFail, graph: 1, value: 21, generic: 2 }
-                        - { descr: profileError, graph: 1, value: 22, generic: 2 }
-                        - { descr: conflict, graph: 1, value: 23, generic: 2 }
+                        - { descr: normal, value: 0, generic: 0 }
+                        - { descr: disabled, value: 1, generic: 3 }
+                        - { descr: purged, value: 2, generic: 2 }
+                        - { descr: reading, value: 5, generic: 2 }
+                        - { descr: settle, value: 6, generic: 1 }
+                        - { descr: notFound, value: 7, generic: 3 }
+                        - { descr: lost, value: 8, generic: 1 }
+                        - { descr: readError, value: 9, generic: 1 }
+                        - { descr: noComm, value: 10, generic: 1 }
+                        - { descr: pwrError, value: 11, generic: 2 }
+                        - { descr: breakerTripped, value: 12, generic: 2 }
+                        - { descr: fuseBlown, value: 13, generic: 2 }
+                        - { descr: lowAlarm, value: 14, generic: 2 }
+                        - { descr: lowWarning, value: 15, generic: 1 }
+                        - { descr: highWarning, value: 16, generic: 1 }
+                        - { descr: highAlarm, value: 17, generic: 2 }
+                        - { descr: alarm, value: 18, generic: 2 }
+                        - { descr: underLimit, value: 19, generic: 1 }
+                        - { descr: overLimit, value: 20, generic: 1 }
+                        - { descr: nvmFail, value: 21, generic: 2 }
+                        - { descr: profileError, value: 22, generic: 2 }
+                        - { descr: conflict, value: 23, generic: 2 }
                 -
                     oid: Sentry4-MIB::st4PhasePowerFactorStatus
                     value: Sentry4-MIB::st4PhasePowerFactorStatus
@@ -376,28 +381,28 @@ modules:
                     index: 'st4PhasePowerFactorStatus.{{ $index }}'
                     state_name: st4PhasePowerFactorStatus
                     states:
-                        - { descr: normal, graph: 1, value: 0, generic: 0 }
-                        - { descr: disabled, graph: 1, value: 1, generic: 3 }
-                        - { descr: purged, graph: 1, value: 2, generic: 2 }
-                        - { descr: reading, graph: 1, value: 5, generic: 2 }
-                        - { descr: settle, graph: 1, value: 6, generic: 1 }
-                        - { descr: notFound, graph: 1, value: 7, generic: 3 }
-                        - { descr: lost, graph: 1, value: 8, generic: 1 }
-                        - { descr: readError, graph: 1, value: 9, generic: 1 }
-                        - { descr: noComm, graph: 1, value: 10, generic: 1 }
-                        - { descr: pwrError, graph: 1, value: 11, generic: 2 }
-                        - { descr: breakerTripped, graph: 1, value: 12, generic: 2 }
-                        - { descr: fuseBlown, graph: 1, value: 13, generic: 2 }
-                        - { descr: lowAlarm, graph: 1, value: 14, generic: 2 }
-                        - { descr: lowWarning, graph: 1, value: 15, generic: 1 }
-                        - { descr: highWarning, graph: 1, value: 16, generic: 1 }
-                        - { descr: highAlarm, graph: 1, value: 17, generic: 2 }
-                        - { descr: alarm, graph: 1, value: 18, generic: 2 }
-                        - { descr: underLimit, graph: 1, value: 19, generic: 1 }
-                        - { descr: overLimit, graph: 1, value: 20, generic: 1 }
-                        - { descr: nvmFail, graph: 1, value: 21, generic: 2 }
-                        - { descr: profileError, graph: 1, value: 22, generic: 2 }
-                        - { descr: conflict, graph: 1, value: 23, generic: 2 }
+                        - { descr: normal, value: 0, generic: 0 }
+                        - { descr: disabled, value: 1, generic: 3 }
+                        - { descr: purged, value: 2, generic: 2 }
+                        - { descr: reading, value: 5, generic: 2 }
+                        - { descr: settle, value: 6, generic: 1 }
+                        - { descr: notFound, value: 7, generic: 3 }
+                        - { descr: lost, value: 8, generic: 1 }
+                        - { descr: readError, value: 9, generic: 1 }
+                        - { descr: noComm, value: 10, generic: 1 }
+                        - { descr: pwrError, value: 11, generic: 2 }
+                        - { descr: breakerTripped, value: 12, generic: 2 }
+                        - { descr: fuseBlown, value: 13, generic: 2 }
+                        - { descr: lowAlarm, value: 14, generic: 2 }
+                        - { descr: lowWarning, value: 15, generic: 1 }
+                        - { descr: highWarning, value: 16, generic: 1 }
+                        - { descr: highAlarm, value: 17, generic: 2 }
+                        - { descr: alarm, value: 18, generic: 2 }
+                        - { descr: underLimit, value: 19, generic: 1 }
+                        - { descr: overLimit, value: 20, generic: 1 }
+                        - { descr: nvmFail, value: 21, generic: 2 }
+                        - { descr: profileError, value: 22, generic: 2 }
+                        - { descr: conflict, value: 23, generic: 2 }
                 -
                     oid: Sentry4-MIB::st4OcpStatus
                     value: Sentry4-MIB::st4OcpStatus
@@ -406,28 +411,28 @@ modules:
                     index: 'st4OcpStatus.{{ $index }}'
                     state_name: st4OcpStatus
                     states:
-                        - { descr: normal, graph: 1, value: 0, generic: 0 }
-                        - { descr: disabled, graph: 1, value: 1, generic: 3 }
-                        - { descr: purged, graph: 1, value: 2, generic: 2 }
-                        - { descr: reading, graph: 1, value: 5, generic: 2 }
-                        - { descr: settle, graph: 1, value: 6, generic: 1 }
-                        - { descr: notFound, graph: 1, value: 7, generic: 3 }
-                        - { descr: lost, graph: 1, value: 8, generic: 1 }
-                        - { descr: readError, graph: 1, value: 9, generic: 1 }
-                        - { descr: noComm, graph: 1, value: 10, generic: 1 }
-                        - { descr: pwrError, graph: 1, value: 11, generic: 2 }
-                        - { descr: breakerTripped, graph: 1, value: 12, generic: 2 }
-                        - { descr: fuseBlown, graph: 1, value: 13, generic: 2 }
-                        - { descr: lowAlarm, graph: 1, value: 14, generic: 2 }
-                        - { descr: lowWarning, graph: 1, value: 15, generic: 1 }
-                        - { descr: highWarning, graph: 1, value: 16, generic: 1 }
-                        - { descr: highAlarm, graph: 1, value: 17, generic: 2 }
-                        - { descr: alarm, graph: 1, value: 18, generic: 2 }
-                        - { descr: underLimit, graph: 1, value: 19, generic: 1 }
-                        - { descr: overLimit, graph: 1, value: 20, generic: 1 }
-                        - { descr: nvmFail, graph: 1, value: 21, generic: 2 }
-                        - { descr: profileError, graph: 1, value: 22, generic: 2 }
-                        - { descr: conflict, graph: 1, value: 23, generic: 2 }
+                        - { descr: normal, value: 0, generic: 0 }
+                        - { descr: disabled, value: 1, generic: 3 }
+                        - { descr: purged, value: 2, generic: 2 }
+                        - { descr: reading, value: 5, generic: 2 }
+                        - { descr: settle, value: 6, generic: 1 }
+                        - { descr: notFound, value: 7, generic: 3 }
+                        - { descr: lost, value: 8, generic: 1 }
+                        - { descr: readError, value: 9, generic: 1 }
+                        - { descr: noComm, value: 10, generic: 1 }
+                        - { descr: pwrError, value: 11, generic: 2 }
+                        - { descr: breakerTripped, value: 12, generic: 2 }
+                        - { descr: fuseBlown, value: 13, generic: 2 }
+                        - { descr: lowAlarm, value: 14, generic: 2 }
+                        - { descr: lowWarning, value: 15, generic: 1 }
+                        - { descr: highWarning, value: 16, generic: 1 }
+                        - { descr: highAlarm, value: 17, generic: 2 }
+                        - { descr: alarm, value: 18, generic: 2 }
+                        - { descr: underLimit, value: 19, generic: 1 }
+                        - { descr: overLimit, value: 20, generic: 1 }
+                        - { descr: nvmFail, value: 21, generic: 2 }
+                        - { descr: profileError, value: 22, generic: 2 }
+                        - { descr: conflict, value: 23, generic: 2 }
                 -
                     oid: Sentry4-MIB::st4BranchState
                     value: Sentry4-MIB::st4BranchState
@@ -436,9 +441,9 @@ modules:
                     index: 'st4BranchState.{{ $index }}'
                     state_name: st4BranchState
                     states:
-                        - { descr: unknown, graph: 0, value: 0, generic: 3 }
-                        - { descr: on, graph: 0, value: 1, generic: 0 }
-                        - { descr: off, graph: 0, value: 2, generic: 3 }
+                        - { descr: unknown, value: 0, generic: 3 }
+                        - { descr: on, value: 1, generic: 0 }
+                        - { descr: off, value: 2, generic: 3 }
                 -
                     oid: Sentry4-MIB::st4BranchStatus
                     value: Sentry4-MIB::st4BranchStatus
@@ -447,28 +452,28 @@ modules:
                     index: 'st4BranchStatus.{{ $index }}'
                     state_name: st4BranchStatus
                     states:
-                        - { descr: normal, graph: 1, value: 0, generic: 0 }
-                        - { descr: disabled, graph: 1, value: 1, generic: 3 }
-                        - { descr: purged, graph: 1, value: 2, generic: 2 }
-                        - { descr: reading, graph: 1, value: 5, generic: 2 }
-                        - { descr: settle, graph: 1, value: 6, generic: 1 }
-                        - { descr: notFound, graph: 1, value: 7, generic: 3 }
-                        - { descr: lost, graph: 1, value: 8, generic: 1 }
-                        - { descr: readError, graph: 1, value: 9, generic: 1 }
-                        - { descr: noComm, graph: 1, value: 10, generic: 1 }
-                        - { descr: pwrError, graph: 1, value: 11, generic: 2 }
-                        - { descr: breakerTripped, graph: 1, value: 12, generic: 2 }
-                        - { descr: fuseBlown, graph: 1, value: 13, generic: 2 }
-                        - { descr: lowAlarm, graph: 1, value: 14, generic: 2 }
-                        - { descr: lowWarning, graph: 1, value: 15, generic: 1 }
-                        - { descr: highWarning, graph: 1, value: 16, generic: 1 }
-                        - { descr: highAlarm, graph: 1, value: 17, generic: 2 }
-                        - { descr: alarm, graph: 1, value: 18, generic: 2 }
-                        - { descr: underLimit, graph: 1, value: 19, generic: 1 }
-                        - { descr: overLimit, graph: 1, value: 20, generic: 1 }
-                        - { descr: nvmFail, graph: 1, value: 21, generic: 2 }
-                        - { descr: profileError, graph: 1, value: 22, generic: 2 }
-                        - { descr: conflict, graph: 1, value: 23, generic: 2 }
+                        - { descr: normal, value: 0, generic: 0 }
+                        - { descr: disabled, value: 1, generic: 3 }
+                        - { descr: purged, value: 2, generic: 2 }
+                        - { descr: reading, value: 5, generic: 2 }
+                        - { descr: settle, value: 6, generic: 1 }
+                        - { descr: notFound, value: 7, generic: 3 }
+                        - { descr: lost, value: 8, generic: 1 }
+                        - { descr: readError, value: 9, generic: 1 }
+                        - { descr: noComm, value: 10, generic: 1 }
+                        - { descr: pwrError, value: 11, generic: 2 }
+                        - { descr: breakerTripped, value: 12, generic: 2 }
+                        - { descr: fuseBlown, value: 13, generic: 2 }
+                        - { descr: lowAlarm, value: 14, generic: 2 }
+                        - { descr: lowWarning, value: 15, generic: 1 }
+                        - { descr: highWarning, value: 16, generic: 1 }
+                        - { descr: highAlarm, value: 17, generic: 2 }
+                        - { descr: alarm, value: 18, generic: 2 }
+                        - { descr: underLimit, value: 19, generic: 1 }
+                        - { descr: overLimit, value: 20, generic: 1 }
+                        - { descr: nvmFail, value: 21, generic: 2 }
+                        - { descr: profileError, value: 22, generic: 2 }
+                        - { descr: conflict, value: 23, generic: 2 }
                 -
                     oid: Sentry4-MIB::st4BranchCurrentStatus
                     value: Sentry4-MIB::st4BranchCurrentStatus
@@ -477,25 +482,73 @@ modules:
                     index: 'st4BranchCurrentStatus.{{ $index }}'
                     state_name: st4BranchCurrentStatus
                     states:
-                        - { descr: normal, graph: 1, value: 0, generic: 0 }
-                        - { descr: disabled, graph: 1, value: 1, generic: 3 }
-                        - { descr: purged, graph: 1, value: 2, generic: 2 }
-                        - { descr: reading, graph: 1, value: 5, generic: 2 }
-                        - { descr: settle, graph: 1, value: 6, generic: 1 }
-                        - { descr: notFound, graph: 1, value: 7, generic: 3 }
-                        - { descr: lost, graph: 1, value: 8, generic: 1 }
-                        - { descr: readError, graph: 1, value: 9, generic: 1 }
-                        - { descr: noComm, graph: 1, value: 10, generic: 1 }
-                        - { descr: pwrError, graph: 1, value: 11, generic: 2 }
-                        - { descr: breakerTripped, graph: 1, value: 12, generic: 2 }
-                        - { descr: fuseBlown, graph: 1, value: 13, generic: 2 }
-                        - { descr: lowAlarm, graph: 1, value: 14, generic: 2 }
-                        - { descr: lowWarning, graph: 1, value: 15, generic: 1 }
-                        - { descr: highWarning, graph: 1, value: 16, generic: 1 }
-                        - { descr: highAlarm, graph: 1, value: 17, generic: 2 }
-                        - { descr: alarm, graph: 1, value: 18, generic: 2 }
-                        - { descr: underLimit, graph: 1, value: 19, generic: 1 }
-                        - { descr: overLimit, graph: 1, value: 20, generic: 1 }
-                        - { descr: nvmFail, graph: 1, value: 21, generic: 2 }
-                        - { descr: profileError, graph: 1, value: 22, generic: 2 }
-                        - { descr: conflict, graph: 1, value: 23, generic: 2 }
+                        - { descr: normal, value: 0, generic: 0 }
+                        - { descr: disabled, value: 1, generic: 3 }
+                        - { descr: purged, value: 2, generic: 2 }
+                        - { descr: reading, value: 5, generic: 2 }
+                        - { descr: settle, value: 6, generic: 1 }
+                        - { descr: notFound, value: 7, generic: 3 }
+                        - { descr: lost, value: 8, generic: 1 }
+                        - { descr: readError, value: 9, generic: 1 }
+                        - { descr: noComm, value: 10, generic: 1 }
+                        - { descr: pwrError, value: 11, generic: 2 }
+                        - { descr: breakerTripped, value: 12, generic: 2 }
+                        - { descr: fuseBlown, value: 13, generic: 2 }
+                        - { descr: lowAlarm, value: 14, generic: 2 }
+                        - { descr: lowWarning, value: 15, generic: 1 }
+                        - { descr: highWarning, value: 16, generic: 1 }
+                        - { descr: highAlarm, value: 17, generic: 2 }
+                        - { descr: alarm, value: 18, generic: 2 }
+                        - { descr: underLimit, value: 19, generic: 1 }
+                        - { descr: overLimit, value: 20, generic: 1 }
+                        - { descr: nvmFail, value: 21, generic: 2 }
+                        - { descr: profileError, value: 22, generic: 2 }
+                        - { descr: conflict, value: 23, generic: 2 }
+        humidity:
+            options:
+                skip_value_lt: 0
+            data:
+                -
+                    oid: Sentry4-MIB::st4HumidSensorMonitorTable
+                    value: Sentry4-MIB::st4HumidSensorValue
+                    num_oid: '.1.3.6.1.4.1.1718.4.1.10.3.1.1.{{ $index }}'
+                    index: 'st4HumidSensorValue.{{ $index }}'
+                    descr: '{{ Sentry4-MIB::st4HumidSensorName }}'
+                    low_warn_limit: Sentry4-MIB::st4HumidSensorLowWarning
+                    low_limit: Sentry4-MIB::st4HumidSensorLowAlarm
+                    warn_limit: Sentry4-MIB::st4HumidSensorHighWarning
+                    high_limit: Sentry4-MIB::st4HumidSensorHighAlarm
+        temperature:
+            options:
+                skip_value_lt: -399
+            data:
+                -
+                    oid: Sentry4-MIB::st4TempSensorMonitorTable
+                    value: Sentry4-MIB::st4TempSensorValue
+                    num_oid: '.1.3.6.1.4.1.1718.4.1.9.3.1.1.{{ $index }}'
+                    index: 'st4TempSensorValue{{ $index }}'
+                    descr: '{{ Sentry4-MIB::st4TempSensorName }}'
+                    skip_limits_calc: true
+                    low_warn_limit: Sentry4-MIB::st4TempSensorLowWarning
+                    low_limit: Sentry4-MIB::st4TempSensorLowAlarm
+                    warn_limit: Sentry4-MIB::st4TempSensorHighWarning
+                    high_limit: Sentry4-MIB::st4TempSensorHighAlarm
+                    divisor: 10
+                    skip_values:
+                        - { oid: Sentry4-MIB::st4TempSensorScale.0, op: '!=', value: 0 }
+                -
+                    oid: Sentry4-MIB::st4TempSensorMonitorTable
+                    value: Sentry4-MIB::st4TempSensorValue
+                    num_oid: '.1.3.6.1.4.1.1718.4.1.9.3.1.1.{{ $index }}'
+                    index: 'st4TempSensorValue{{ $index }}'
+                    descr: '{{ Sentry4-MIB::st4TempSensorName }}'
+                    skip_limits_calc: true
+                    low_warn_limit: Sentry4-MIB::st4TempSensorLowWarning
+                    low_limit: Sentry4-MIB::st4TempSensorLowAlarm
+                    warn_limit: Sentry4-MIB::st4TempSensorHighWarning
+                    high_limit: Sentry4-MIB::st4TempSensorHighAlarm
+                    divisor: 10
+                    user_func: fahrenheit_to_celsius
+                    skip_values:
+                        - { oid: Sentry4-MIB::st4TempSensorScale.0, op: '!=', value: 1 }
+
