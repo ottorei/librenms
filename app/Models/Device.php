@@ -27,6 +27,7 @@ use LibreNMS\Enum\DeviceStatus;
 use LibreNMS\Enum\MaintenanceStatus;
 use LibreNMS\Exceptions\InvalidIpException;
 use LibreNMS\Polling\Method\Config\SnmpConfig;
+use LibreNMS\Polling\ModuleStatus;
 use LibreNMS\Util\IP;
 use LibreNMS\Util\Rewrite;
 use LibreNMS\Util\Time;
@@ -114,7 +115,7 @@ class Device extends BaseModel
     ];
 
     /**
-     * @return array{inserted: 'datetime', last_discovered: 'datetime', last_polled: 'datetime', last_ping: 'datetime', status: 'boolean'}
+     * @return array<string, string>
      */
     protected function casts(): array
     {
@@ -122,7 +123,6 @@ class Device extends BaseModel
             'inserted' => 'datetime',
             'last_discovered' => 'datetime',
             'last_polled' => 'datetime',
-            'last_ping' => 'datetime',
             'status' => 'boolean',
             'mtu_status' => 'boolean',
             'ignore' => 'boolean',
@@ -156,6 +156,9 @@ class Device extends BaseModel
         return str_ends_with($this->transport ?? '', '6') ? AddressFamily::IPv6 : AddressFamily::IPv4;
     }
 
+    /**
+     * Find the device with this address, preferring a device that owns it over one that has it on a port.
+     */
     public static function findByIp(?string $ip): ?Device
     {
         if ($ip === null) {
@@ -163,7 +166,8 @@ class Device extends BaseModel
         }
 
         try {
-            $device_id = static::hasIp(IP::parse($ip))->value('device_id');
+            $ip = IP::parse($ip);
+            $device_id = static::hasIp($ip)->orderByIpOwner($ip)->value('device_id');
             $device = DeviceCache::get($device_id);
 
             return $device->exists ? $device : null;
@@ -421,13 +425,12 @@ class Device extends BaseModel
 
     public function forgetAttrib($name)
     {
-        $attrib_index = $this->attribs->search(fn ($attrib) => $attrib->attrib_type === $name);
+        $attrib = $this->attribs->first(fn ($attrib) => $attrib->attrib_type === $name);
 
-        if ($attrib_index !== false) {
-            $deleted = (bool) $this->attribs->get($attrib_index)->delete();
-            // only forget the attrib_index after delete, otherwise delete() will fail fatally with:
-            // Symfony\\Component\\Debug\Exception\\FatalThrowableError(code: 0):  Call to a member function delete() on null
-            $this->attribs->forget((string) $attrib_index);
+        if ($attrib !== null) {
+            $deleted = (bool) $attrib->delete();
+            // only remove the attrib from the relation after delete
+            $this->setRelation('attribs', $this->attribs->reject(fn ($item) => $item->is($attrib))->values());
 
             return $deleted;
         }
@@ -438,6 +441,21 @@ class Device extends BaseModel
     public function getAttribs()
     {
         return $this->attribs->pluck('attrib_value', 'attrib_type')->toArray();
+    }
+
+    /**
+     * Selected port polling only polls ports that are up.
+     * The device setting overrides the os setting, which overrides the global setting.
+     */
+    public function selectedPortPolling(): ModuleStatus
+    {
+        $deviceSetting = $this->getAttrib('selected_ports');
+
+        return new ModuleStatus(
+            (bool) LibrenmsConfig::get('polling.selected_ports', false),
+            LibrenmsConfig::has("os.$this->os.polling.selected_ports") ? (bool) LibrenmsConfig::get("os.$this->os.polling.selected_ports") : null,
+            $deviceSetting === null ? null : $deviceSetting === 'true',
+        );
     }
 
     /**
@@ -519,8 +537,8 @@ class Device extends BaseModel
     public function filterState(Builder $query, mixed $value, array $config): void
     {
         $this->applyMappedFilter($query, $value, $config, fn (Builder $q, $state) => match ($state) {
-            'up' => $q->where('status', 1)->where('disabled', 0)->where('disable_notify', 0),
-            'down' => $q->where('status', 0)->where('disabled', 0)->where('disable_notify', 0),
+            'up' => $q->where('status', 1)->where('disabled', 0),
+            'down' => $q->where('status', 0)->where('disabled', 0),
             default => $q,
         });
     }
@@ -691,6 +709,17 @@ class Device extends BaseModel
         }
 
         return $query->where('hostname', $deviceSpec);
+    }
+
+    /**
+     * Order devices that own this address, or are named $name, ahead of devices that only have it on a port.
+     */
+    protected function scopeOrderByIpOwner(Builder $query, IP $ip, ?string $name = null): Builder
+    {
+        $name ??= $ip->uncompressed();
+
+        return $query->orderByRaw('CASE WHEN hostname IN (?, ?) OR sysName = ? OR ip = ? THEN 0 ELSE 1 END', [$name, $ip->uncompressed(), $name, $ip->packed()])
+            ->orderBy('device_id');
     }
 
     protected function scopeHasIp(Builder $query, IP $ip): Builder

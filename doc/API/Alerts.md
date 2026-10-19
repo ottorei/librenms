@@ -2,7 +2,9 @@
 
 Get details of an alert
 
-Route: `/api/v0/alerts/:id`
+Route: `/api/v0/faults/:id`
+
+Legacy alias: `/api/v0/alerts/:id`
 
 - id is the alert id, you can obtain a list of alert ids from [`list_alerts`](#list_alerts).
 
@@ -13,7 +15,7 @@ Input:
 Example:
 
 ```curl
-curl -H 'Authorization: Bearer YOURAPITOKENHERE' https://foo.example/api/v0/alerts/1
+curl -H 'Authorization: Bearer YOURAPITOKENHERE' https://foo.example/api/v0/faults/1
 ```
 
 Output:
@@ -41,7 +43,9 @@ Output:
 
 Acknowledge an alert
 
-Route: `/api/v0/alerts/:id`
+Route: `/api/v0/faults/:id`
+
+Legacy alias: `/api/v0/alerts/:id`
 
 - id is the alert id, you can obtain a list of alert ids from [`list_alerts`](#list_alerts).
 - note is the note to add to the alert
@@ -55,7 +59,7 @@ Input:
 Example:
 
 ```curl
-curl -X PUT -H 'Authorization: Bearer YOURAPITOKENHERE' https://foo.example/api/v0/alerts/1
+curl -X PUT -H 'Authorization: Bearer YOURAPITOKENHERE' https://foo.example/api/v0/faults/1
 ```
 
 Output:
@@ -72,7 +76,9 @@ Output:
 
 Unmute an alert
 
-Route: `/api/v0/alerts/unmute/:id`
+Route: `/api/v0/faults/unmute/:id`
+
+Legacy alias: `/api/v0/alerts/unmute/:id`
 
 - id is the alert id, you can obtain a list of alert ids from [`list_alerts`](#list_alerts).
 
@@ -83,7 +89,7 @@ Input:
 Example:
 
 ```curl
-curl -X PUT -H 'Authorization: Bearer YOURAPITOKENHERE' https://foo.example/api/v0/alerts/unmute/1
+curl -X PUT -H 'Authorization: Bearer YOURAPITOKENHERE' https://foo.example/api/v0/faults/unmute/1
 ```
 
 Output:
@@ -99,7 +105,9 @@ Output:
 
 List all alerts
 
-Route: `/api/v0/alerts`
+Route: `/api/v0/faults`
+
+Legacy alias: `/api/v0/alerts`
 
 Input:
 
@@ -112,19 +120,19 @@ Input:
 Examples:
 
 ```curl
-curl -H 'Authorization: Bearer YOURAPITOKENHERE' https://foo.example/api/v0/alerts?state=1
+curl -H 'Authorization: Bearer YOURAPITOKENHERE' https://foo.example/api/v0/faults?state=1
 ```
 
 ```curl
-curl -H 'Authorization: Bearer YOURAPITOKENHERE' https://foo.example/api/v0/alerts?severity=critical
+curl -H 'Authorization: Bearer YOURAPITOKENHERE' https://foo.example/api/v0/faults?severity=critical
 ```
 
 ```curl
-curl -H 'Authorization: Bearer YOURAPITOKENHERE' https://foo.example/api/v0/alerts?order=timestamp%20ASC
+curl -H 'Authorization: Bearer YOURAPITOKENHERE' https://foo.example/api/v0/faults?order=timestamp%20ASC
 ```
 
 ```curl
-curl -H 'Authorization: Bearer YOURAPITOKENHERE' https://foo.example/api/v0/alerts?alert_rule=49
+curl -H 'Authorization: Bearer YOURAPITOKENHERE' https://foo.example/api/v0/faults?alert_rule=49
 ```
 
 Output:
@@ -323,6 +331,7 @@ Input (JSON):
 - invert: it inverts the check of the rule.
 - name: the name of the rule. This field is mandatory.
 - notes: your own notes about this rule
+- proc: Optional. URL of a procedure/runbook for this rule, shown as a link on the alerts page and passed to transports. Must be `http://` or `https://` to be rendered, max 80 characters.
 
 Example:
 
@@ -374,6 +383,7 @@ Input (JSON):
 - invert: it inverts the check of the rule.
 - name: the name of the rule. This field is mandatory.
 - notes: your own notes about this rule
+- proc: Optional. URL of a procedure/runbook for this rule, shown as a link on the alerts page and passed to transports. Must be `http://` or `https://` to be rendered, max 80 characters.
 
 Example:
 
