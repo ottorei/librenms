@@ -33,6 +33,11 @@ class Ospfv3Controller extends Controller
 {
     public function __invoke(Request $request): View
     {
+        $request->validate([
+            'per_page' => 'nullable|integer',
+            'page' => 'nullable|integer',
+        ]);
+
         $instances = Ospfv3Instance::hasAccess($request->user())
             ->with('device')
             ->withCount([
@@ -42,12 +47,13 @@ class Ospfv3Controller extends Controller
                 'nbrs',
             ])
             ->orderBy('device_id')
-            ->get();
+            ->paginate($request->integer('per_page', 50))
+            ->withQueryString();
 
         return view('routing.ospf', [
             'tab' => 'ospfv3',
             'title' => __('OSPFv3'),
-            'instances' => $instances->map(fn (Ospfv3Instance $instance) => [
+            'instances' => $instances->through(fn (Ospfv3Instance $instance) => [
                 'device' => $instance->device,
                 'router_id' => $instance->router_id,
                 'admin_status' => $instance->ospfv3AdminStatus,
