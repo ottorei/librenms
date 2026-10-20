@@ -35,29 +35,22 @@ class CefController extends Controller
     {
         $request->validate([
             'view' => 'nullable|in:basic,graphs',
-            'per_page' => 'nullable|integer',
-            'page' => 'nullable|integer',
         ]);
 
         $view = $request->query('view', 'basic');
-        $perPage = $request->query('per_page');
-
-        $cefs = CefSwitching::hasAccess($request->user())
-            ->orderBy('device_id')
-            ->orderBy('entPhysicalIndex')
-            ->orderBy('afi')
-            ->orderBy('cef_index')
-            ->paginate($request->integer('per_page', 50))
-            ->withQueryString();
 
         return view('routing.cef', [
             'view' => $view,
             'cef_options' => [
-                'basic' => ['text' => __('Basic'), 'link' => route('routing.cef', ['per_page' => $perPage])],
-                'graphs' => ['text' => __('Graphs'), 'link' => route('routing.cef', ['view' => 'graphs', 'per_page' => $perPage])],
+                'basic' => ['text' => __('Basic'), 'link' => route('routing.cef')],
+                'graphs' => ['text' => __('Graphs'), 'link' => route('routing.cef', ['view' => 'graphs'])],
             ],
-            'cefs' => $cefs->getCollection(),
-            'paginator' => $cefs,
+            'cefs' => CefSwitching::hasAccess($request->user())
+                ->orderBy('device_id')
+                ->orderBy('entPhysicalIndex')
+                ->orderBy('afi')
+                ->orderBy('cef_index')
+                ->get(),
         ]);
     }
 }

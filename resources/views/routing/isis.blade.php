@@ -10,10 +10,6 @@
 
         <x-panel>
             <x-routing.isis-table :adjacencies="$adjacencies" show-device />
-
-            <x-slot:footer>
-                <x-pagination-footer :paginator="$paginator" />
-            </x-slot:footer>
         </x-panel>
     </div>
 @endsection

@@ -14,9 +14,6 @@
                 <x-option-bar border="none" name="{{ __('Graphs') }}" :options="$graph_options" :selected="$graph ?? 'none'" />
             </div>
             <x-routing.bgp-peer-table :peers="$peers" :graph="$graph" show-device />
-            <div class="panel-footer">
-                <x-pagination-footer :paginator="$paginator" />
-            </div>
         </div>
     </div>
 @endsection

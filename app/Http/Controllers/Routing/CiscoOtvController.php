@@ -33,32 +33,13 @@ class CiscoOtvController extends Controller
 {
     public function __invoke(Request $request): View
     {
-        $request->validate([
-            'per_page' => 'nullable|integer',
-            'page' => 'nullable|integer',
-        ]);
-
-        $otv = fn () => Component::hasAccess($request->user())
-            ->where('type', 'Cisco-OTV')
-            ->where('ignore', 0);
-
-        // paginate on devices, then load all the components of the devices on this page
-        $devices = $otv()
-            ->select('device_id')
-            ->groupBy('device_id')
-            ->orderBy('device_id')
-            ->paginate($request->integer('per_page', 50))
-            ->withQueryString();
-
-        $components = $otv()
-            ->whereIn('device_id', $devices->getCollection()->pluck('device_id'))
-            ->with(['prefs', 'device'])
-            ->get()
-            ->groupBy('device_id');
-
         return view('routing.cisco-otv', [
-            'devices' => $components,
-            'paginator' => $devices,
+            'devices' => Component::hasAccess($request->user())
+                ->where('type', 'Cisco-OTV')
+                ->where('ignore', 0)
+                ->with(['prefs', 'device'])
+                ->get()
+                ->groupBy('device_id'),
         ]);
     }
 }

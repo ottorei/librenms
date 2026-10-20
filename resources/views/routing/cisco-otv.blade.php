@@ -18,11 +18,5 @@
                 <em class="text-muted">{{ __('No OTV overlays found.') }}</em>
             </x-panel>
         @endforelse
-
-        <x-panel>
-            <x-slot:footer>
-                <x-pagination-footer :paginator="$paginator" />
-            </x-slot:footer>
-        </x-panel>
     </div>
 @endsection
