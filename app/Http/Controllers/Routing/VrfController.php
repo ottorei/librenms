@@ -37,16 +37,13 @@ class VrfController extends Controller
             'view' => 'nullable|in:basic,graphs',
             'graph' => 'nullable|in:bits,pkts,upkts,nupkts,errors',
             'vrf' => 'nullable|string',
-            'per_page' => 'nullable|integer',
-            'page' => 'nullable|integer',
         ]);
 
         $view = $request->query('view', 'basic');
         $graph = $request->query('graph', 'bits');
         $name = $request->query('vrf');
-        $perPage = $request->integer('per_page', 50);
 
-        $link = fn (array $params) => route('routing.vrf', array_filter(['vrf' => $name, 'per_page' => $request->query('per_page')] + $params));
+        $link = fn (array $params) => route('routing.vrf', array_filter(['vrf' => $name] + $params));
         $options = [
             'basic' => ['text' => __('Basic'), 'link' => $link([])],
             'graphs' => ['text' => __('Graphs'), 'link' => $link(['view' => 'graphs', 'graph' => $graph])],
@@ -59,32 +56,16 @@ class VrfController extends Controller
             }
         }
 
-        // paginate on the distinct vrf name + rd groups, then load only the vrfs on this page
-        $groups = Vrf::hasAccess($request->user())
-            ->when($name, fn ($query) => $query->where('vrf_name', $name))
-            ->select(['vrf_name', 'mplsVpnVrfRouteDistinguisher'])
-            ->groupBy(['vrf_name', 'mplsVpnVrfRouteDistinguisher'])
-            ->orderBy('vrf_name')
-            ->orderBy('mplsVpnVrfRouteDistinguisher')
-            ->paginate($perPage)
-            ->withQueryString();
-
-        $groupKey = fn (Vrf $vrf) => $vrf->vrf_name . '|' . $vrf->mplsVpnVrfRouteDistinguisher;
-        $keys = $groups->getCollection()->map($groupKey);
-
         $vrfs = Vrf::hasAccess($request->user())
-            ->whereIn('vrf_name', $groups->getCollection()->pluck('vrf_name')->unique())
+            ->when($name, fn ($query) => $query->where('vrf_name', $name))
             ->with(['device', 'ports' => fn ($query) => $query->orderBy('ifDescr')->with('device')])
             ->orderBy('vrf_name')
             ->orderBy('mplsVpnVrfRouteDistinguisher')
             ->get()
-            ->groupBy($groupKey);
-
-        // a vrf name may span pages with different rds, keep only the groups on this page
-        $groups->setCollection($keys->map(fn (string $key) => $vrfs->get($key))->filter()->values());
+            ->groupBy(fn (Vrf $vrf) => $vrf->vrf_name . '|' . $vrf->mplsVpnVrfRouteDistinguisher);
 
         return view('routing.vrf', [
-            'vrfs' => $groups,
+            'vrfs' => $vrfs,
             'view' => $view,
             'graph' => $view === 'graphs' ? $graph : null,
             'name' => $name,

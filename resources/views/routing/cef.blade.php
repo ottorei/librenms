@@ -10,10 +10,6 @@
 
         <x-panel>
             <x-routing.cef-table :cefs="$cefs" :graphs="$view === 'graphs'" show-device />
-
-            <x-slot:footer>
-                <x-pagination-footer :paginator="$paginator" />
-            </x-slot:footer>
         </x-panel>
     </div>
 @endsection

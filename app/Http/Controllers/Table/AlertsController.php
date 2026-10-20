@@ -64,12 +64,11 @@ class AlertsController extends TableController
     }
 
     /**
-     * @return array<string, mixed>
+     * @return array<string, string>
      */
     protected function rules(): array
     {
         return [
-            ...AlertFault::filterValidationRules(),
             'rule_id' => 'nullable|integer|min:1',
             'alert_id' => 'nullable|integer',
             'device_id' => 'nullable|integer',
@@ -135,10 +134,26 @@ class AlertsController extends TableController
                 }
             },
 
-            'unreachable' => function ($q, ?string $unreachable): void {
-                /** @var Builder<AlertFault> $q */
-                if ($unreachable !== null) {
-                    $q->unreachable((bool) $unreachable);
+            'unreachable' => function (Builder $q, ?string $unreachable): void {
+                if ($unreachable === null) {
+                    return;
+                }
+
+                $hasParent = fn ($query) => $query
+                    ->from('device_relationships')
+                    ->whereColumn('device_relationships.child_device_id', 'alert_faults.device_id');
+
+                $hasUpParent = fn ($query) => $query
+                    ->from('device_relationships')
+                    ->join('devices as parent_devices', 'parent_devices.device_id', '=',
+                        'device_relationships.parent_device_id')
+                    ->whereColumn('device_relationships.child_device_id', 'alert_faults.device_id')
+                    ->where('parent_devices.status', '!=', 0);
+
+                if ((int) $unreachable) {
+                    $q->whereExists($hasParent)->whereNotExists($hasUpParent);
+                } else {
+                    $q->where(fn ($query) => $query->whereNotExists($hasParent)->orWhereExists($hasUpParent));
                 }
             },
 
@@ -189,8 +204,7 @@ class AlertsController extends TableController
             ->where('alert_faults.open', 1)
             ->whereHas('device', fn (Builder $q) => $q->where('disabled', 0))
             ->whereHas('rule', fn (Builder $q) => $q->where('disabled', 0))
-            ->hasAccess($request->user())
-            ->when($request->array('filter'), fn (Builder $q, array $filters) => $q->applyFilters($filters));
+            ->hasAccess($request->user());
 
         $stateFilter = $request->input('state');
         if ($stateFilter === null || (int) $stateFilter !== AlertState::RECOVERED) {

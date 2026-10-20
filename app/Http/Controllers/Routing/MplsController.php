@@ -41,34 +41,23 @@ class MplsController extends Controller
     {
         $request->validate([
             'view' => 'nullable|in:' . implode(',', MplsTable::VIEWS),
-            'per_page' => 'nullable|integer',
-            'page' => 'nullable|integer',
         ]);
 
         $view = (string) $request->query('view', 'lsp');
         $user = $request->user();
-        $perPage = $request->query('per_page');
-
-        $query = match ($view) {
-            'paths' => MplsLspPath::hasAccess($user)
-                ->select('mpls_lsp_paths.*')
-                ->leftJoin('mpls_lsps', 'mpls_lsps.lsp_id', '=', 'mpls_lsp_paths.lsp_id')
-                ->with('lsp')
-                ->orderBy('mpls_lsp_paths.device_id')
-                ->orderBy('mpls_lsps.mplsLspName'),
-            'sdps' => MplsSdp::hasAccess($user)->orderBy('device_id')->orderBy('sdp_oid'),
-            'sdpbinds' => MplsSdpBind::hasAccess($user)->orderBy('device_id')->orderBy('sdp_oid')->orderBy('svc_oid'),
-            'services' => MplsService::hasAccess($user)->orderBy('device_id')->orderBy('svc_oid'),
-            'saps' => MplsSap::hasAccess($user)->orderBy('device_id')->orderBy('svc_oid')->orderBy('sapPortId')->orderBy('sapEncapValue'),
-            default => MplsLsp::hasAccess($user)->orderBy('device_id')->orderBy('mplsLspName'),
-        };
-        $items = $query->paginate($request->integer('per_page', 50))->withQueryString();
 
         return view('routing.mpls', [
             'view' => $view,
-            'mpls_options' => MplsTable::options(fn (string $option) => route('routing.mpls', ['view' => $option, 'per_page' => $perPage])),
-            'items' => $items->getCollection(),
-            'paginator' => $items,
+            'mpls_options' => MplsTable::options(fn (string $option) => route('routing.mpls', ['view' => $option])),
+            'items' => match ($view) {
+                'paths' => MplsLspPath::hasAccess($user)->with('lsp')->orderBy('device_id')->get()
+                    ->sortBy(fn (MplsLspPath $path) => [$path->device_id, $path->lsp?->mplsLspName])->values(),
+                'sdps' => MplsSdp::hasAccess($user)->orderBy('device_id')->orderBy('sdp_oid')->get(),
+                'sdpbinds' => MplsSdpBind::hasAccess($user)->orderBy('device_id')->orderBy('sdp_oid')->orderBy('svc_oid')->get(),
+                'services' => MplsService::hasAccess($user)->orderBy('device_id')->orderBy('svc_oid')->get(),
+                'saps' => MplsSap::hasAccess($user)->orderBy('device_id')->orderBy('svc_oid')->orderBy('sapPortId')->orderBy('sapEncapValue')->get(),
+                default => MplsLsp::hasAccess($user)->orderBy('device_id')->orderBy('mplsLspName')->get(),
+            },
         ]);
     }
 }

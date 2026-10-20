@@ -10,10 +10,6 @@
 
         <x-panel>
             <x-routing.mpls-table :view="$view" :items="$items" show-device />
-
-            <x-slot:footer>
-                <x-pagination-footer :paginator="$paginator" />
-            </x-slot:footer>
         </x-panel>
     </div>
 @endsection
