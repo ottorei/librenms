@@ -40,6 +40,8 @@ class BgpController extends Controller
             'adminstatus' => 'nullable|in:start,stop',
             'state' => 'nullable|in:down',
             'graph' => 'nullable|in:' . implode(',', BgpPeerTable::GRAPHS),
+            'per_page' => 'nullable|integer',
+            'page' => 'nullable|integer',
         ]);
 
         $type = $request->query('type', 'all');
@@ -48,7 +50,7 @@ class BgpController extends Controller
         $graph = $request->query('graph');
         $user = $request->user();
 
-        $peers = BgpPeer::hasAccess($user)
+        $query = BgpPeer::hasAccess($user)
             ->select('bgpPeers.*')
             ->join('devices', 'devices.device_id', '=', 'bgpPeers.device_id')
             ->when($type === 'internal', fn ($q) => $q->whereColumn('devices.bgpLocalAs', '=', 'bgpPeers.bgpPeerRemoteAs'))
@@ -59,16 +61,20 @@ class BgpController extends Controller
             ->with('device')
             ->orderBy('devices.hostname')
             ->orderBy('bgpPeerRemoteAs')
-            ->orderBy('bgpPeerIdentifier')
-            ->get();
+            ->orderBy('bgpPeerIdentifier');
 
-        $link = fn (array $params) => route('routing.bgp', array_filter(array_merge($request->query(), $params), fn ($v) => $v !== null));
+        $peers = (clone $query)
+            ->paginate($request->integer('per_page', 50))
+            ->withQueryString();
+
+        $link = fn (array $params) => route('routing.bgp', array_filter(array_merge($request->except('page'), $params), fn ($v) => $v !== null));
 
         $activeAfis = BgpPeerCbgp::hasAccess($user)->distinct()->get(['afi', 'safi'])
             ->map(fn (BgpPeerCbgp $c) => $c->afi . $c->safi)->all();
 
         return view('routing.bgp', [
-            'peers' => $peers,
+            'peers' => $peers->getCollection(),
+            'paginator' => $peers,
             'graph' => $graph,
             'type' => $type,
             'admin_status' => $adminStatus ?? 'any',
@@ -87,7 +93,7 @@ class BgpController extends Controller
                 'any' => ['text' => __('Any'), 'link' => $link(['state' => null])],
                 'down' => ['text' => __('Down'), 'link' => $link(['state' => 'down'])],
             ],
-            'graph_options' => $this->graphOptions($link, $activeAfis, ! empty(BgpPeerTable::macAccountingIds($peers))),
+            'graph_options' => $this->graphOptions($link, $activeAfis, BgpPeerTable::hasMacAccounting($query)),
         ]);
     }
 

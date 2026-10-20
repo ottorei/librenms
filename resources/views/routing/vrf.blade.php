@@ -45,6 +45,10 @@
                     @endforeach
                 </x-slot:body>
             </x-table>
+
+            <x-slot:footer>
+                <x-pagination-footer :paginator="$vrfs" />
+            </x-slot:footer>
         </x-panel>
     </div>
 @endsection

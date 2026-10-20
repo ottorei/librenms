@@ -35,6 +35,10 @@
                     @endforeach
                 </x-slot:body>
             </x-table>
+
+            <x-slot:footer>
+                <x-pagination-footer :paginator="$instances" />
+            </x-slot:footer>
         </x-panel>
     </div>
 @endsection
