@@ -7,7 +7,9 @@ use App\Models\CefSwitching;
 use App\Models\Device;
 use App\Models\EntPhysical;
 use App\Models\Ipv4Address;
+use App\Models\Ipv4Mac;
 use App\Models\IsisAdjacency;
+use App\Models\MacAccounting;
 use App\Models\MplsLsp;
 use App\Models\MplsLspPath;
 use App\Models\MplsSap;
@@ -161,6 +163,47 @@ class GlobalRoutingTest extends TestCase
             ->assertDontSee('Denied-Peer');
     }
 
+    public function testBgpMacAccountingGraphOptionsIgnorePagination(): void
+    {
+        $device = Device::factory()->create(['hostname' => 'bgp-mac-router.local', 'bgpLocalAs' => 64501]);
+        $port = Port::factory()->for($device)->create();
+        BgpPeer::factory()->for($device)->create(['bgpPeerIdentifier' => '192.0.2.1', 'bgpPeerRemoteAs' => 64501, 'bgpPeerState' => 'established']);
+        BgpPeer::factory()->for($device)->create(['bgpPeerIdentifier' => '192.0.2.2', 'bgpPeerRemoteAs' => 64502, 'bgpPeerState' => 'idle']);
+        Ipv4Mac::factory()->create([
+            'port_id' => $port->port_id,
+            'device_id' => $device->device_id,
+            'mac_address' => 'aabbccddee02',
+            'ipv4_address' => '192.0.2.2',
+        ]);
+        MacAccounting::forceCreate([
+            'port_id' => $port->port_id,
+            'device_id' => $device->device_id,
+            'ifIndex' => $port->ifIndex,
+            'mac' => 'aabbccddee02',
+            'bps_in' => 0,
+            'bps_out' => 0,
+        ]);
+        $admin = $this->admin();
+
+        // the peer with mac accounting is on page 2, the graph options still show on page 1
+        $response = $this->actingAs($admin)
+            ->get(route('routing.bgp', ['per_page' => 1]))
+            ->assertOk()
+            ->assertDontSee('192.0.2.2');
+        $this->assertArrayHasKey('macaccounting_bits', $response->viewData('graph_options'));
+
+        // filters still apply: down peers include the idle peer with mac accounting, internal peers do not
+        $response = $this->actingAs($admin)
+            ->get(route('routing.bgp', ['state' => 'down', 'per_page' => 1]))
+            ->assertOk();
+        $this->assertArrayHasKey('macaccounting_bits', $response->viewData('graph_options'));
+
+        $response = $this->actingAs($admin)
+            ->get(route('routing.bgp', ['type' => 'internal']))
+            ->assertOk();
+        $this->assertArrayNotHasKey('macaccounting_bits', $response->viewData('graph_options'));
+    }
+
     public function testCefPage(): void
     {
         $device = Device::factory()->create(['hostname' => 'cef-router.local']);
@@ -213,6 +256,70 @@ class GlobalRoutingTest extends TestCase
             ->assertOk()
             ->assertDontSee('0000.0000.0001')
             ->assertSee('0000.0000.0002');
+    }
+
+    public function testRoutingPagesPaginate(): void
+    {
+        $device = Device::factory()->create(['hostname' => 'isis-router.local']);
+        IsisAdjacency::factory()->for($device)->create(['isisISAdjNeighSysID' => '0000.0000.0001']);
+        IsisAdjacency::factory()->for($device)->create(['isisISAdjNeighSysID' => '0000.0000.0002']);
+        $admin = $this->admin();
+
+        $this->actingAs($admin)
+            ->get(route('routing.isis', ['per_page' => 1]))
+            ->assertOk()
+            ->assertSee('0000.0000.0001')
+            ->assertDontSee('0000.0000.0002')
+            ->assertSee('page=2', false);
+
+        $this->actingAs($admin)
+            ->get(route('routing.isis', ['per_page' => 1, 'page' => 2]))
+            ->assertOk()
+            ->assertDontSee('0000.0000.0001')
+            ->assertSee('0000.0000.0002');
+
+        foreach (['bgp', 'cef', 'cisco-otv', 'isis', 'mpls', 'ospf', 'ospfv3', 'vrf'] as $page) {
+            $this->actingAs($admin)
+                ->get(route("routing.$page", ['per_page' => 1, 'page' => 2]))
+                ->assertOk()
+                ->assertSee('id="per_page"', false);
+        }
+
+        $this->actingAs($admin)
+            ->get(route('routing.mpls', ['view' => 'paths', 'per_page' => 1]))
+            ->assertOk();
+    }
+
+    public function testVrfPagePaginatesGroups(): void
+    {
+        $device = Device::factory()->create(['hostname' => 'vrf-router-a.local']);
+        $other = Device::factory()->create(['hostname' => 'vrf-router-b.local']);
+        Vrf::factory()->for($device)->create(['vrf_name' => 'VRF_PAGE_A', 'mplsVpnVrfRouteDistinguisher' => '65000:1']);
+        Vrf::factory()->for($other)->create(['vrf_name' => 'VRF_PAGE_A', 'mplsVpnVrfRouteDistinguisher' => '65000:1']);
+        Vrf::factory()->for($device)->create(['vrf_name' => 'VRF_PAGE_B', 'mplsVpnVrfRouteDistinguisher' => '65000:2']);
+        Vrf::factory()->for($device)->create(['vrf_name' => 'VRF_PAGE_B', 'mplsVpnVrfRouteDistinguisher' => '65000:3']);
+        $admin = $this->admin();
+
+        $this->actingAs($admin)
+            ->get(route('routing.vrf', ['vrf' => 'VRF_PAGE_A']))
+            ->assertOk()
+            ->assertSee('vrf-router-a.local')
+            ->assertSee('vrf-router-b.local')
+            ->assertDontSee('VRF_PAGE_B');
+
+        // VRF_PAGE_B has two route distinguishers, each is its own row and they land on separate pages
+        $response = $this->actingAs($admin)
+            ->get(route('routing.vrf', ['vrf' => 'VRF_PAGE_B', 'per_page' => 1]))
+            ->assertOk()
+            ->assertSee('65000:2')
+            ->assertDontSee('65000:3');
+        $this->assertSame(2, $response->viewData('vrfs')->total());
+
+        $this->actingAs($admin)
+            ->get(route('routing.vrf', ['vrf' => 'VRF_PAGE_B', 'per_page' => 1, 'page' => 2]))
+            ->assertOk()
+            ->assertSee('65000:3')
+            ->assertDontSee('65000:2');
     }
 
     public function testMplsPageViews(): void

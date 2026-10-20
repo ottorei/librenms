@@ -31,6 +31,7 @@ use App\Models\Ipv6Address;
 use App\Models\Port;
 use Closure;
 use Illuminate\Contracts\View\View;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
@@ -120,6 +121,23 @@ class BgpPeerTable extends Component
             'prefixes_ipv6unicast' => $peers->filter(fn (BgpPeer $p) => str_contains($p->bgpPeerIdentifier, ':')),
             default => $peers,
         };
+    }
+
+    /**
+     * Check if any IPv4 peer matched by the query has a mac accounting entry, without loading the peers
+     *
+     * @param  Builder<BgpPeer>  $peers
+     */
+    public static function hasMacAccounting(Builder $peers): bool
+    {
+        return $peers->clone()
+            ->reorder()
+            ->where('bgpPeers.bgpPeerIdentifier', 'not like', '%:%')
+            ->join('ipv4_mac', 'ipv4_mac.ipv4_address', '=', 'bgpPeers.bgpPeerIdentifier')
+            ->join('mac_accounting', 'mac_accounting.mac', '=', 'ipv4_mac.mac_address')
+            ->join('ports', fn ($join) => $join->on('ports.port_id', '=', 'mac_accounting.port_id')
+                ->on('ports.device_id', '=', 'bgpPeers.device_id'))
+            ->exists();
     }
 
     /**

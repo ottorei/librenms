@@ -35,23 +35,28 @@ class IsisController extends Controller
     {
         $request->validate([
             'state' => 'nullable|in:all,up,down',
+            'per_page' => 'nullable|integer',
+            'page' => 'nullable|integer',
         ]);
 
         $state = $request->query('state', 'all');
+        $perPage = $request->query('per_page');
 
         $adjacencies = IsisAdjacency::hasAccess($request->user())
             ->when($state !== 'all', fn ($q) => $q->where('isisISAdjState', $state))
             ->with(['device', 'port'])
             ->orderBy('device_id')
-            ->get();
+            ->paginate($request->integer('per_page', 50))
+            ->withQueryString();
 
         return view('routing.isis', [
-            'adjacencies' => $adjacencies,
+            'adjacencies' => $adjacencies->getCollection(),
+            'paginator' => $adjacencies,
             'state' => $state,
             'state_options' => [
-                'all' => ['text' => __('All'), 'link' => route('routing.isis')],
-                'up' => ['text' => __('Up'), 'link' => route('routing.isis', ['state' => 'up'])],
-                'down' => ['text' => __('Down'), 'link' => route('routing.isis', ['state' => 'down'])],
+                'all' => ['text' => __('All'), 'link' => route('routing.isis', ['per_page' => $perPage])],
+                'up' => ['text' => __('Up'), 'link' => route('routing.isis', ['state' => 'up', 'per_page' => $perPage])],
+                'down' => ['text' => __('Down'), 'link' => route('routing.isis', ['state' => 'down', 'per_page' => $perPage])],
             ],
         ]);
     }
